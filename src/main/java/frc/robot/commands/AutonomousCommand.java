@@ -30,7 +30,7 @@ public class AutonomousCommand extends SequentialCommandGroup
     double speed = .5;
 
     WaitCommand waitCommand = new WaitCommand(1.5);
-    Command moveForwardCommand = Commands.startEnd(() -> this.drivetrain.drive(speed, 0, 0, true, true), () -> this.drivetrain.drive(0, 0, 0, true, true)).withTimeout(1);
+    Command moveForwardCommand = Commands.startEnd(() -> this.drivetrain.drive(speed, 0, 0, true), () -> this.drivetrain.drive(0, 0, 0, true)).withTimeout(1);
     Command runExampleMotorCommand = new RunCommand(this::runExampleMotor, driveSubsystem).withTimeout(2);
     WaitCommand waitCommand2 = new WaitCommand(1.5);
     Command stopExampleMotorCommand = new RunCommand(this::stopExampleMotor, driveSubsystem).withTimeout(2);
@@ -39,7 +39,7 @@ public class AutonomousCommand extends SequentialCommandGroup
   }
 
   private void runExampleMotor() {
-    this.drivetrain.drive(.5, 0, 0, true, true);
+    this.drivetrain.drive(.5, 0, 0, true);
     this.gameSubsystem.setExampleMotorSpeed(0);
 
   }

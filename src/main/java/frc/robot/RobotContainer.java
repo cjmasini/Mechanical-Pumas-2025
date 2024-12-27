@@ -4,15 +4,20 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.commands.AutonomousCommand;
 import frc.robot.commands.CancelCommand;
 import frc.robot.commands.ExampleMotorCommand;
 import frc.robot.commands.MoveCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.GameSubsystem;
+
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a "declarative" paradigm, very
  * little robot logic should actually be handled in the {@link Robot} periodic methods (other than the scheduler calls).
@@ -26,6 +31,8 @@ public class RobotContainer
   private final GameSubsystem gameSubsystem = new GameSubsystem();
   
   private final CommandXboxController driverXbox = new CommandXboxController(0);
+  
+  private final SendableChooser<Command> autoChooser = AutoBuilder.buildAutoChooser();
 
 
   /**
@@ -37,11 +44,17 @@ public class RobotContainer
     MoveCommand moveCommand = new MoveCommand(this.drivetrain, driverXbox);
     drivetrain.setDefaultCommand(moveCommand);
 
+    configureBindings();
 
-    // Toggle drive mode command, currently disabled as we did not find it necessary
-    // InstantCommand toggleDriveMode = new InstantCommand(() -> moveCommand.toggleFieldReletive());
-    // driverXbox.y().and(driverXbox.rightTrigger().negate()).onTrue(toggleDriveMode);
-    
+    // Register all commands necessary for auto with the name set in path planner
+    NamedCommands.registerCommand("runExampleMotor", new InstantCommand(() -> gameSubsystem.setExampleMotorSpeed(1)));
+    NamedCommands.registerCommand("stopExampleMotor", new InstantCommand(() -> gameSubsystem.setExampleMotorSpeed(0)));
+
+    SmartDashboard.putData(autoChooser);
+
+  }
+
+  private void configureBindings() {
     // Run Example Motor Command with a timeout of 10s
     // Must only check for A/B/X/Y when right trigger is not pressed down to prevent triggering 
     // while trying to automatically orient
@@ -56,10 +69,14 @@ public class RobotContainer
     // With the pigeon Gyro, we only needed to do this because of user error in setup
     InstantCommand resetGyro = new InstantCommand(() -> this.drivetrain.zeroHeading());
     driverXbox.rightStick().and(driverXbox.rightTrigger()).onTrue(resetGyro);
+
+    // Toggle drive mode command, currently disabled as we did not find it necessary
+    // InstantCommand toggleDriveMode = new InstantCommand(() -> moveCommand.toggleFieldReletive());
+    // driverXbox.y().and(driverXbox.rightTrigger().negate()).onTrue(toggleDriveMode);
   }
 
-  // TODO: Finish integration with Path Planner and set up an auto-chooser
+  // Return the auto selected in smart dashboard
   public Command getAutonomousCommand() {
-    return new AutonomousCommand(drivetrain, gameSubsystem);
+    return autoChooser.getSelected();
   }
 }

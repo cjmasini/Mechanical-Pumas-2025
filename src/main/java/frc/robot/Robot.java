@@ -3,7 +3,6 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot;
-
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
@@ -98,7 +97,6 @@ public class Robot extends TimedRobot
   public void autonomousInit()
   {
     autonomousCommand = robotContainer.getAutonomousCommand();
-    autonomousCommand.schedule();
 
     // schedule the autonomous command (example)
     if (autonomousCommand != null)

@@ -39,21 +39,21 @@ public class MoveCommand extends Command
   public void execute() {
     // Trigger mappings for fine-tuned robot-oriented adjustments using the d-pad
     if (driverXbox.povLeft().getAsBoolean()) {
-      driveSubsystem.drive(0, .2, -MathUtil.applyDeadband(driverXbox.getRightX(), OperatorConstants.DRIVE_DEADBAND), false, true);
+      driveSubsystem.drive(0, .2, -MathUtil.applyDeadband(driverXbox.getRightX(), OperatorConstants.DRIVE_DEADBAND), false);
     } else if (driverXbox.povRight().getAsBoolean()) {
-      driveSubsystem.drive(0, -.2, -MathUtil.applyDeadband(driverXbox.getRightX(), OperatorConstants.DRIVE_DEADBAND), false, true);
+      driveSubsystem.drive(0, -.2, -MathUtil.applyDeadband(driverXbox.getRightX(), OperatorConstants.DRIVE_DEADBAND), false);
     } else if (driverXbox.povUp().getAsBoolean()) {
-      driveSubsystem.drive(.2, 0, -MathUtil.applyDeadband(driverXbox.getRightX(), OperatorConstants.DRIVE_DEADBAND), false, true);
+      driveSubsystem.drive(.2, 0, -MathUtil.applyDeadband(driverXbox.getRightX(), OperatorConstants.DRIVE_DEADBAND), false);
     } else if (driverXbox.povDown().getAsBoolean()) {
-      driveSubsystem.drive(-0.2, 0, -MathUtil.applyDeadband(driverXbox.getRightX(), OperatorConstants.DRIVE_DEADBAND), false, true);
+      driveSubsystem.drive(-0.2, 0, -MathUtil.applyDeadband(driverXbox.getRightX(), OperatorConstants.DRIVE_DEADBAND), false);
     } else if (driverXbox.povUpLeft().getAsBoolean()) {
-      driveSubsystem.drive(.14, .14, -MathUtil.applyDeadband(driverXbox.getRightX(), OperatorConstants.DRIVE_DEADBAND), false, true);
+      driveSubsystem.drive(.14, .14, -MathUtil.applyDeadband(driverXbox.getRightX(), OperatorConstants.DRIVE_DEADBAND), false);
     } else if (driverXbox.povUpRight().getAsBoolean()) {
-      driveSubsystem.drive(.14, -.14, -MathUtil.applyDeadband(driverXbox.getRightX(), OperatorConstants.DRIVE_DEADBAND), false, true);
+      driveSubsystem.drive(.14, -.14, -MathUtil.applyDeadband(driverXbox.getRightX(), OperatorConstants.DRIVE_DEADBAND), false);
     } else if (driverXbox.povDownLeft().getAsBoolean()) {
-      driveSubsystem.drive(-.14, .14, -MathUtil.applyDeadband(driverXbox.getRightX(), OperatorConstants.DRIVE_DEADBAND), false, true);
+      driveSubsystem.drive(-.14, .14, -MathUtil.applyDeadband(driverXbox.getRightX(), OperatorConstants.DRIVE_DEADBAND), false);
     } else if (driverXbox.povDownRight().getAsBoolean()) {
-      driveSubsystem.drive(-.14, -.14, -MathUtil.applyDeadband(driverXbox.getRightX(), OperatorConstants.DRIVE_DEADBAND), false, true);
+      driveSubsystem.drive(-.14, -.14, -MathUtil.applyDeadband(driverXbox.getRightX(), OperatorConstants.DRIVE_DEADBAND), false);
     } else { // Joystick / field-oriented based movement
       double yMovement = driverXbox.getLeftY();
       double xMovement = driverXbox.getLeftX();
@@ -63,26 +63,22 @@ public class MoveCommand extends Command
         this.driveSubsystem.driveAndOrient(
             -MathUtil.applyDeadband(DriveConstants.DPAD_SPEED_REGULATOR * Math.pow(yMovement, 3), OperatorConstants.DRIVE_DEADBAND),
             -MathUtil.applyDeadband(DriveConstants.DPAD_SPEED_REGULATOR * Math.pow(xMovement, 3), OperatorConstants.DRIVE_DEADBAND),
-            Direction.RIGHT,
-             true);
+            Direction.RIGHT);
       } else if(driverXbox.rightTrigger().getAsBoolean() && driverXbox.y().getAsBoolean()) {
         this.driveSubsystem.driveAndOrient(
             -MathUtil.applyDeadband(DriveConstants.DPAD_SPEED_REGULATOR * Math.pow(yMovement, 3), OperatorConstants.DRIVE_DEADBAND),
             -MathUtil.applyDeadband(DriveConstants.DPAD_SPEED_REGULATOR * Math.pow(xMovement, 3), OperatorConstants.DRIVE_DEADBAND),
-            Direction.BACKWARD,
-             true);
+            Direction.BACKWARD);
       } else if(driverXbox.rightTrigger().getAsBoolean() && driverXbox.b().getAsBoolean()) {
         this.driveSubsystem.driveAndOrient(
             -MathUtil.applyDeadband(DriveConstants.DPAD_SPEED_REGULATOR * Math.pow(yMovement, 3), OperatorConstants.DRIVE_DEADBAND),
             -MathUtil.applyDeadband(DriveConstants.DPAD_SPEED_REGULATOR * Math.pow(xMovement, 3), OperatorConstants.DRIVE_DEADBAND),
-            Direction.LEFT,
-             true);
+            Direction.LEFT);
       } else if(driverXbox.rightTrigger().getAsBoolean() && driverXbox.a().getAsBoolean()) {
         this.driveSubsystem.driveAndOrient(
             -MathUtil.applyDeadband(DriveConstants.DPAD_SPEED_REGULATOR * Math.pow(yMovement, 3), OperatorConstants.DRIVE_DEADBAND),
             -MathUtil.applyDeadband(DriveConstants.DPAD_SPEED_REGULATOR * Math.pow(xMovement, 3), OperatorConstants.DRIVE_DEADBAND),
-            Direction.FORWARD,
-             true);
+            Direction.FORWARD);
       } else {
         // Default joystick controlled swerve
         // The left stick controls translation of the robot.
@@ -91,7 +87,7 @@ public class MoveCommand extends Command
             -MathUtil.applyDeadband(DriveConstants.DPAD_SPEED_REGULATOR * Math.pow(yMovement, 3), OperatorConstants.DRIVE_DEADBAND),
             -MathUtil.applyDeadband(DriveConstants.DPAD_SPEED_REGULATOR * Math.pow(xMovement, 3), OperatorConstants.DRIVE_DEADBAND),
             -MathUtil.applyDeadband(driverXbox.getRightX(), OperatorConstants.DRIVE_DEADBAND),
-            fieldRelative, true);
+            fieldRelative);
       }
     }
   }
