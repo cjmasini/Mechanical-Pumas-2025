@@ -1,0 +1,14 @@
+{
+  "imu": {
+    "type": "adxrs450",
+    "id": null,
+    "canbus": "null"
+  },
+  "invertedIMU": true,
+  "modules": [
+    "frontleft.json",
+    "frontright.json",
+    "backleft.json",
+    "backright.json"
+  ]
+}
