@@ -11,11 +11,17 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.SparkAbsoluteEncoder.Type;
 import com.revrobotics.SparkPIDController;
 import com.revrobotics.AbsoluteEncoder;
+import com.revrobotics.CANSparkFlex;
 import com.revrobotics.RelativeEncoder;
 import frc.robot.Constants.ModuleConstants;
 
+/**
+ * SwerveModule class - Tracks and controls state information for a swerve module
+ * TODO: Uncomment and switch to spark flex code if needed
+ */
 public class SwerveModule {
   private final CANSparkMax driveMotorController;
+  // private final CANSparkFlex driveMotorController;
   private final CANSparkMax steeringMotorController;
 
   private final RelativeEncoder driveEncoder;
@@ -32,6 +38,7 @@ public class SwerveModule {
    */
   public SwerveModule(int drivingCANId, int steeringCANId, double chassisAngularOffset) {
     driveMotorController = new CANSparkMax(drivingCANId, MotorType.kBrushless);
+    // driveMotorController = new CANSparkFlex(drivingCANId, MotorType.kBrushless);
     steeringMotorController = new CANSparkMax(steeringCANId, MotorType.kBrushless);
 
     // Factory reset to get motor controllers to a known state before configuration

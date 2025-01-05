@@ -99,7 +99,8 @@ public final class Constants
 
     // Calculations required for driving motor conversion factors and feed forward
     // TODO: Update free speed if needed
-    public static final double FREE_SPEED_RPM = 6784; // 5676 for V1.1,  6784 for NEO Vortex
+    public static final double FREE_SPEED_RPM = 5676; // 5676 RPM for NEO V1.1
+    // public static final double FREE_SPEED_RPM = 6784; // 6784 RPM for NEO Vortex
     public static final double DRIVING_MOTOR_FREE_SPEED_IN_RPS = FREE_SPEED_RPM / 60;
     public static final double WHEEL_CIRCUMFERENCE_IN_METERS = 0.2393893602;
     // 45 teeth on the wheel's bevel gear, 22 teeth on the first-stage spur gear, 15 teeth on the bevel pinion
