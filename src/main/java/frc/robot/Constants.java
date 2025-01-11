@@ -4,8 +4,8 @@
 
 package frc.robot;
 
-import com.pathplanner.lib.util.PIDConstants;
-import com.revrobotics.CANSparkBase.IdleMode;
+import com.pathplanner.lib.config.PIDConstants;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -98,11 +98,13 @@ public final class Constants
     public static final boolean TURNING_ENCODER_INVERTED = true;
 
     // Calculations required for driving motor conversion factors and feed forward
-    // TODO: Update free speed if needed
-    public static final double FREE_SPEED_RPM = 5676; // 5676 RPM for NEO V1.1
+    // TODO: Update drive motor free speed if using vortex motors
+    public static final double DRIVE_MOTOR_FREE_SPEED_RPM = 5676; // 5676 RPM for NEO V1.1
     // public static final double FREE_SPEED_RPM = 6784; // 6784 RPM for NEO Vortex
-    public static final double DRIVING_MOTOR_FREE_SPEED_IN_RPS = FREE_SPEED_RPM / 60;
-    public static final double WHEEL_CIRCUMFERENCE_IN_METERS = 0.2393893602;
+    public static final double DRIVE_MOTOR_FREE_SPEED_RPS = DRIVE_MOTOR_FREE_SPEED_RPM / 60;
+    public static final double DRIVING_MOTOR_FREE_SPEED_IN_RPS = DRIVE_MOTOR_FREE_SPEED_RPM / 60;
+    public static final double WHEEL_DIAMETER_METERS = 0.0762;
+    public static final double WHEEL_CIRCUMFERENCE_IN_METERS = WHEEL_DIAMETER_METERS * Math.PI;;
     // 45 teeth on the wheel's bevel gear, 22 teeth on the first-stage spur gear, 15 teeth on the bevel pinion
     public static final double DRIVE_MOTOR_REDUCTION = (45.0 * 22) / (DRIVE_MOTOR_PINION_TEETH * 15);
     public static final double DRIVE_WHEEL_FREE_SPEED_IN_RPS = (DRIVING_MOTOR_FREE_SPEED_IN_RPS * WHEEL_CIRCUMFERENCE_IN_METERS)
@@ -112,8 +114,6 @@ public final class Constants
         / DRIVE_MOTOR_REDUCTION; // meters
     public static final double DRIVE_ENCODER_VELECITY_FACTOR = ((WHEEL_CIRCUMFERENCE_IN_METERS)
         / DRIVE_MOTOR_REDUCTION) / 60.0; // meters per second
-
-    public static final double CHASSIS_ANGULAR_OFFSET = 0;
 
     public static final double STEERING_ENCODER_POSITION_FACTOR = (2 * Math.PI); // radians
     public static final double STEERING_ENCODER_VELECITY_FACTOR = (2 * Math.PI) / 60.0; // radians per second

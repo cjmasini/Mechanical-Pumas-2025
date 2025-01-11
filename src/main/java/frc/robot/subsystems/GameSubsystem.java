@@ -4,20 +4,20 @@
 
 package frc.robot.subsystems;
 
-import com.revrobotics.CANSparkLowLevel;
-import com.revrobotics.CANSparkMax;
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CAN_Id_Constants;
-
-import swervelib.SwerveDrive;
-
 
 public class GameSubsystem extends SubsystemBase
 {
   /**
    * Example Motor
    */
-  private final CANSparkMax exampleMotor;
+  private final SparkMax exampleMotor;
 
   /**
    * Initialize {@link SwerveDrive} with the directory provided.
@@ -28,11 +28,11 @@ public class GameSubsystem extends SubsystemBase
   {
     this.setName("Game Subsystem");
 
-    this.exampleMotor = new CANSparkMax(CAN_Id_Constants.EXAMPLE_MOTOR_CONTROLLER_ID, CANSparkLowLevel.MotorType.kBrushless);
-    // Restore defaults to known state before setting up motor
-    this.exampleMotor.restoreFactoryDefaults();
-    this.exampleMotor.setIdleMode(CANSparkMax.IdleMode.kCoast);
-    this.exampleMotor.setInverted(true);
+    this.exampleMotor = new SparkMax(CAN_Id_Constants.EXAMPLE_MOTOR_CONTROLLER_ID, MotorType.kBrushless);
+    SparkMaxConfig config = new SparkMaxConfig();
+    config
+      .inverted(true)
+      .idleMode(IdleMode.kBrake);
 
   }
 
