@@ -4,15 +4,8 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.config.RobotConfig;
-import com.pathplanner.lib.controllers.PPHolonomicDriveController;
-// import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
-import com.pathplanner.lib.config.PIDConstants;
-// import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -20,10 +13,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.util.WPIUtilJNI;
-import edu.wpi.first.wpilibj.DriverStation;
-import frc.robot.Constants;
-import frc.robot.Constants.AutonConstants;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.CAN_Id_Constants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.DriveConstants.Direction;
@@ -62,7 +52,7 @@ public class DriveSubsystem extends SubsystemBase {
   // Odometry class for tracking robot pose
   SwerveDriveOdometry odometry = new SwerveDriveOdometry(
       DriveConstants.DRIVE_KINEMATICS,
-      Rotation2d.fromDegrees(-1 * gyro.getAngle()),
+      Rotation2d.fromDegrees(gyro.getYaw().getValueAsDouble()),
       new SwerveModulePosition[] {
           frontLeftModule.getPosition(),
           frontRightModule.getPosition(),
@@ -71,33 +61,6 @@ public class DriveSubsystem extends SubsystemBase {
       });
 
   public DriveSubsystem() {
-
-    try{
-      RobotConfig config = RobotConfig.fromGUISettings();
-
-      // Configure AutoBuilder
-      AutoBuilder.configure(
-        this::getPose, 
-        this::resetPose, 
-        this::getRobotRelativeSpeeds, 
-        this::driveRobotRelative, 
-        new PPHolonomicDriveController(
-          new PIDConstants(AutonConstants.AUTON_X_CONTROLLER_P, 0.0, 0.0), // Translation PID constants
-          new PIDConstants(AutonConstants.AUTON_Y_CONTROLLER_P, 0.0, 0.0) // Rotation PID constants
-        ),
-        config,
-        () -> {
-          // Boolean supplier that controls when the path will be mirrored for the red alliance
-          // This will flip the path being followed to the red side of the field.
-          // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
-          var alliance = DriverStation.getAlliance();
-          return alliance.isPresent() ? (alliance.get() == DriverStation.Alliance.Red) : false;
-        },
-        this
-      );
-    }catch(Exception e){
-      DriverStation.reportError("Failed to load PathPlanner config and configure AutoBuilder", e.getStackTrace());
-    }
 
     //TODO: PID Tuning could be improved
     orientationController = new PIDController(0.01, 0, 0);
@@ -108,13 +71,14 @@ public class DriveSubsystem extends SubsystemBase {
   public void periodic() {
     // Update the odometry in the periodic block
     odometry.update(
-        Rotation2d.fromDegrees(-1 * gyro.getAngle()),
+        Rotation2d.fromDegrees(gyro.getYaw().getValueAsDouble()),
         new SwerveModulePosition[] {
             frontLeftModule.getPosition(),
             frontRightModule.getPosition(),
             backLeftModule.getPosition(),
             backRightModule.getPosition()
         });
+    SmartDashboard.putNumber("DSTargetAngle", frontLeftModule.getTargetAngle());
   }
 
   /**
@@ -133,7 +97,7 @@ public class DriveSubsystem extends SubsystemBase {
    */
   public void resetPose(Pose2d pose) {
     odometry.resetPosition(
-        Rotation2d.fromDegrees(-1 * gyro.getAngle()),
+        Rotation2d.fromDegrees(gyro.getYaw().getValueAsDouble()),
         new SwerveModulePosition[] {
             frontLeftModule.getPosition(),
             frontRightModule.getPosition(),
@@ -151,7 +115,7 @@ public class DriveSubsystem extends SubsystemBase {
    * @param direction     Direction to orient front of robot towards.
    */
   public void driveAndOrient(double xSpeed, double ySpeed, Direction direction) {
-    this.driveAndOrient(xSpeed, ySpeed, SwerveUtils.normalizeAngle(SwerveUtils.directionToAngle(direction, SwerveUtils.normalizeAngle(this.getHeading()))));
+    this.driveAndOrient(xSpeed, ySpeed, SwerveUtils.normalizeAngle(SwerveUtils.directionToAngle(direction, this.getHeading())));
   }
 
     /**
@@ -162,7 +126,7 @@ public class DriveSubsystem extends SubsystemBase {
    * @param targetHeading     Target heading (angle) robot should face
    */
   public void driveAndOrient(double xSpeed, double ySpeed, double target) {
-    double currentHeading = SwerveUtils.normalizeAngle(this.getHeading());
+    double currentHeading = this.getHeading();
     double targetHeading = SwerveUtils.normalizeAngle(target);
     
     // The left stick controls translation of the robot.
@@ -172,29 +136,6 @@ public class DriveSubsystem extends SubsystemBase {
         ySpeed,
         this.orientationController.calculate(currentHeading, targetHeading),
         true);
-  }
-
-  /**
-   * Call the drive function with a chassis speeds input
-   *
-   * @param xSpeed        Speed of the robot in the x direction (forward).
-   * @param ySpeed        Speed of the robot in the y direction (sideways).
-   * @param rot           Angular rate of the robot.
-   */
-  public void driveRobotRelative(ChassisSpeeds chassisSpeeds) {
-    this.drive(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond, chassisSpeeds.omegaRadiansPerSecond, false);
-  }
-
-  /**
-   * Get the reletive robot speeds for the robot
-   * 
-   * @return ChassisSpeeds containing states for each swerve module
-   */
-  public ChassisSpeeds getRobotRelativeSpeeds(){
-    return DriveConstants.DRIVE_KINEMATICS.toChassisSpeeds(frontLeftModule.getState(),
-                                                           frontRightModule.getState(),
-                                                           backLeftModule.getState(),
-                                                           backRightModule.getState());
   }
 
 
@@ -216,7 +157,7 @@ public class DriveSubsystem extends SubsystemBase {
     var swerveModuleStates = DriveConstants.DRIVE_KINEMATICS.toSwerveModuleStates(
         fieldRelative
             ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered,
-                Rotation2d.fromDegrees(-1 * gyro.getAngle()))
+                Rotation2d.fromDegrees(gyro.getYaw().getValueAsDouble()))
             : new ChassisSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered));
     SwerveDriveKinematics.desaturateWheelSpeeds(
         swerveModuleStates, DriveConstants.MAX_SPEED_METERS_PER_SECOND);
@@ -269,6 +210,6 @@ public class DriveSubsystem extends SubsystemBase {
    * @return the robot's heading in degrees, from -180 to 180
    */
   public double getHeading() {
-    return Rotation2d.fromDegrees(-1 * gyro.getAngle()).getDegrees();
+    return SwerveUtils.normalizeAngle(gyro.getYaw().getValueAsDouble());
   }
 }
