@@ -1,6 +1,6 @@
 package frc.robot.utils;
 
-import frc.robot.Constants.DriveConstants.Direction;
+import frc.robot.Constants.RobotConstants.Direction;
 
 public class SwerveUtils {
 

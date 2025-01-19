@@ -10,7 +10,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.CAN_Id_Constants;
+import frc.robot.Constants.CANIdConstants;
 
 public class GameSubsystem extends SubsystemBase
 {
@@ -28,7 +28,7 @@ public class GameSubsystem extends SubsystemBase
   {
     this.setName("Game Subsystem");
 
-    this.exampleMotor = new SparkMax(CAN_Id_Constants.EXAMPLE_MOTOR_CONTROLLER_ID, MotorType.kBrushless);
+    this.exampleMotor = new SparkMax(CANIdConstants.EXAMPLE_MOTOR_CONTROLLER_ID, MotorType.kBrushless);
     SparkMaxConfig config = new SparkMaxConfig();
     config
       .inverted(true)

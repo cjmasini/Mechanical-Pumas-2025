@@ -3,8 +3,7 @@ package frc.robot.commands;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.Constants.DriveConstants;
-import frc.robot.Constants.DriveConstants.Direction;
+import frc.robot.Constants.RobotConstants.Direction;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.subsystems.DriveSubsystem;
 
@@ -61,31 +60,31 @@ public class MoveCommand extends Command
       // Trigger mappings for field oriented driving while automically orienting to a supplied direction
       if(driverXbox.rightTrigger().getAsBoolean() && driverXbox.x().getAsBoolean()) {
         this.driveSubsystem.driveAndOrient(
-            -MathUtil.applyDeadband(DriveConstants.DPAD_SPEED_REGULATOR * Math.pow(yMovement, 3), OperatorConstants.DRIVE_DEADBAND),
-            -MathUtil.applyDeadband(DriveConstants.DPAD_SPEED_REGULATOR * Math.pow(xMovement, 3), OperatorConstants.DRIVE_DEADBAND),
+            -MathUtil.applyDeadband(OperatorConstants.DPAD_SPEED_REGULATOR * Math.pow(yMovement, 3), OperatorConstants.DRIVE_DEADBAND),
+            -MathUtil.applyDeadband(OperatorConstants.DPAD_SPEED_REGULATOR * Math.pow(xMovement, 3), OperatorConstants.DRIVE_DEADBAND),
             Direction.RIGHT);
       } else if(driverXbox.rightTrigger().getAsBoolean() && driverXbox.y().getAsBoolean()) {
         this.driveSubsystem.driveAndOrient(
-            -MathUtil.applyDeadband(DriveConstants.DPAD_SPEED_REGULATOR * Math.pow(yMovement, 3), OperatorConstants.DRIVE_DEADBAND),
-            -MathUtil.applyDeadband(DriveConstants.DPAD_SPEED_REGULATOR * Math.pow(xMovement, 3), OperatorConstants.DRIVE_DEADBAND),
+            -MathUtil.applyDeadband(OperatorConstants.DPAD_SPEED_REGULATOR * Math.pow(yMovement, 3), OperatorConstants.DRIVE_DEADBAND),
+            -MathUtil.applyDeadband(OperatorConstants.DPAD_SPEED_REGULATOR * Math.pow(xMovement, 3), OperatorConstants.DRIVE_DEADBAND),
             Direction.BACKWARD);
       } else if(driverXbox.rightTrigger().getAsBoolean() && driverXbox.b().getAsBoolean()) {
         this.driveSubsystem.driveAndOrient(
-            -MathUtil.applyDeadband(DriveConstants.DPAD_SPEED_REGULATOR * Math.pow(yMovement, 3), OperatorConstants.DRIVE_DEADBAND),
-            -MathUtil.applyDeadband(DriveConstants.DPAD_SPEED_REGULATOR * Math.pow(xMovement, 3), OperatorConstants.DRIVE_DEADBAND),
+            -MathUtil.applyDeadband(OperatorConstants.DPAD_SPEED_REGULATOR * Math.pow(yMovement, 3), OperatorConstants.DRIVE_DEADBAND),
+            -MathUtil.applyDeadband(OperatorConstants.DPAD_SPEED_REGULATOR * Math.pow(xMovement, 3), OperatorConstants.DRIVE_DEADBAND),
             Direction.LEFT);
       } else if(driverXbox.rightTrigger().getAsBoolean() && driverXbox.a().getAsBoolean()) {
         this.driveSubsystem.driveAndOrient(
-            -MathUtil.applyDeadband(DriveConstants.DPAD_SPEED_REGULATOR * Math.pow(yMovement, 3), OperatorConstants.DRIVE_DEADBAND),
-            -MathUtil.applyDeadband(DriveConstants.DPAD_SPEED_REGULATOR * Math.pow(xMovement, 3), OperatorConstants.DRIVE_DEADBAND),
+            -MathUtil.applyDeadband(OperatorConstants.DPAD_SPEED_REGULATOR * Math.pow(yMovement, 3), OperatorConstants.DRIVE_DEADBAND),
+            -MathUtil.applyDeadband(OperatorConstants.DPAD_SPEED_REGULATOR * Math.pow(xMovement, 3), OperatorConstants.DRIVE_DEADBAND),
             Direction.FORWARD);
       } else {
         // Default joystick controlled swerve
         // The left stick controls translation of the robot.
         // Turning is controlled by the X axis of the right stick.
         this.driveSubsystem.drive(
-            -MathUtil.applyDeadband(DriveConstants.DPAD_SPEED_REGULATOR * Math.pow(yMovement, 3), OperatorConstants.DRIVE_DEADBAND),
-            -MathUtil.applyDeadband(DriveConstants.DPAD_SPEED_REGULATOR * Math.pow(xMovement, 3), OperatorConstants.DRIVE_DEADBAND),
+            -MathUtil.applyDeadband(OperatorConstants.DPAD_SPEED_REGULATOR * Math.pow(yMovement, 3), OperatorConstants.DRIVE_DEADBAND),
+            -MathUtil.applyDeadband(OperatorConstants.DPAD_SPEED_REGULATOR * Math.pow(xMovement, 3), OperatorConstants.DRIVE_DEADBAND),
             -MathUtil.applyDeadband(driverXbox.getRightX(), OperatorConstants.DRIVE_DEADBAND),
             fieldRelative);
       }
@@ -115,7 +114,7 @@ public class MoveCommand extends Command
   }
 
     /*
-   * setFieldReletive - toggles the drive mode of the robot
+   * setFieldReletive - sets the drive mode of the robot
    * 
    * Can be used to dynamically set field-oriented or robot oriented drive modes
    */

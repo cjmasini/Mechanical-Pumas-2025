@@ -1,6 +1,11 @@
 {
   "HALProvider": {
     "Other Devices": {
+      "SPARK Flex [7] RELATIVE ENCODER": {
+        "header": {
+          "open": true
+        }
+      },
       "Talon FX (v6)[2]/Rotor Sensor": {
         "header": {
           "open": true
@@ -40,6 +45,7 @@
       "/LiveWindow/Ungrouped/PIDController[1]": "PIDController",
       "/LiveWindow/Ungrouped/Pigeon 2 [13]": "Gyro",
       "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
+      "/SmartDashboard/Alerts": "Alerts",
       "/SmartDashboard/Field": "Field2d",
       "/SmartDashboard/Pigeon 2 (v6) [13]": "Gyro",
       "/SmartDashboard/Pigeon 2 [13]": "Gyro",
@@ -78,12 +84,18 @@
         "Field": {
           "open": true
         },
+        "SendableChooser[0]": {
+          "open": true
+        },
         "open": true,
         "swerve": {
           "open": true
         }
       }
     }
+  },
+  "NetworkTables Info": {
+    "visible": true
   },
   "NetworkTables View": {
     "visible": false

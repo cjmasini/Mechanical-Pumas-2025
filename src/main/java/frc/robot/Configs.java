@@ -15,7 +15,7 @@ public final class Configs {
             // Use module constants to calculate conversion factors and feed forward gain.
             double drivingFactor = ModuleConstants.WHEEL_CIRCUMFERENCE_IN_METERS
                     / ModuleConstants.DRIVE_MOTOR_REDUCTION;
-            double turningFactor = 2 * Math.PI;
+            double turningFactor = ModuleConstants.MAX_ANGULAR_SPEED;
             double drivingVelocityFeedForward = 1 / ModuleConstants.DRIVE_WHEEL_FREE_SPEED_IN_RPS;
 
             drivingConfig

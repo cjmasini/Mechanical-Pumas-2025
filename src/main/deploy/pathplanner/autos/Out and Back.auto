@@ -5,21 +5,27 @@
     "data": {
       "commands": [
         {
+          "type": "path",
+          "data": {
+            "pathName": "Out"
+          }
+        },
+        {
           "type": "named",
           "data": {
             "name": "runExampleMotor"
           }
         },
         {
-          "type": "path",
-          "data": {
-            "pathName": "Note 1 Intake Process"
-          }
-        },
-        {
           "type": "named",
           "data": {
             "name": "stopExampleMotor"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Back"
           }
         }
       ]

@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.3665098068109631,
-        "y": 5.5
+        "x": 8.0,
+        "y": 6.5
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.3665098068109636,
-        "y": 5.5
+        "x": 9.0,
+        "y": 6.5
       },
       "isLocked": false,
-      "linkedName": "Note 1 Intake Position"
+      "linkedName": "Start"
     },
     {
       "anchor": {
-        "x": 3.3,
-        "y": 5.5
+        "x": 4.0,
+        "y": 6.5
       },
       "prevControl": {
-        "x": 2.3,
-        "y": 5.5
+        "x": 3.0,
+        "y": 6.5
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Close middle"
+      "linkedName": "Out Position"
     }
   ],
   "rotationTargets": [],
@@ -41,7 +41,7 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0.0,
+    "velocity": 0,
     "rotation": 0.0
   },
   "reversed": false,
