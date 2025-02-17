@@ -4,10 +4,13 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
+import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants.CANIdConstants;
@@ -17,7 +20,7 @@ public class ClimbSubsystem extends CancelableSubsystemBase
     /**
      * Motor (with 100 to 1 gearbox) to climb
      */
-    private final SparkMax climber;
+    private final TalonFX climber;
 
 
     private Timer stalledTimer;
@@ -31,7 +34,10 @@ public class ClimbSubsystem extends CancelableSubsystemBase
     {
     this.setName("Climb Subsystem");
 
-    this.climber = new SparkMax(CANIdConstants.CLIMB_MOTOR_CONTROLLER_ID, MotorType.kBrushless);
+    this.climber = new TalonFX(CANIdConstants.CLIMB_MOTOR_CONTROLLER_ID);
+    MotorOutputConfigs motorConfig = new MotorOutputConfigs().withNeutralMode(NeutralModeValue.Brake);
+    this.climber.getConfigurator().apply(motorConfig);
+
     SparkMaxConfig config = new SparkMaxConfig();
     config
         .inverted(true)
@@ -45,8 +51,9 @@ public class ClimbSubsystem extends CancelableSubsystemBase
      * 
      * @param climbMotorSpeed - Speed (0-1) to set climb motor at
      */
-    public void setClimbMotorSpeed(double climbMotorSpeed){
-    this.climber.set(climbMotorSpeed);
+    public void setClimbMotorSpeed(double climbMotorSpeed)
+    {
+        this.climber.set(climbMotorSpeed);
     }
 
     /**
@@ -56,9 +63,9 @@ public class ClimbSubsystem extends CancelableSubsystemBase
     public void periodic()
     {
         // TODO: Fine tune stall current value based on data
-        if (this.climber.getOutputCurrent() > 40 && !this.stalledTimer.isRunning()){
+        if (this.climber.getStatorCurrent().getValue().magnitude() > 40 && !this.stalledTimer.isRunning()) {
             this.stalledTimer.start();
-        } else if (this.climber.getOutputCurrent() < 30 && this.stalledTimer.get() > 2){
+        } else if (this.climber.getStatorCurrent().getValue().magnitude() < 40 && this.stalledTimer.get() > 2) {
             this.climber.set(0);
             this.stalledTimer.stop();
         }
