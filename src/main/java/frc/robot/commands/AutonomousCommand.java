@@ -6,7 +6,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.GameSubsystem;
+import frc.robot.subsystems.CoralSubsystem;
 
 /**
  * Command for note intake
@@ -15,7 +15,7 @@ public class AutonomousCommand extends SequentialCommandGroup
 {
 
   private final DriveSubsystem drivetrain;
-  private final GameSubsystem gameSubsystem;
+  private final CoralSubsystem gameSubsystem;
   
   /**
    * Command for autonomous mode
@@ -23,7 +23,7 @@ public class AutonomousCommand extends SequentialCommandGroup
    * @param drivetrain The drivetrain
    * @param gameSubsystem  The launcher subsystem.
    */
-  public AutonomousCommand(DriveSubsystem driveSubsystem, GameSubsystem gameSubsystem)
+  public AutonomousCommand(DriveSubsystem driveSubsystem, CoralSubsystem gameSubsystem)
   {
     this.gameSubsystem = gameSubsystem;
     this.drivetrain = driveSubsystem;
@@ -40,12 +40,12 @@ public class AutonomousCommand extends SequentialCommandGroup
 
   private void runExampleMotor() {
     this.drivetrain.drive(.5, 0, 0, true);
-    this.gameSubsystem.setExampleMotorSpeed(0);
+    this.gameSubsystem.setCoralMotorSpeed(0);
 
   }
 
   private void stopExampleMotor() {
-    this.gameSubsystem.setExampleMotorSpeed(0);
+    this.gameSubsystem.setCoralMotorSpeed(0);
   }
 }
 

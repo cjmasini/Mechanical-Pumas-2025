@@ -39,8 +39,74 @@ public final class Constants
     // Gyro CAN Id
     public static final int PIGEON_GYRO_CAN_ID = 21;
 
+    // Elevator CAN Ids
+    public static final int LEFT_ELEVATOR_CAN_ID = 11;
+    public static final int RIGHT_ELEVATOR_CAN_ID = 12;
+
     // Motor CAN Ids
-    public static final int EXAMPLE_MOTOR_CONTROLLER_ID = 51;
+    public static final int CORAL_MOTOR_CONTROLLER_ID = 51;
+    public static final int CLIMB_MOTOR_CONTROLLER_ID = 52;
+  }
+
+  public static final class ElevatorConstants {
+
+    //TODO: Update these
+    public static final double COUNTS_PER_INCH = 1.0;
+
+    // PID Constants
+    // TODO: Update these
+    public static final double kP = 1.0;
+    public static final double kI = 0.0;
+    public static final double kD = 0.0;
+
+    // TODO: Update these
+    public static final double kS = 0.0;
+    public static final double kV = 0.0;
+    public static final double kG = 0.0;
+
+    //Elevator Contraints
+    // TODO: Update these
+    public static final double MAX_VELOCITY = 1.0;
+    public static final double MAX_ACCELERATION = 1.0;
+    public static final double MAX_POSITION = 50.0;
+    public static final double MIN_POSITION = 0.0;
+    public static final double POSITION_TOLERANCE = 0.25;
+    public static final double MIN_POWER = -0.5;
+    public static final double MAX_POWER = 0.5;
+
+
+    // TODO these values are completely made up
+    public static final int DOWN = 0;
+    public static final int L1 = 10;
+    public static final int L2 = 20;
+    public static final int L3 = 30;
+    public static final int L4 = 40;
+    public static final int A2 = 10;
+    public static final int A3 = 20;
+    public static final int INTAKE = 25;
+    public static final int NET = 50;
+
+    public static enum Level {
+      DOWN(ElevatorConstants.DOWN),
+      INTAKE(ElevatorConstants.INTAKE),
+      NET(ElevatorConstants.NET),
+      L1(ElevatorConstants.L1),
+      L2(ElevatorConstants.L2),
+      L3(ElevatorConstants.L3),
+      L4(ElevatorConstants.L4),
+      A2(ElevatorConstants.A2),
+      A3(ElevatorConstants.A3);
+
+      private final int position;
+
+      Level(int position) {
+        this.position = position;
+      }
+
+      public int getPosition() {
+        return position;
+      }
+    }
   }
 
   public static final class RobotConstants {

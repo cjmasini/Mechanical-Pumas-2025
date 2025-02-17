@@ -22,9 +22,8 @@ import frc.robot.Constants.RobotConstants;
 import frc.robot.Constants.ModuleConstants;
 import frc.robot.Constants.RobotConstants.Direction;
 import frc.robot.utils.SwerveUtils;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class DriveSubsystem extends SubsystemBase {
+public class DriveSubsystem extends CancelableSubsystemBase {
   
   // Create MAXSwerveModules
   private final SwerveModule frontLeftModule = new SwerveModule(

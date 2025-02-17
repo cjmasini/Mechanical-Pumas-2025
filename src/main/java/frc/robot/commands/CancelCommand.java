@@ -1,7 +1,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.GameSubsystem;
+import frc.robot.subsystems.CoralSubsystem;
 
 /**
  * Command for note intake
@@ -9,14 +9,14 @@ import frc.robot.subsystems.GameSubsystem;
 public class CancelCommand extends Command 
 {
 
-  private final GameSubsystem gameSubsystem;
+  private final CoralSubsystem gameSubsystem;
 
   /**
    * Cancel all game subsystem mechanisms
    *
    * @param gameSubsystem  The launcher subsystem.
    */
-  public CancelCommand(GameSubsystem gameSubsystem)
+  public CancelCommand(CoralSubsystem gameSubsystem)
   {
 
     this.gameSubsystem = gameSubsystem;
@@ -29,7 +29,7 @@ public class CancelCommand extends Command
   public void initialize()
   {
     // Set all motors to stop
-    this.gameSubsystem.setExampleMotorSpeed(0);
+    this.gameSubsystem.setCoralMotorSpeed(0);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

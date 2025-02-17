@@ -9,49 +9,43 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CANIdConstants;
 
-public class GameSubsystem extends SubsystemBase
+public class CoralSubsystem extends CancelableSubsystemBase
 {
   /**
-   * Example Motor
+   * Motor to outtake coral pieces
    */
-  private final SparkMax exampleMotor;
+  private final SparkMax coralLauncher;
 
   /**
    * Initialize {@link SwerveDrive} with the directory provided.
    *
    * @param directory Directory of swerve drive config files.
    */
-  public GameSubsystem()
+  public CoralSubsystem()
   {
-    this.setName("Game Subsystem");
+    this.setName("Coral Subsystem");
 
-    this.exampleMotor = new SparkMax(CANIdConstants.EXAMPLE_MOTOR_CONTROLLER_ID, MotorType.kBrushless);
+    this.coralLauncher = new SparkMax(CANIdConstants.CORAL_MOTOR_CONTROLLER_ID, MotorType.kBrushless);
     SparkMaxConfig config = new SparkMaxConfig();
     config
       .inverted(true)
-      .idleMode(IdleMode.kBrake);
+      .idleMode(IdleMode.kBrake)
+      .smartCurrentLimit(20);
 
   }
 
   /**
-   * Set example motor speed to provided value
+   * Set coral motor speed to provided value
    * 
-   * @param exampleMotorSpeed - Speed (0-1) to set Example Motor at
+   * @param coralMotorSpeed - Speed (0-1) to set coral motor at
    */
-  public void setExampleMotorSpeed(double exampleMotorSpeed){
-    this.exampleMotor.set(exampleMotorSpeed);
+  public void setCoralMotorSpeed(double coralMotorSpeed){
+    this.coralLauncher.set(coralMotorSpeed);
   }
 
-  @Override
-  public void periodic()
-  {
-  }
-
-  @Override
-  public void simulationPeriodic()
-  {
+  public void cancel(){
+    this.coralLauncher.set(0);
   }
 }
