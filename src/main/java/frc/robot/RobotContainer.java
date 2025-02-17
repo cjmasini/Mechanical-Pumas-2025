@@ -30,12 +30,14 @@ import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.CoralSubsystem;
 
 /**
- * This class is where the bulk of the robot should be declared. Since Command-based is a "declarative" paradigm, very
- * little robot logic should actually be handled in the {@link Robot} periodic methods (other than the scheduler calls).
- * Instead, the structure of the robot (including subsystems, commands, and trigger mappings) should be declared here.
+ * This class is where the bulk of the robot should be declared. Since
+ * Command-based is a "declarative" paradigm, very
+ * little robot logic should actually be handled in the {@link Robot} periodic
+ * methods (other than the scheduler calls).
+ * Instead, the structure of the robot (including subsystems, commands, and
+ * trigger mappings) should be declared here.
  */
-public class RobotContainer
-{
+public class RobotContainer {
   private final DriveSubsystem drivetrain = new DriveSubsystem();
 
   private final CoralSubsystem coralSubsystem = new CoralSubsystem();
@@ -43,17 +45,15 @@ public class RobotContainer
   private final ClimbSubsystem climbSubsystem = new ClimbSubsystem();
 
   private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
-  
-  private final CommandXboxController driverXbox = new CommandXboxController(0);
-  
-  private final SendableChooser<Command> autoChooser = AutoBuilder.buildAutoChooser();
 
+  private final CommandXboxController driverXbox = new CommandXboxController(0);
+
+  private final SendableChooser<Command> autoChooser = AutoBuilder.buildAutoChooser();
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
-  public RobotContainer()
-  {
+  public RobotContainer() {
 
     MoveCommand moveCommand = new MoveCommand(this.drivetrain, driverXbox);
     drivetrain.setDefaultCommand(moveCommand);
@@ -61,7 +61,11 @@ public class RobotContainer
     configureBindings();
 
     // Register all commands necessary for auto with the name set in path planner
-    NamedCommands.registerCommand("ejectCoral", Commands.startEnd(() -> {coralSubsystem.setCoralMotorSpeed(1);}, () -> {coralSubsystem.setCoralMotorSpeed(0);}, coralSubsystem).withTimeout(1));
+    NamedCommands.registerCommand("ejectCoral", Commands.startEnd(() -> {
+      coralSubsystem.setCoralMotorSpeed(1);
+    }, () -> {
+      coralSubsystem.setCoralMotorSpeed(0);
+    }, coralSubsystem).withTimeout(1));
 
     SmartDashboard.putData(autoChooser);
   }
@@ -82,7 +86,7 @@ public class RobotContainer
     // Raise elevator while button is pressed
     RaiseElevatorCommand raiseElevatorCommand = new RaiseElevatorCommand(elevatorSubsystem);
     driverXbox.y().whileTrue(raiseElevatorCommand);
-    
+
     // Lower elevator while button is pressed
     LowerElevatorCommand lowerElevatorCommand = new LowerElevatorCommand(elevatorSubsystem);
     driverXbox.x().whileTrue(lowerElevatorCommand);
@@ -92,18 +96,21 @@ public class RobotContainer
     SetElevatorPositionCommand setElevatorPositionCommand = new SetElevatorPositionCommand(level, elevatorSubsystem);
     driverXbox.leftTrigger().onTrue(setElevatorPositionCommand);
 
-
-    // Right trigger is used to cancel other commands and as a modifier for face buttons
-    CancelCommand cancelCommand = new CancelCommand(List.of(drivetrain, coralSubsystem, climbSubsystem, elevatorSubsystem));
+    // Right trigger is used to cancel other commands and as a modifier for face
+    // buttons
+    CancelCommand cancelCommand = new CancelCommand(
+        List.of(drivetrain, coralSubsystem, climbSubsystem, elevatorSubsystem));
     driverXbox.rightTrigger().onTrue(cancelCommand.withTimeout(10));
 
     // Manually re-zero the gyro if it gets off during competition
-    // With the pigeon Gyro, we only needed to do this because of user error in setup
+    // With the pigeon Gyro, we only needed to do this because of user error in
+    // setup
     InstantCommand resetGyro = new InstantCommand(() -> this.drivetrain.zeroHeading());
     driverXbox.rightStick().and(driverXbox.rightTrigger()).onTrue(resetGyro);
 
     // Toggle drive mode command, currently disabled as we did not find it necessary
-    // InstantCommand toggleDriveMode = new InstantCommand(() -> moveCommand.toggleFieldReletive());
+    // InstantCommand toggleDriveMode = new InstantCommand(() ->
+    // moveCommand.toggleFieldReletive());
     // driverXbox.y().and(driverXbox.rightTrigger().negate()).onTrue(toggleDriveMode);
   }
 

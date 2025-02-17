@@ -4,37 +4,31 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.ClimbSubsystem;
 
 /**
- * Command for note intake
+ * Command for climbing cage
  */
-public class ClimbCommand extends Command 
-{
+public class ClimbCommand extends Command {
 
   private final ClimbSubsystem climbSubsystem;
-  
+
   /**
    * Command for climbing the cage
    * Scheduled to run only when while the climb button is pressed down
    *
-   * @param coralSubsystem  The game subsystem.
+   * @param coralSubsystem
+   *          The game subsystem.
    */
-  public ClimbCommand(ClimbSubsystem climbSubsystem)
-  {
+  public ClimbCommand(ClimbSubsystem climbSubsystem) {
     this.climbSubsystem = climbSubsystem;
     addRequirements(climbSubsystem);
   }
 
   @Override
-  public void execute()
-  {
+  public void execute() {
     this.climbSubsystem.setClimbMotorSpeed(1);
   }
-  
+
   @Override
-  public void end(boolean interrupted)
-  {
+  public void end(boolean interrupted) {
     this.climbSubsystem.setClimbMotorSpeed(0);
   }
 }
-
-
-  

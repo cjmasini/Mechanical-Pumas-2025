@@ -6,35 +6,29 @@ import frc.robot.subsystems.ElevatorSubsystem;
 /**
  * Manually move elevator up
  */
-public class RaiseElevatorCommand extends Command 
-{
+public class RaiseElevatorCommand extends Command {
 
   private final ElevatorSubsystem elevatorSubsystem;
-  
+
   /**
    * Command for manually raising the elevator
    * Scheduled to run only when while the raise button is pressed down
    *
-   * @param elevatorSubsystem  The elevator subsystem.
+   * @param elevatorSubsystem
+   *          The elevator subsystem.
    */
-  public RaiseElevatorCommand(ElevatorSubsystem elevatorSubsystem)
-  {
+  public RaiseElevatorCommand(ElevatorSubsystem elevatorSubsystem) {
     this.elevatorSubsystem = elevatorSubsystem;
     addRequirements(elevatorSubsystem);
   }
 
   @Override
-  public void execute()
-  {
+  public void execute() {
     this.elevatorSubsystem.setManualPower(.25);
   }
-  
+
   @Override
-  public void end(boolean interrupted)
-  {
+  public void end(boolean interrupted) {
     this.elevatorSubsystem.setManualPower(0);
   }
 }
-
-
-  

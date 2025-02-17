@@ -24,7 +24,7 @@ import frc.robot.Constants.RobotConstants.Direction;
 import frc.robot.utils.SwerveUtils;
 
 public class DriveSubsystem extends CancelableSubsystemBase {
-  
+
   // Create MAXSwerveModules
   private final SwerveModule frontLeftModule = new SwerveModule(
       CANIdConstants.FRONT_LEFT_DRIVE_CAN_ID,
@@ -46,7 +46,6 @@ public class DriveSubsystem extends CancelableSubsystemBase {
       CANIdConstants.BACK_RIGHT_STEERING_CAN_ID,
       RobotConstants.BACK_RIGHT_CHASSIS_ANGULAR_OFFSET);
 
-
   // The gyro sensor
   private final Pigeon2 gyro = new Pigeon2(CANIdConstants.PIGEON_GYRO_CAN_ID);
 
@@ -64,23 +63,23 @@ public class DriveSubsystem extends CancelableSubsystemBase {
           backRightModule.getPosition()
       });
 
-  
   public DriveSubsystem() {
     RobotConfig config;
     try {
       config = RobotConfig.fromGUISettings();
       AutoBuilder.configure(
-        this::getPose, // Robot pose supplier
-        this::resetPose, // Method to reset odometry (will be called if your auto has a starting pose)
-        this::getRobotReletiveSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-        this::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
-        AutonConstants.AUTON_CONTROLLER, // PID controller for autonomous driving
-        config, // RobotConfig object that holds your robot's physical properties
-        () -> {
-          return (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == DriverStation.Alliance.Red) ? true : false;
-        }, // Supplier that returns true if the robot is on the red alliance    
-        this // Reference to this subsystem to set requirements
-     );
+          this::getPose, // Robot pose supplier
+          this::resetPose, // Method to reset odometry (will be called if your auto has a starting pose)
+          this::getRobotReletiveSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+          this::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
+          AutonConstants.AUTON_CONTROLLER, // PID controller for autonomous driving
+          config, // RobotConfig object that holds your robot's physical properties
+          () -> {
+            return (DriverStation.getAlliance().isPresent()
+                && DriverStation.getAlliance().get() == DriverStation.Alliance.Red) ? true : false;
+          }, // Supplier that returns true if the robot is on the red alliance
+          this // Reference to this subsystem to set requirements
+      );
     } catch (Exception e) {
       DriverStation.reportError("Failed to load PathPlanner config and configure AutoBuilder", e.getStackTrace());
     }
@@ -105,27 +104,34 @@ public class DriveSubsystem extends CancelableSubsystemBase {
   }
 
   /**
-   * Method to drive the robot while it adjusts to a specified orientation. 
+   * Method to drive the robot while it adjusts to a specified orientation.
    *
-   * @param xSpeed        Speed of the robot in the x direction (forward).
-   * @param ySpeed        Speed of the robot in the y direction (sideways).
-   * @param direction     Direction to orient front of robot towards.
+   * @param xSpeed
+   *          Speed of the robot in the x direction (forward).
+   * @param ySpeed
+   *          Speed of the robot in the y direction (sideways).
+   * @param direction
+   *          Direction to orient front of robot towards.
    */
   public void driveAndOrient(double xSpeed, double ySpeed, Direction direction) {
-    this.driveAndOrient(xSpeed, ySpeed, SwerveUtils.normalizeAngle(SwerveUtils.directionToAngle(direction, this.getHeading())));
+    this.driveAndOrient(xSpeed, ySpeed,
+        SwerveUtils.normalizeAngle(SwerveUtils.directionToAngle(direction, this.getHeading())));
   }
 
-    /**
-   * Method to drive the robot while it adjusts to a specified orientation. 
+  /**
+   * Method to drive the robot while it adjusts to a specified orientation.
    *
-   * @param xSpeed            Speed of the robot in the x direction (forward).
-   * @param ySpeed            Speed of the robot in the y direction (sideways).
-   * @param targetHeading     Target heading (angle) robot should face
+   * @param xSpeed
+   *          Speed of the robot in the x direction (forward).
+   * @param ySpeed
+   *          Speed of the robot in the y direction (sideways).
+   * @param targetHeading
+   *          Target heading (angle) robot should face
    */
   public void driveAndOrient(double xSpeed, double ySpeed, double target) {
     double currentHeading = this.getHeading();
     double targetHeading = SwerveUtils.normalizeAngle(target);
-    
+
     // The left stick controls translation of the robot.
     // Automatically turn to face the supplied heading
     this.drive(
@@ -151,11 +157,15 @@ public class DriveSubsystem extends CancelableSubsystemBase {
   /**
    * Method to drive the robot using joystick info.
    *
-   * @param xSpeed        Speed of the robot in the x direction (forward).
-   * @param ySpeed        Speed of the robot in the y direction (sideways).
-   * @param rot           Angular rate of the robot.
-   * @param fieldRelative Whether the provided x and y speeds are relative to the
-   *                      field.
+   * @param xSpeed
+   *          Speed of the robot in the x direction (forward).
+   * @param ySpeed
+   *          Speed of the robot in the y direction (sideways).
+   * @param rot
+   *          Angular rate of the robot.
+   * @param fieldRelative
+   *          Whether the provided x and y speeds are relative to the
+   *          field.
    */
   public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
     // Convert the commanded speeds into the correct units for the drivetrain
@@ -186,7 +196,7 @@ public class DriveSubsystem extends CancelableSubsystemBase {
     backRightModule.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
   }
 
-    /**
+  /**
    * Returns the currently-estimated pose of the robot.
    *
    * @return The pose (x / y coordinates and rotation)
@@ -198,7 +208,8 @@ public class DriveSubsystem extends CancelableSubsystemBase {
   /**
    * Resets the odometry to the specified pose.
    *
-   * @param pose The pose to which to set the odometry.
+   * @param pose
+   *          The pose to which to set the odometry.
    */
   public void resetPose(Pose2d pose) {
     odometry.resetPosition(
@@ -214,6 +225,7 @@ public class DriveSubsystem extends CancelableSubsystemBase {
 
   /**
    * Gets current speeds of the robot in robot-relative coordinates.
+   * 
    * @return
    */
   public ChassisSpeeds getRobotReletiveSpeeds() {
@@ -222,21 +234,23 @@ public class DriveSubsystem extends CancelableSubsystemBase {
 
   /**
    * Get current states of the swerve modules
+   * 
    * @return
    */
   public SwerveModuleState[] getModuleStates() {
     return new SwerveModuleState[] {
-      frontLeftModule.getState(),
-      frontRightModule.getState(),
-      backLeftModule.getState(),
-      backRightModule.getState()
+        frontLeftModule.getState(),
+        frontRightModule.getState(),
+        backLeftModule.getState(),
+        backRightModule.getState()
     };
   }
-  
+
   /**
    * Sets the swerve ModuleStates.
    *
-   * @param desiredStates The desired SwerveModule states.
+   * @param desiredStates
+   *          The desired SwerveModule states.
    */
   public void setModuleStates(SwerveModuleState[] desiredStates) {
     SwerveDriveKinematics.desaturateWheelSpeeds(
@@ -250,7 +264,8 @@ public class DriveSubsystem extends CancelableSubsystemBase {
   /**
    * Resets the odometry to the specified pose.
    *
-   * @param pose The pose to which to set the odometry.
+   * @param pose
+   *          The pose to which to set the odometry.
    */
   public void resetOdometry(Pose2d pose) {
     this.odometry.resetPosition(

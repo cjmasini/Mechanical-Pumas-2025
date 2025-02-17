@@ -21,7 +21,8 @@ import com.revrobotics.spark.SparkMax;
 import frc.robot.Configs;
 
 /**
- * SwerveModule class - Tracks and controls state information for a swerve module
+ * SwerveModule class - Tracks and controls state information for a swerve
+ * module
  * TODO: Uncomment and switch to spark flex code if needed
  */
 public class SwerveModule {
@@ -40,7 +41,8 @@ public class SwerveModule {
   private SwerveModuleState desiredState = new SwerveModuleState(0.0, new Rotation2d());
 
   /**
-   * Configures a SwerveModule with a spark max motor controller and connected through bore
+   * Configures a SwerveModule with a spark max motor controller and connected
+   * through bore
    * encoder
    */
   public SwerveModule(int drivingCANId, int steeringCANId, double chassisAngularOffset) {
@@ -94,12 +96,13 @@ public class SwerveModule {
   /**
    * Sets the desired state for the module.
    *
-   * @param desiredState Desired state with speed and angle.
+   * @param desiredState
+   *          Desired state with speed and angle.
    */
   public void setDesiredState(SwerveModuleState desiredState) {
     // Apply chassis angular offset to the desired state.
-    SwerveModuleState correctedDesiredState = 
-      new SwerveModuleState(desiredState.speedMetersPerSecond, desiredState.angle.plus(Rotation2d.fromRadians(chassisAngularOffset)));
+    SwerveModuleState correctedDesiredState = new SwerveModuleState(desiredState.speedMetersPerSecond,
+        desiredState.angle.plus(Rotation2d.fromRadians(chassisAngularOffset)));
 
     // Optimize the reference state to avoid spinning further than 90 degrees.
     correctedDesiredState.optimize(new Rotation2d(this.steeringEncoder.getPosition()));
@@ -110,7 +113,6 @@ public class SwerveModule {
     SmartDashboard.putNumber("SWCommandedState", correctedDesiredState.angle.getRadians());
     SmartDashboard.putNumber("SWDesiredState", this.desiredState.angle.getRadians());
     SmartDashboard.putNumber("SWCurrentState", this.steeringEncoder.getPosition());
-
 
     this.desiredState = desiredState;
   }
@@ -123,7 +125,7 @@ public class SwerveModule {
   public double getTargetAngle() {
     return this.desiredState.angle.getRadians();
   }
-  
+
   public double getCurrentAngle() {
     return this.steeringEncoder.getPosition();
   }

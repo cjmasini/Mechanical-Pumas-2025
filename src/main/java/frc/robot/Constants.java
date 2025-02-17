@@ -13,17 +13,19 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
 
 /**
- * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean constants. This
- * class should not be used for any other purpose. All constants should be declared globally (i.e. public static). Do
+ * The Constants class provides a convenient place for teams to hold robot-wide
+ * numerical or boolean constants. This
+ * class should not be used for any other purpose. All constants should be
+ * declared globally (i.e. public static). Do
  * not put anything functional in this class.
  *
- * <p>It is advised to statically import this class (or one of its inner classes) wherever the
- * constants are needed, to reduce verbosity.
+ * <p>
+ * It is advised to statically import this class (or one of its inner classes)
+ * wherever the constants are needed, to reduce verbosity.
  */
-public final class Constants
-{
+public final class Constants {
 
-  //TODO: Update CAN IDs in this class to match your robot's configuration 
+  // TODO: Update CAN IDs in this class to match your robot's configuration
   public static final class CANIdConstants {
     // Drive Motor CAN Ids
     public static final int FRONT_LEFT_DRIVE_CAN_ID = 7;
@@ -50,7 +52,7 @@ public final class Constants
 
   public static final class ElevatorConstants {
 
-    //TODO: Update these
+    // TODO: Update these
     public static final double COUNTS_PER_INCH = 1.0;
 
     // PID Constants
@@ -64,7 +66,7 @@ public final class Constants
     public static final double kV = 0.0;
     public static final double kG = 0.0;
 
-    //Elevator Contraints
+    // Elevator Contraints
     // TODO: Update these
     public static final double MAX_VELOCITY = 1.0;
     public static final double MAX_ACCELERATION = 1.0;
@@ -73,7 +75,6 @@ public final class Constants
     public static final double POSITION_TOLERANCE = 0.25;
     public static final double MIN_POWER = -0.5;
     public static final double MAX_POWER = 0.5;
-
 
     // TODO these values are completely made up
     public static final int DOWN = 0;
@@ -87,15 +88,11 @@ public final class Constants
     public static final int NET = 50;
 
     public static enum Level {
-      DOWN(ElevatorConstants.DOWN),
-      INTAKE(ElevatorConstants.INTAKE),
-      NET(ElevatorConstants.NET),
-      L1(ElevatorConstants.L1),
-      L2(ElevatorConstants.L2),
-      L3(ElevatorConstants.L3),
-      L4(ElevatorConstants.L4),
-      A2(ElevatorConstants.A2),
-      A3(ElevatorConstants.A3);
+      DOWN(ElevatorConstants.DOWN), INTAKE(ElevatorConstants.INTAKE), NET(ElevatorConstants.NET), L1(
+          ElevatorConstants.L1),
+      L2(ElevatorConstants.L2), L3(
+          ElevatorConstants.L3),
+      L4(ElevatorConstants.L4), A2(ElevatorConstants.A2), A3(ElevatorConstants.A3);
 
       private final int position;
 
@@ -111,7 +108,7 @@ public final class Constants
 
   public static final class RobotConstants {
     // Chassis configuration
-    //TODO: Update for your robots size
+    // TODO: Update for your robots size
     public static final double WHEEL_BASE = Units.inchesToMeters(30);
     // Distance between centers of right and left or front and back wheels on robot
     public static final SwerveDriveKinematics DRIVE_KINEMATICS = new SwerveDriveKinematics(
@@ -133,10 +130,7 @@ public final class Constants
 
     // Enum for auto-orienting to field directions
     public enum Direction {
-      FORWARD,
-      BACKWARD,
-      LEFT,
-      RIGHT
+      FORWARD, BACKWARD, LEFT, RIGHT
     }
   }
 
@@ -145,19 +139,24 @@ public final class Constants
 
     // Calculations required for driving motor conversion factors and feed forward
 
-    // The MAXSwerve module can be configured with one of three pinion gears: 12T, 13T, or 14T.
-    // This changes the drive speed of the module (a pinion gear with more teeth will result in a
+    // The MAXSwerve module can be configured with one of three pinion gears: 12T,
+    // 13T, or 14T.
+    // This changes the drive speed of the module (a pinion gear with more teeth
+    // will result in a
     // robot that drives faster).
-    //TODO: Verify this is correct for your swerve setup
+    // TODO: Verify this is correct for your swerve setup
     public static final int DRIVE_MOTOR_PINION_TEETH = 14;
 
     // TODO: Update drive motor free speed if using vortex motors
-    // public static final double DRIVE_MOTOR_FREE_SPEED_RPM = 5676; // 5676 RPM for NEO V1.1
+    // public static final double DRIVE_MOTOR_FREE_SPEED_RPM = 5676; // 5676 RPM for
+    // NEO V1.1
     public static final double DRIVE_MOTOR_FREE_SPEED_RPM = 6784; // 6784 RPM for NEO Vortex
     public static final double WHEEL_CIRCUMFERENCE_IN_METERS = 0.23938936;
-    // 45 teeth on the wheel's bevel gear, 22 teeth on the first-stage spur gear, 15 teeth on the bevel pinion
+    // 45 teeth on the wheel's bevel gear, 22 teeth on the first-stage spur gear, 15
+    // teeth on the bevel pinion
     public static final double DRIVE_MOTOR_REDUCTION = (45.0 * 22) / (DRIVE_MOTOR_PINION_TEETH * 15);
-    public static final double DRIVE_WHEEL_FREE_SPEED_IN_RPS = (DRIVE_MOTOR_FREE_SPEED_RPM / 60 * WHEEL_CIRCUMFERENCE_IN_METERS)
+    public static final double DRIVE_WHEEL_FREE_SPEED_IN_RPS = (DRIVE_MOTOR_FREE_SPEED_RPM / 60
+        * WHEEL_CIRCUMFERENCE_IN_METERS)
         / DRIVE_MOTOR_REDUCTION;
   }
 
@@ -168,10 +167,10 @@ public final class Constants
 
   public static final class AutonConstants {
     public static final PIDConstants TRANSLATION_PID = new PIDConstants(0.7, 0, 0);
-    public static final PIDConstants ANGLE_PID   = new PIDConstants(0.4, 0, 0.01);
+    public static final PIDConstants ANGLE_PID = new PIDConstants(0.4, 0, 0.01);
 
     public static final PathFollowingController AUTON_CONTROLLER = new PPHolonomicDriveController(
-      new PIDConstants(5, 0.0, 0.0), // Translation PID constants
-      new PIDConstants(5, 0.0, 0.0)); // Rotation PID constants
+        new PIDConstants(5, 0.0, 0.0), // Translation PID constants
+        new PIDConstants(5, 0.0, 0.0)); // Rotation PID constants
   }
 }

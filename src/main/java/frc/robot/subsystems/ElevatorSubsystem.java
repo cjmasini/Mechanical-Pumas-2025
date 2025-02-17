@@ -42,32 +42,30 @@ public class ElevatorSubsystem extends CancelableSubsystemBase {
         followerMotor = new SparkMax(CANIdConstants.RIGHT_ELEVATOR_CAN_ID, MotorType.kBrushless);
         SparkMaxConfig followerConfig = new SparkMaxConfig();
         followerConfig.follow(elevatorMotor, true);
-        followerMotor.configure(followerConfig, null, null); 
-        
+        followerMotor.configure(followerConfig, null, null);
+
         encoder = elevatorMotor.getEncoder();
-        
+
         pidController = new PIDController(
-            ElevatorConstants.kP,
-            ElevatorConstants.kI,
-            ElevatorConstants.kD
-        );        
+                ElevatorConstants.kP,
+                ElevatorConstants.kI,
+                ElevatorConstants.kD);
         pidController.setTolerance(ElevatorConstants.POSITION_TOLERANCE);
-        
+
         constraints = new TrapezoidProfile.Constraints(
-            ElevatorConstants.MAX_VELOCITY,
-            ElevatorConstants.MAX_ACCELERATION
-        );
+                ElevatorConstants.MAX_VELOCITY,
+                ElevatorConstants.MAX_ACCELERATION);
         nextState = new TrapezoidProfile.State(0, 0);
         goalState = new TrapezoidProfile.State(0, 0);
-        profile = new TrapezoidProfile(constraints);   
+        profile = new TrapezoidProfile(constraints);
     }
 
     @Override
     public void periodic() {
         currentPos = encoder.getPosition() / ElevatorConstants.COUNTS_PER_INCH;
-        
+
         // Update the state for motion towards target over the next 20ms
-        nextState = profile.calculate(0.020, nextState, goalState); 
+        nextState = profile.calculate(0.020, nextState, goalState);
 
         if (getHeightInches() >= ElevatorConstants.MAX_POSITION) {
             elevatorMotor.set(0);
@@ -76,25 +74,24 @@ public class ElevatorSubsystem extends CancelableSubsystemBase {
 
         double pidOutput = pidController.calculate(getHeightInches(), nextState.position);
         double ff = calculateFeedForward(nextState);
-        
+
         double outputPower = MathUtil.clamp(
-            pidOutput + ff,
-            ElevatorConstants.MIN_POWER,
-            ElevatorConstants.MAX_POWER
-        );
-        
+                pidOutput + ff,
+                ElevatorConstants.MIN_POWER,
+                ElevatorConstants.MAX_POWER);
+
         elevatorMotor.set(outputPower);
 
         // Update SmartDashboard
         logElevatorState();
     }
-    
+
     public boolean isAtHeight(double targetHeightInches) {
         // Check if the elevator is within a small tolerance of the target height
-        return pidController.atSetpoint() && 
-               Math.abs(getHeightInches() - targetHeightInches) < ElevatorConstants.POSITION_TOLERANCE;
+        return pidController.atSetpoint() &&
+                Math.abs(getHeightInches() - targetHeightInches) < ElevatorConstants.POSITION_TOLERANCE;
     }
-    
+
     public void setLevel(Level level) {
         targetLevel = level;
         setPositionInches(level.getPosition());
@@ -102,11 +99,10 @@ public class ElevatorSubsystem extends CancelableSubsystemBase {
 
     public void setPositionInches(double inches) {
         targetInches = MathUtil.clamp(
-            inches,
-            ElevatorConstants.MIN_POSITION,
-            ElevatorConstants.MAX_POSITION
-        );
-        
+                inches,
+                ElevatorConstants.MIN_POSITION,
+                ElevatorConstants.MAX_POSITION);
+
         // Update goal state for motion profile
         goalState = new TrapezoidProfile.State(targetInches, 0);
     }
@@ -114,8 +110,8 @@ public class ElevatorSubsystem extends CancelableSubsystemBase {
     private double calculateFeedForward(TrapezoidProfile.State state) {
         // kS (static friction), kG (gravity), kV (velocity),
         return ElevatorConstants.kS * Math.signum(state.velocity) +
-               ElevatorConstants.kG +
-               ElevatorConstants.kV * state.velocity;
+                ElevatorConstants.kG +
+                ElevatorConstants.kV * state.velocity;
     }
 
     private void logElevatorState() {
@@ -131,8 +127,8 @@ public class ElevatorSubsystem extends CancelableSubsystemBase {
     }
 
     public boolean isAtPosition(Level position) {
-        return pidController.atSetpoint() && 
-               Math.abs(getHeightInches() - position.getPosition()) < 0.5;
+        return pidController.atSetpoint() &&
+                Math.abs(getHeightInches() - position.getPosition()) < 0.5;
     }
 
     public Level getTargetLevel() {
@@ -143,11 +139,12 @@ public class ElevatorSubsystem extends CancelableSubsystemBase {
         pidController.reset();
         nextState = new TrapezoidProfile.State(getHeightInches(), 0);
         goalState = new TrapezoidProfile.State(getHeightInches(), 0);
-        
-        if (getHeightInches() >= ElevatorConstants.MAX_POSITION || getHeightInches() <= ElevatorConstants.MIN_POSITION) {
+
+        if (getHeightInches() >= ElevatorConstants.MAX_POSITION
+                || getHeightInches() <= ElevatorConstants.MIN_POSITION) {
             power = 0;
         }
-        
+
         elevatorMotor.set(MathUtil.clamp(power, ElevatorConstants.MIN_POWER, ElevatorConstants.MAX_POWER));
     }
 

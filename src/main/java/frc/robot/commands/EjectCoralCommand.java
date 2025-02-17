@@ -9,18 +9,17 @@ import frc.robot.subsystems.CoralSubsystem;
 /**
  * Command for scoring coral
  */
-public class EjectCoralCommand extends SequentialCommandGroup 
-{
+public class EjectCoralCommand extends SequentialCommandGroup {
 
   private final CoralSubsystem coralSubsystem;
-  
+
   /**
-   * Command for intaking notes
+   * Command for scoring coral
    *
-   * @param coralSubsystem  The game subsystem.
+   * @param coralSubsystem
+   *          The game subsystem.
    */
-  public EjectCoralCommand(CoralSubsystem coralSubsystem)
-  {
+  public EjectCoralCommand(CoralSubsystem coralSubsystem) {
     this.coralSubsystem = coralSubsystem;
 
     Command startCoralMotor = new InstantCommand(() -> this.coralSubsystem.setCoralMotorSpeed(1), coralSubsystem);
@@ -30,6 +29,3 @@ public class EjectCoralCommand extends SequentialCommandGroup
     addRequirements(coralSubsystem);
   }
 }
-
-
-  

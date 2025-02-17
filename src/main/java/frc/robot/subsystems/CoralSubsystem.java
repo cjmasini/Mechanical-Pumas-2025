@@ -11,8 +11,7 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import frc.robot.Constants.CANIdConstants;
 
-public class CoralSubsystem extends CancelableSubsystemBase
-{
+public class CoralSubsystem extends CancelableSubsystemBase {
   /**
    * Motor to outtake coral pieces
    */
@@ -21,31 +20,32 @@ public class CoralSubsystem extends CancelableSubsystemBase
   /**
    * Initialize {@link SwerveDrive} with the directory provided.
    *
-   * @param directory Directory of swerve drive config files.
+   * @param directory
+   *          Directory of swerve drive config files.
    */
-  public CoralSubsystem()
-  {
+  public CoralSubsystem() {
     this.setName("Coral Subsystem");
 
     this.coralLauncher = new SparkMax(CANIdConstants.CORAL_MOTOR_CONTROLLER_ID, MotorType.kBrushless);
     SparkMaxConfig config = new SparkMaxConfig();
     config
-      .inverted(true)
-      .idleMode(IdleMode.kBrake)
-      .smartCurrentLimit(20);
+        .inverted(true)
+        .idleMode(IdleMode.kBrake)
+        .smartCurrentLimit(20);
 
   }
 
   /**
    * Set coral motor speed to provided value
    * 
-   * @param coralMotorSpeed - Speed (0-1) to set coral motor at
+   * @param coralMotorSpeed
+   *          - Speed (0-1) to set coral motor at
    */
-  public void setCoralMotorSpeed(double coralMotorSpeed){
+  public void setCoralMotorSpeed(double coralMotorSpeed) {
     this.coralLauncher.set(coralMotorSpeed);
   }
 
-  public void cancel(){
+  public void cancel() {
     this.coralLauncher.set(0);
   }
 }

@@ -9,28 +9,30 @@ import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.CoralSubsystem;
 
 /**
- * Command for note intake
+ * Autonomous sequential command group
  */
-public class AutonomousCommand extends SequentialCommandGroup 
-{
+public class AutonomousCommand extends SequentialCommandGroup {
 
   private final DriveSubsystem drivetrain;
   private final CoralSubsystem gameSubsystem;
-  
+
   /**
    * Command for autonomous mode
    *
-   * @param drivetrain The drivetrain
-   * @param gameSubsystem  The launcher subsystem.
+   * @param drivetrain
+   *          The drivetrain
+   * @param gameSubsystem
+   *          The launcher subsystem.
    */
-  public AutonomousCommand(DriveSubsystem driveSubsystem, CoralSubsystem gameSubsystem)
-  {
+  public AutonomousCommand(DriveSubsystem driveSubsystem, CoralSubsystem gameSubsystem) {
     this.gameSubsystem = gameSubsystem;
     this.drivetrain = driveSubsystem;
     double speed = .5;
 
     WaitCommand waitCommand = new WaitCommand(1.5);
-    Command moveForwardCommand = Commands.startEnd(() -> this.drivetrain.drive(speed, 0, 0, true), () -> this.drivetrain.drive(0, 0, 0, true)).withTimeout(1);
+    Command moveForwardCommand = Commands
+        .startEnd(() -> this.drivetrain.drive(speed, 0, 0, true), () -> this.drivetrain.drive(0, 0, 0, true))
+        .withTimeout(1);
     Command runExampleMotorCommand = new RunCommand(this::runExampleMotor, driveSubsystem).withTimeout(2);
     WaitCommand waitCommand2 = new WaitCommand(1.5);
     Command stopExampleMotorCommand = new RunCommand(this::stopExampleMotor, driveSubsystem).withTimeout(2);
@@ -48,6 +50,3 @@ public class AutonomousCommand extends SequentialCommandGroup
     this.gameSubsystem.setCoralMotorSpeed(0);
   }
 }
-
-
-  
