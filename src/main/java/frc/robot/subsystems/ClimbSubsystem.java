@@ -34,11 +34,7 @@ public class ClimbSubsystem extends CancelableSubsystemBase {
         MotorOutputConfigs motorConfig = new MotorOutputConfigs().withNeutralMode(NeutralModeValue.Brake);
         this.climber.getConfigurator().apply(motorConfig);
 
-        SparkMaxConfig config = new SparkMaxConfig();
-        config
-                .inverted(true)
-                .idleMode(IdleMode.kBrake)
-                .smartCurrentLimit(30);
+        this.stalledTimer = new Timer();
 
     }
 

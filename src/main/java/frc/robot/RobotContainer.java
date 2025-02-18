@@ -9,6 +9,7 @@ import java.util.List;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -23,7 +24,7 @@ import frc.robot.commands.FallCommand;
 import frc.robot.commands.LowerElevatorCommand;
 import frc.robot.commands.MoveCommand;
 import frc.robot.commands.RaiseElevatorCommand;
-import frc.robot.commands.SetElevatorPositionCommand;
+import frc.robot.commands.ScoreCoralCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.ClimbSubsystem;
@@ -50,6 +51,8 @@ public class RobotContainer {
 
   private final SendableChooser<Command> autoChooser = AutoBuilder.buildAutoChooser();
 
+  private SendableChooser<Level> levelChooser = new SendableChooser<>();
+
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
@@ -67,7 +70,9 @@ public class RobotContainer {
       coralSubsystem.setCoralMotorSpeed(0);
     }, coralSubsystem).withTimeout(1));
 
+    SmartDashboard.putData(levelChooser);
     SmartDashboard.putData(autoChooser);
+    SmartDashboard.putNumber("Match Time", DriverStation.getMatchTime());
   }
 
   private void configureBindings() {
@@ -92,9 +97,12 @@ public class RobotContainer {
     driverXbox.x().whileTrue(lowerElevatorCommand);
 
     // Set the elevator to a specific position
-    Level level = Level.L2;
-    SetElevatorPositionCommand setElevatorPositionCommand = new SetElevatorPositionCommand(level, elevatorSubsystem);
-    driverXbox.leftTrigger().onTrue(setElevatorPositionCommand);
+    for (Level level : Level.values()) {
+      levelChooser.addOption(level.toString(), level);
+    }
+    levelChooser.setDefaultOption("DOWN", Level.DOWN);
+    ScoreCoralCommand scoreCoralCommand = new ScoreCoralCommand(levelChooser, elevatorSubsystem, coralSubsystem);
+    driverXbox.leftTrigger().onTrue(scoreCoralCommand);
 
     // Right trigger is used to cancel other commands and as a modifier for face
     // buttons

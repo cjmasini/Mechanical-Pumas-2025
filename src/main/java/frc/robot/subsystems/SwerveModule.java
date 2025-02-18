@@ -6,7 +6,6 @@ package frc.robot.subsystems;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.RelativeEncoder;
@@ -110,9 +109,6 @@ public class SwerveModule {
     // Command driving and turning SPARKS MAX towards their respective setpoints.
     this.drivePIDController.setReference(correctedDesiredState.speedMetersPerSecond, ControlType.kVelocity);
     this.steeringPIDController.setReference(correctedDesiredState.angle.getRadians(), ControlType.kPosition);
-    SmartDashboard.putNumber("SWCommandedState", correctedDesiredState.angle.getRadians());
-    SmartDashboard.putNumber("SWDesiredState", this.desiredState.angle.getRadians());
-    SmartDashboard.putNumber("SWCurrentState", this.steeringEncoder.getPosition());
 
     this.desiredState = desiredState;
   }

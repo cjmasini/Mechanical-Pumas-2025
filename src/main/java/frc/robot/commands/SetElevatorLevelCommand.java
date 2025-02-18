@@ -7,7 +7,7 @@ import frc.robot.subsystems.ElevatorSubsystem;
 /**
  * Move elevator to a specific position
  */
-public class SetElevatorPositionCommand extends Command {
+public class SetElevatorLevelCommand extends Command {
 
   private final ElevatorSubsystem elevatorSubsystem;
   private final Level targetLevel;
@@ -15,10 +15,12 @@ public class SetElevatorPositionCommand extends Command {
   /**
    * Command for setting the elevator to a specific position
    *
+   * @param targetLevel
+   *                          The target level to move the elevator to.
    * @param elevatorSubsystem
-   *          The elevator subsystem.
+   *                          The elevator subsystem.
    */
-  public SetElevatorPositionCommand(Level targetLevel, ElevatorSubsystem elevatorSubsystem) {
+  public SetElevatorLevelCommand(Level targetLevel, ElevatorSubsystem elevatorSubsystem) {
     this.elevatorSubsystem = elevatorSubsystem;
     addRequirements(elevatorSubsystem);
 
@@ -31,7 +33,11 @@ public class SetElevatorPositionCommand extends Command {
   }
 
   @Override
+  public boolean isFinished() {
+    return this.elevatorSubsystem.isAtLevel(targetLevel);
+  }
+
+  @Override
   public void end(boolean interrupted) {
-    this.elevatorSubsystem.cancel();
   }
 }

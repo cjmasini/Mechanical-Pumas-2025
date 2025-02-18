@@ -100,7 +100,6 @@ public class DriveSubsystem extends CancelableSubsystemBase {
             backLeftModule.getPosition(),
             backRightModule.getPosition()
         });
-    SmartDashboard.putNumber("DSTargetAngle", frontLeftModule.getTargetAngle());
   }
 
   /**

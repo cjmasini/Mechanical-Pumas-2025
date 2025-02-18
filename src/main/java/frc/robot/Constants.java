@@ -28,14 +28,14 @@ public final class Constants {
   // TODO: Update CAN IDs in this class to match your robot's configuration
   public static final class CANIdConstants {
     // Drive Motor CAN Ids
-    public static final int FRONT_LEFT_DRIVE_CAN_ID = 7;
-    public static final int FRONT_RIGHT_DRIVE_CAN_ID = 5;
-    public static final int BACK_LEFT_DRIVE_CAN_ID = 3;
+    public static final int FRONT_LEFT_DRIVE_CAN_ID = 3;
+    public static final int FRONT_RIGHT_DRIVE_CAN_ID = 7;
+    public static final int BACK_LEFT_DRIVE_CAN_ID = 5;
     public static final int BACK_RIGHT_DRIVE_CAN_ID = 1;
 
-    public static final int FRONT_LEFT_STEERING_CAN_ID = 8;
-    public static final int FRONT_RIGHT_STEERING_CAN_ID = 6;
-    public static final int BACK_LEFT_STEERING_CAN_ID = 4;
+    public static final int FRONT_LEFT_STEERING_CAN_ID = 4;
+    public static final int FRONT_RIGHT_STEERING_CAN_ID = 8;
+    public static final int BACK_LEFT_STEERING_CAN_ID = 6;
     public static final int BACK_RIGHT_STEERING_CAN_ID = 2;
 
     // Gyro CAN Id
