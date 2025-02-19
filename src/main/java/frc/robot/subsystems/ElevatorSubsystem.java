@@ -64,7 +64,7 @@ public class ElevatorSubsystem extends CancelableSubsystemBase {
 
     @Override
     public void periodic() {
-        if (manualMode) {
+        if (!manualMode) {
             currentPos = encoder.getPosition() / ElevatorConstants.COUNTS_PER_INCH;
 
             // Update the state for motion towards target over the next 20ms
