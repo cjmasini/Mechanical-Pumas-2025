@@ -55,21 +55,20 @@ public final class Constants {
     // TODO: Update these
     public static final double COUNTS_PER_INCH = 1.0;
 
-    // PID Constants
-    // TODO: Update these
-    public static final double kP = 1.0;
+    // PID / feedforward Constants
+    // TODO: Update these - Currently set based on reca.lc estimates
+    public static final double kP = .05;
     public static final double kI = 0.0;
     public static final double kD = 0.0;
-
-    // TODO: Update these
     public static final double kS = 0.0;
-    public static final double kV = 0.0;
-    public static final double kG = 0.0;
+    public static final double kV = 3.07;
+    public static final double kG = 0.52;
+    public static final double kA = 0.05;
 
-    // Elevator Contraints
-    // TODO: Update these
-    public static final double MAX_VELOCITY = 1.0;
-    public static final double MAX_ACCELERATION = 1.0;
+    // Elevator Contraints - all in inches / seconds
+    // TODO: Update these - Currently set based on reca.lc estimates
+    public static final double MAX_VELOCITY = 59.14;
+    public static final double MAX_ACCELERATION = 181.5;
     public static final double MAX_POSITION = 50.0;
     public static final double MIN_POSITION = 0.0;
     public static final double POSITION_TOLERANCE = 0.25;

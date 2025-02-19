@@ -8,6 +8,7 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -19,7 +20,9 @@ public class ElevatorSubsystem extends CancelableSubsystemBase {
     private final SparkMax elevatorMotor;
     private final SparkMax followerMotor;
     private final RelativeEncoder encoder;
+
     private final PIDController pidController;
+    private final ElevatorFeedforward feedforward;
     private final TrapezoidProfile.Constraints constraints;
 
     private TrapezoidProfile.State goalState;
@@ -54,6 +57,11 @@ public class ElevatorSubsystem extends CancelableSubsystemBase {
                 ElevatorConstants.kD);
         pidController.setTolerance(ElevatorConstants.POSITION_TOLERANCE);
 
+        feedforward = new ElevatorFeedforward(
+                ElevatorConstants.kS,
+                ElevatorConstants.kG,
+                ElevatorConstants.kV);
+
         constraints = new TrapezoidProfile.Constraints(
                 ElevatorConstants.MAX_VELOCITY,
                 ElevatorConstants.MAX_ACCELERATION);
@@ -76,13 +84,13 @@ public class ElevatorSubsystem extends CancelableSubsystemBase {
             }
 
             double pidOutput = pidController.calculate(getHeightInches(), nextState.position);
-            double ff = calculateFeedForward(nextState);
+            double ff = feedforward.calculate(nextState.velocity);
 
             double outputPower = MathUtil.clamp(
                     pidOutput + ff,
                     ElevatorConstants.MIN_POWER,
                     ElevatorConstants.MAX_POWER);
-
+            
             elevatorMotor.set(outputPower);
         }
         logElevatorState();
@@ -109,13 +117,6 @@ public class ElevatorSubsystem extends CancelableSubsystemBase {
 
         // Update goal state for motion profile
         goalState = new TrapezoidProfile.State(targetInches, 0);
-    }
-
-    private double calculateFeedForward(TrapezoidProfile.State state) {
-        // kS (static friction), kG (gravity), kV (velocity),
-        return ElevatorConstants.kS * Math.signum(state.velocity) +
-                ElevatorConstants.kG +
-                ElevatorConstants.kV * state.velocity;
     }
 
     private void logElevatorState() {
