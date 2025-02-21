@@ -8,6 +8,7 @@ import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.controllers.PathFollowingController;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
@@ -165,11 +166,21 @@ public final class Constants {
   }
 
   public static final class AutonConstants {
+    // TODO: Tune these values
     public static final PIDConstants TRANSLATION_PID = new PIDConstants(0.7, 0, 0);
-    public static final PIDConstants ANGLE_PID = new PIDConstants(0.4, 0, 0.01);
+    public static final PIDConstants ANGLE_PID = new PIDConstants(0.01, 0, 0);
 
     public static final PathFollowingController AUTON_CONTROLLER = new PPHolonomicDriveController(
-        new PIDConstants(5, 0.0, 0.0), // Translation PID constants
-        new PIDConstants(5, 0.0, 0.0)); // Rotation PID constants
+        TRANSLATION_PID, // new PIDConstants(5, 0.0, 0.0), // Translation PID constants
+        ANGLE_PID); // new PIDConstants(5, 0.0, 0.0)); // Rotation PID constants
+
+    // TODO: Update these values
+    public static final double LIMELIGHT_HEIGHT_METERS = 0.254;
+    public static final double LIMELIGHT_MOUNTING_ANGLE_DEGREES = 30.0;
+    public static final double LIMELIGHT_MOUNTING_ANGLE_RADIANS = Math
+        .toRadians(AutonConstants.LIMELIGHT_MOUNTING_ANGLE_DEGREES);
+
+    public static final double REEF_APRILTAG_HEIGHT = 0.324;
+
   }
 }

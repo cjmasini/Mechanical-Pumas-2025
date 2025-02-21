@@ -6,6 +6,8 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.trajectory.PathPlannerTrajectoryState;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -24,7 +26,7 @@ import frc.robot.utils.SwerveUtils;
 
 public class DriveSubsystem extends CancelableSubsystemBase {
 
-  // Create MAXSwerveModules
+  // Create Swerve Modules
   private final SwerveModule frontLeftModule = new SwerveModule(
       CANIdConstants.FRONT_LEFT_DRIVE_CAN_ID,
       CANIdConstants.FRONT_LEFT_STEERING_CAN_ID,
@@ -49,7 +51,7 @@ public class DriveSubsystem extends CancelableSubsystemBase {
   private final Pigeon2 gyro = new Pigeon2(CANIdConstants.PIGEON_GYRO_CAN_ID);
 
   // PID Controller for orientation to supplied angle
-  public final PIDController orientationController;
+  private final PIDController orientationController;
 
   // Odometry class for tracking robot pose
   SwerveDriveOdometry odometry = new SwerveDriveOdometry(
@@ -68,7 +70,7 @@ public class DriveSubsystem extends CancelableSubsystemBase {
       config = RobotConfig.fromGUISettings();
       AutoBuilder.configure(
           this::getPose, // Robot pose supplier
-          this::resetPose, // Method to reset odometry (will be called if your auto has a starting pose)
+          this::updatePose, // Method to reset odometry (will be called if your auto has a starting pose)
           this::getRobotReletiveSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
           this::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
           AutonConstants.AUTON_CONTROLLER, // PID controller for autonomous driving
@@ -83,8 +85,8 @@ public class DriveSubsystem extends CancelableSubsystemBase {
       DriverStation.reportError("Failed to load PathPlanner config and configure AutoBuilder", e.getStackTrace());
     }
 
-    // TODO: PID Tuning could be improved
-    orientationController = new PIDController(0.01, 0, 0);
+    orientationController = new PIDController(AutonConstants.ANGLE_PID.kP, AutonConstants.ANGLE_PID.kI,
+        AutonConstants.ANGLE_PID.kD);
     orientationController.enableContinuousInput(-180, 180);
   }
 
@@ -105,11 +107,11 @@ public class DriveSubsystem extends CancelableSubsystemBase {
    * Method to drive the robot while it adjusts to a specified orientation.
    *
    * @param xSpeed
-   *          Speed of the robot in the x direction (forward).
+   *                  Speed of the robot in the x direction (forward).
    * @param ySpeed
-   *          Speed of the robot in the y direction (sideways).
+   *                  Speed of the robot in the y direction (sideways).
    * @param direction
-   *          Direction to orient front of robot towards.
+   *                  Direction to orient front of robot towards.
    */
   public void driveAndOrient(double xSpeed, double ySpeed, Direction direction) {
     this.driveAndOrient(xSpeed, ySpeed,
@@ -120,11 +122,11 @@ public class DriveSubsystem extends CancelableSubsystemBase {
    * Method to drive the robot while it adjusts to a specified orientation.
    *
    * @param xSpeed
-   *          Speed of the robot in the x direction (forward).
+   *                      Speed of the robot in the x direction (forward).
    * @param ySpeed
-   *          Speed of the robot in the y direction (sideways).
+   *                      Speed of the robot in the y direction (sideways).
    * @param targetHeading
-   *          Target heading (angle) robot should face
+   *                      Target heading (angle) robot should face
    */
   public void driveAndOrient(double xSpeed, double ySpeed, double target) {
     double currentHeading = this.getHeading();
@@ -156,14 +158,14 @@ public class DriveSubsystem extends CancelableSubsystemBase {
    * Method to drive the robot using joystick info.
    *
    * @param xSpeed
-   *          Speed of the robot in the x direction (forward).
+   *                      Speed of the robot in the x direction (forward).
    * @param ySpeed
-   *          Speed of the robot in the y direction (sideways).
+   *                      Speed of the robot in the y direction (sideways).
    * @param rot
-   *          Angular rate of the robot.
+   *                      Angular rate of the robot.
    * @param fieldRelative
-   *          Whether the provided x and y speeds are relative to the
-   *          field.
+   *                      Whether the provided x and y speeds are relative to the
+   *                      field.
    */
   public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
     // Convert the commanded speeds into the correct units for the drivetrain
@@ -204,12 +206,12 @@ public class DriveSubsystem extends CancelableSubsystemBase {
   }
 
   /**
-   * Resets the odometry to the specified pose.
+   * Updates the odometry to the specified pose.
    *
    * @param pose
-   *          The pose to which to set the odometry.
+   *             The pose to which to set the odometry.
    */
-  public void resetPose(Pose2d pose) {
+  public void updatePose(Pose2d pose) {
     odometry.resetPosition(
         Rotation2d.fromDegrees(gyro.getYaw().getValueAsDouble()),
         new SwerveModulePosition[] {
@@ -248,7 +250,7 @@ public class DriveSubsystem extends CancelableSubsystemBase {
    * Sets the swerve ModuleStates.
    *
    * @param desiredStates
-   *          The desired SwerveModule states.
+   *                      The desired SwerveModule states.
    */
   public void setModuleStates(SwerveModuleState[] desiredStates) {
     SwerveDriveKinematics.desaturateWheelSpeeds(
@@ -257,24 +259,6 @@ public class DriveSubsystem extends CancelableSubsystemBase {
     frontRightModule.setDesiredState(desiredStates[1]);
     backLeftModule.setDesiredState(desiredStates[2]);
     backRightModule.setDesiredState(desiredStates[3]);
-  }
-
-  /**
-   * Resets the odometry to the specified pose.
-   *
-   * @param pose
-   *          The pose to which to set the odometry.
-   */
-  public void resetOdometry(Pose2d pose) {
-    this.odometry.resetPosition(
-        Rotation2d.fromDegrees(gyro.getYaw().getValueAsDouble()),
-        new SwerveModulePosition[] {
-            this.frontLeftModule.getPosition(),
-            this.frontRightModule.getPosition(),
-            this.backLeftModule.getPosition(),
-            this.backRightModule.getPosition()
-        },
-        pose);
   }
 
   /** Resets the drive encoders to currently read a position of 0. */
@@ -298,4 +282,55 @@ public class DriveSubsystem extends CancelableSubsystemBase {
   public double getHeading() {
     return SwerveUtils.normalizeAngle(gyro.getYaw().getValueAsDouble());
   }
+
+  /**
+   * Drives the robot to achieve the specified offsets relative to a detected
+   * AprilTag.
+   * It computes the current forward and lateral distances to the tag using
+   * limelightTy and limelightTx,
+   * constructs a current relative pose, and then uses the path following
+   * controller's
+   * calculateRobotRelativeSpeeds method to determine the required robot-relative
+   * speeds.
+   *
+   * @param desiredXOffset Desired forward distance (in meters) from the tag.
+   * @param desiredYOffset Desired lateral distance (in meters) from the tag.
+   * @param limelightTx    Horizontal offset from the tag (in degrees).
+   * @param limelightTy    Vertical offset from the tag (in degrees).
+   */
+  public void driveToTagOffset(double desiredXOffset, double desiredYOffset, double limelightTx, double limelightTy) {
+    // Calculate the current forward distance (x) from the tag using the vertical
+    // offset.
+    double currentXOffset = (AutonConstants.REEF_APRILTAG_HEIGHT - AutonConstants.LIMELIGHT_HEIGHT_METERS)
+        / Math.tan(AutonConstants.LIMELIGHT_MOUNTING_ANGLE_RADIANS + Math.toRadians(limelightTy));
+
+    // Calculate the current lateral distance (y) from the camera center using the
+    // horizontal offset.
+    double currentYOffset = currentXOffset * Math.tan(Math.toRadians(limelightTx));
+
+    // Construct the current relative pose.
+    // The rotation is set from limelightTx so that zero means the limelight is
+    // directly facing the tag.
+    Pose2d currentRelativePose = new Pose2d(currentXOffset, currentYOffset, Rotation2d.fromDegrees(limelightTx));
+
+    // The desired relative pose has the desired offsets with zero rotation error
+    // (directly facing the tag).
+    Pose2d desiredRelativePose = new Pose2d(desiredXOffset, desiredYOffset, new Rotation2d(0));
+
+    // Create a target trajectory state using the desired relative pose.
+    PathPlannerTrajectoryState targetState = new PathPlannerTrajectoryState();
+    targetState.pose = desiredRelativePose;
+
+    // Calculate the robot-relative speeds using the path following controller.
+    ChassisSpeeds robotRelativeSpeeds = AutonConstants.AUTON_CONTROLLER
+        .calculateRobotRelativeSpeeds(currentRelativePose, targetState);
+
+    double normalizedX = robotRelativeSpeeds.vxMetersPerSecond / ModuleConstants.DRIVE_WHEEL_FREE_SPEED_IN_RPS;
+    double normalizedY = robotRelativeSpeeds.vyMetersPerSecond / ModuleConstants.DRIVE_WHEEL_FREE_SPEED_IN_RPS;
+    double normalizedRot = robotRelativeSpeeds.omegaRadiansPerSecond / ModuleConstants.MAX_ANGULAR_SPEED;
+
+    // Command the drivetrain using field-relative control.
+    drive(normalizedX, normalizedY, normalizedRot, true);
+  }
+
 }

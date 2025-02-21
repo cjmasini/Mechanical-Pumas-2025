@@ -27,6 +27,7 @@ import frc.robot.commands.RaiseElevatorCommand;
 import frc.robot.commands.ScoreCoralCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
+import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.CoralSubsystem;
 
@@ -47,6 +48,8 @@ public class RobotContainer {
 
   private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
 
+  private final VisionSubsystem visionSubsystem = new VisionSubsystem(drivetrain);
+
   private final CommandXboxController driverXbox = new CommandXboxController(0);
 
   private final SendableChooser<Command> autoChooser = AutoBuilder.buildAutoChooser();
@@ -57,7 +60,6 @@ public class RobotContainer {
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
-
     MoveCommand moveCommand = new MoveCommand(this.drivetrain, driverXbox);
     drivetrain.setDefaultCommand(moveCommand);
 
