@@ -31,4 +31,14 @@ public class ScoreCoralCommand extends SequentialCommandGroup {
         Command lowerElevator = new SetElevatorLevelCommand(Level.DOWN, elevatorSubsystem);
         this.addCommands(raiseElevator, scoreCoral, waitCommand, lowerElevator);
     }
+
+    public ScoreCoralCommand(Level targetLevel, ElevatorSubsystem elevatorSubsystem, CoralSubsystem coralSubsystem) {
+        addRequirements(elevatorSubsystem, coralSubsystem);
+
+        Command raiseElevator = new SetElevatorLevelCommand(targetLevel, elevatorSubsystem);
+        Command scoreCoral = new EjectCoralCommand(coralSubsystem);
+        Command waitCommand = new WaitCommand(1);
+        Command lowerElevator = new SetElevatorLevelCommand(Level.DOWN, elevatorSubsystem);
+        this.addCommands(raiseElevator, scoreCoral, waitCommand, lowerElevator);
+    }
 }

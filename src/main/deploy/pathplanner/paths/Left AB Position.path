@@ -1,0 +1,70 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 1.2513461538461532,
+        "y": 7.048910256410256
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.107114226197975,
+        "y": 6.268867652624536
+      },
+      "isLocked": false,
+      "linkedName": "Left Coral Intake"
+    },
+    {
+      "anchor": {
+        "x": 2.393181818181818,
+        "y": 5.974446022727273
+      },
+      "prevControl": {
+        "x": 2.2220163429621347,
+        "y": 6.3098774781476035
+      },
+      "nextControl": {
+        "x": 2.661320379980893,
+        "y": 5.448977274294558
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.393181818181818,
+        "y": 4.069872159090909
+      },
+      "prevControl": {
+        "x": 1.7880128205128198,
+        "y": 4.066282051282052
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0.0,
+    "rotation": 0.0
+  },
+  "reversed": false,
+  "folder": null,
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": -52.50000000000001
+  },
+  "useDefaultConstraints": true
+}

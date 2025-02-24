@@ -7,16 +7,13 @@ package frc.robot;
 import java.util.List;
 
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.auto.NamedCommands;
-
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.ElevatorConstants.Level;
+import frc.robot.commands.AutonomousCommandFactory;
 import frc.robot.commands.CancelCommand;
 import frc.robot.commands.ClimbCommand;
 import frc.robot.commands.EjectCoralCommand;
@@ -54,6 +51,9 @@ public class RobotContainer {
 
   private final SendableChooser<Command> autoChooser = AutoBuilder.buildAutoChooser();
 
+  private final AutonomousCommandFactory autoFactory = new AutonomousCommandFactory(drivetrain, visionSubsystem,
+      elevatorSubsystem, coralSubsystem);
+
   private SendableChooser<Level> levelChooser = new SendableChooser<>();
 
   /**
@@ -65,16 +65,9 @@ public class RobotContainer {
 
     configureBindings();
 
-    // Register all commands necessary for auto with the name set in path planner
-    NamedCommands.registerCommand("ejectCoral", Commands.startEnd(() -> {
-      coralSubsystem.setCoralMotorSpeed(1);
-    }, () -> {
-      coralSubsystem.setCoralMotorSpeed(0);
-    }, coralSubsystem).withTimeout(1));
 
     SmartDashboard.putData(levelChooser);
     SmartDashboard.putData(autoChooser);
-    SmartDashboard.putNumber("Match Time", DriverStation.getMatchTime());
   }
 
   private void configureBindings() {
@@ -126,6 +119,10 @@ public class RobotContainer {
 
   // Return the auto selected in smart dashboard
   public Command getAutonomousCommand() {
-    return autoChooser.getSelected();
+    if (SmartDashboard.getBoolean("Use Custom Auto?", false)) {
+      return autoFactory.createAutoCommand(SmartDashboard.getString("Custom Auto", "Error"));
+    } else {
+      return autoChooser.getSelected();
+    }
   }
 }

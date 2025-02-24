@@ -1,0 +1,95 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 3.521858974358974,
+        "y": 2.642051282051282
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 3.7414641980632233,
+        "y": 2.78023731357589
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.3556410256410256,
+        "y": 2.642051282051282
+      },
+      "prevControl": {
+        "x": 3.0262082128871683,
+        "y": 2.0326497550121
+      },
+      "nextControl": {
+        "x": 1.783785113884738,
+        "y": 3.1617454640792286
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.3556410256410256,
+        "y": 6.047820512820513
+      },
+      "prevControl": {
+        "x": 2.8255282457601067,
+        "y": 5.105167325305371
+      },
+      "nextControl": {
+        "x": 2.0779793406214546,
+        "y": 6.604844967259162
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 1.2513461538461532,
+        "y": 7.048910256410256
+      },
+      "prevControl": {
+        "x": 1.3885147572873655,
+        "y": 6.839901227346946
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Left Coral Intake"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1,
+      "rotationDegrees": 1.9091524329963392
+    },
+    {
+      "waypointRelativePos": 2,
+      "rotationDegrees": -59.588918732874674
+    }
+  ],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -52.50000000000001
+  },
+  "reversed": false,
+  "folder": null,
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 59.99999999999999
+  },
+  "useDefaultConstraints": true
+}

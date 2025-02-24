@@ -1,0 +1,95 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 6.153589743589744,
+        "y": 3.8495512820512823
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 6.782686564199079,
+        "y": 4.6293635586860855
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 6.587051282051282,
+        "y": 6.29551282051282
+      },
+      "prevControl": {
+        "x": 7.206119782587994,
+        "y": 5.584056216616037
+      },
+      "nextControl": {
+        "x": 5.4713198013790265,
+        "y": 7.577753040151874
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 3.160641025641025,
+        "y": 6.574166666666667
+      },
+      "prevControl": {
+        "x": 3.409521036595251,
+        "y": 6.550528981766824
+      },
+      "nextControl": {
+        "x": 2.0239041015504924,
+        "y": 6.682129653017586
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 1.2513461538461532,
+        "y": 7.048910256410256
+      },
+      "prevControl": {
+        "x": 1.8729929553429234,
+        "y": 6.938062433378536
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Left Coral Intake"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1,
+      "rotationDegrees": -110.62987994612627
+    },
+    {
+      "waypointRelativePos": 2.0,
+      "rotationDegrees": -60.94539590092288
+    }
+  ],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -52.50000000000001
+  },
+  "reversed": false,
+  "folder": null,
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 180.0
+  },
+  "useDefaultConstraints": true
+}

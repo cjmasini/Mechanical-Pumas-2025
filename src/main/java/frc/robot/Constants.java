@@ -8,7 +8,6 @@ import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.controllers.PathFollowingController;
 
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
@@ -181,6 +180,5 @@ public final class Constants {
         .toRadians(AutonConstants.LIMELIGHT_MOUNTING_ANGLE_DEGREES);
 
     public static final double REEF_APRILTAG_HEIGHT = 0.324;
-
   }
 }
