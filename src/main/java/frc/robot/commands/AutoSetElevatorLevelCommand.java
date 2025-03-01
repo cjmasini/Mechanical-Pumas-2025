@@ -30,16 +30,16 @@ public class AutoSetElevatorLevelCommand extends Command {
 
   @Override
   public void initialize() {
-    this.elevatorSubsystem.setLevel(levelChooser.getSelected());
   }
 
   @Override
   public void execute() {
+      this.elevatorSubsystem.setLevel(levelChooser.getSelected());
   }
 
   @Override
   public boolean isFinished() {
-    return this.elevatorSubsystem.isAtLevel(levelChooser.getSelected());
+    return false;//this.elevatorSubsystem.isAtLevel(levelChooser.getSelected());
   }
 
   @Override

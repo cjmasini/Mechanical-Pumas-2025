@@ -63,7 +63,8 @@ public class ElevatorSubsystem extends CancelableSubsystemBase {
         feedforward = new ElevatorFeedforward(
                 ElevatorConstants.kS,
                 ElevatorConstants.kG,
-                ElevatorConstants.kV);
+                ElevatorConstants.kV,
+                ElevatorConstants.kA);
 
         setDefaultCommand(new SetElevatorLevelCommand(Level.DOWN, this));
 
@@ -78,6 +79,7 @@ public class ElevatorSubsystem extends CancelableSubsystemBase {
     @Override
     public void periodic() {
         // DataLogManager.log("Manual Mode: %b".formatted(manualMode));
+        logElevatorState();
         if (!manualMode) {
             currentPos = encoder.getPosition() / ElevatorConstants.COUNTS_PER_INCH;
 
@@ -95,7 +97,7 @@ public class ElevatorSubsystem extends CancelableSubsystemBase {
             // DataLogManager.log("PID Output: %f".formatted(pidOutput));
 
             double outputPower = MathUtil.clamp(
-                    pidOutput + ff,
+                    pidOutput,
                     ElevatorConstants.MIN_POWER,
                     ElevatorConstants.MAX_POWER);
             
@@ -114,6 +116,7 @@ public class ElevatorSubsystem extends CancelableSubsystemBase {
     public void setLevel(Level level) {
         DataLogManager.log("Level set to %s".formatted(level.toString()));
         targetLevel = level;
+        SmartDashboard.putString("Target Level", level.name());
         setPositionInches(level.getPosition());
     }
 
@@ -136,6 +139,7 @@ public class ElevatorSubsystem extends CancelableSubsystemBase {
         SmartDashboard.putString("Target Level", targetLevel.toString());
         SmartDashboard.putNumber("Elevator Current", elevatorMotor.getOutputCurrent());
         SmartDashboard.putNumber("Elevator Velocity", nextState.velocity);
+        SmartDashboard.putBoolean("At Target", this.isAtHeight(targetInches));
     }
 
     public double getHeightInches() {

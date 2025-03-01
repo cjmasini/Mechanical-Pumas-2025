@@ -61,8 +61,9 @@ public final class Constants {
     public static final double kI = 0.0;
     public static final double kD = 0.0;
     public static final double kS = 0.0;
-    public static final double kV = 3.07;
-    public static final double kG = 0.52;
+    public static final double kV = 0.0;
+    public static final double kG = 0.02;
+    public static final double kA = 0.0;
 
     // Elevator Contraints - all in inches / seconds
     // TODO: Update these - Currently set based on reca.lc estimates
@@ -71,8 +72,8 @@ public final class Constants {
     public static final double MAX_POSITION = 50.0;
     public static final double MIN_POSITION = 0.0;
     public static final double POSITION_TOLERANCE = 0.25;
-    public static final double MIN_POWER = -0.5;
-    public static final double MAX_POWER = 0.5;
+    public static final double MIN_POWER = -1;
+    public static final double MAX_POWER = 1;
 
     // TODO these values are completely made up
     public static final int DOWN = 0;
