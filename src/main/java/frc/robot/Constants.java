@@ -53,17 +53,16 @@ public final class Constants {
   public static final class ElevatorConstants {
 
     // TODO: Update these
-    public static final double COUNTS_PER_INCH = 1.0;
+    public static final double COUNTS_PER_INCH = .4664;
 
     // PID / feedforward Constants
     // TODO: Update these - Currently set based on reca.lc estimates
-    public static final double kP = .05;
+    public static final double kP = 0.1;
     public static final double kI = 0.0;
     public static final double kD = 0.0;
     public static final double kS = 0.0;
     public static final double kV = 3.07;
     public static final double kG = 0.52;
-    public static final double kA = 0.05;
 
     // Elevator Contraints - all in inches / seconds
     // TODO: Update these - Currently set based on reca.lc estimates

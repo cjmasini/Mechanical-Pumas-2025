@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.ElevatorConstants.Level;
+import frc.robot.commands.AutoSetElevatorLevelCommand;
 import frc.robot.commands.AutonomousCommandFactory;
 import frc.robot.commands.CancelCommand;
 import frc.robot.commands.ClimbCommand;
@@ -96,7 +97,8 @@ public class RobotContainer {
       levelChooser.addOption(level.toString(), level);
     }
     levelChooser.setDefaultOption("DOWN", Level.DOWN);
-    ScoreCoralCommand scoreCoralCommand = new ScoreCoralCommand(levelChooser, elevatorSubsystem, coralSubsystem);
+    // ScoreCoralCommand scoreCoralCommand = new ScoreCoralCommand(levelChooser, elevatorSubsystem, coralSubsystem);
+    AutoSetElevatorLevelCommand scoreCoralCommand = new AutoSetElevatorLevelCommand(levelChooser, elevatorSubsystem);
     driverXbox.leftTrigger().onTrue(scoreCoralCommand);
 
     // Right trigger is used to cancel other commands and as a modifier for face

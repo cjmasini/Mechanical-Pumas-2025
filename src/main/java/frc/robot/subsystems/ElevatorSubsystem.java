@@ -11,8 +11,10 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.ElevatorConstants.Level;
+import frc.robot.commands.SetElevatorLevelCommand;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.CANIdConstants;
 
@@ -36,6 +38,7 @@ public class ElevatorSubsystem extends CancelableSubsystemBase {
     private boolean manualMode = false;
 
     public ElevatorSubsystem() {
+        DataLogManager.start();
         elevatorMotor = new SparkMax(CANIdConstants.LEFT_ELEVATOR_CAN_ID, MotorType.kBrushless);
         SparkMaxConfig elevatorMotorConfig = new SparkMaxConfig();
         elevatorMotorConfig.idleMode(IdleMode.kBrake);
@@ -62,6 +65,8 @@ public class ElevatorSubsystem extends CancelableSubsystemBase {
                 ElevatorConstants.kG,
                 ElevatorConstants.kV);
 
+        setDefaultCommand(new SetElevatorLevelCommand(Level.DOWN, this));
+
         constraints = new TrapezoidProfile.Constraints(
                 ElevatorConstants.MAX_VELOCITY,
                 ElevatorConstants.MAX_ACCELERATION);
@@ -72,6 +77,7 @@ public class ElevatorSubsystem extends CancelableSubsystemBase {
 
     @Override
     public void periodic() {
+        // DataLogManager.log("Manual Mode: %b".formatted(manualMode));
         if (!manualMode) {
             currentPos = encoder.getPosition() / ElevatorConstants.COUNTS_PER_INCH;
 
@@ -85,6 +91,8 @@ public class ElevatorSubsystem extends CancelableSubsystemBase {
 
             double pidOutput = pidController.calculate(getHeightInches(), nextState.position);
             double ff = feedforward.calculate(nextState.velocity);
+            // DataLogManager.log("Feedforward: %f".formatted(ff));
+            // DataLogManager.log("PID Output: %f".formatted(pidOutput));
 
             double outputPower = MathUtil.clamp(
                     pidOutput + ff,
@@ -104,17 +112,19 @@ public class ElevatorSubsystem extends CancelableSubsystemBase {
     }
 
     public void setLevel(Level level) {
+        DataLogManager.log("Level set to %s".formatted(level.toString()));
         targetLevel = level;
         setPositionInches(level.getPosition());
     }
 
     public void setPositionInches(double inches) {
+        DataLogManager.log("Elevator set to %f inches".formatted(inches));
         manualMode = false;
         targetInches = MathUtil.clamp(
                 inches,
                 ElevatorConstants.MIN_POSITION,
                 ElevatorConstants.MAX_POSITION);
-
+        DataLogManager.log("Target Inches: %f".formatted(targetInches));
         // Update goal state for motion profile
         goalState = new TrapezoidProfile.State(targetInches, 0);
     }
@@ -133,6 +143,8 @@ public class ElevatorSubsystem extends CancelableSubsystemBase {
     }
 
     public boolean isAtLevel(Level level) {
+        DataLogManager.log("Is at level function called with level %s".formatted(level.toString()));
+
         return pidController.atSetpoint() &&
                 Math.abs(getHeightInches() - level.getPosition()) < 0.5;
     }
@@ -159,6 +171,8 @@ public class ElevatorSubsystem extends CancelableSubsystemBase {
 
     @Override
     public void cancel() {
+        DataLogManager.log("Cancel function");
+
         pidController.reset();
         nextState = new TrapezoidProfile.State(getHeightInches(), 0);
         goalState = new TrapezoidProfile.State(getHeightInches(), 0);
