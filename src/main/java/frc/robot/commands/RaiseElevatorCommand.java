@@ -15,7 +15,7 @@ public class RaiseElevatorCommand extends Command {
    * Scheduled to run only when while the raise button is pressed down
    *
    * @param elevatorSubsystem
-   *          The elevator subsystem.
+   *                          The elevator subsystem.
    */
   public RaiseElevatorCommand(ElevatorSubsystem elevatorSubsystem) {
     this.elevatorSubsystem = elevatorSubsystem;

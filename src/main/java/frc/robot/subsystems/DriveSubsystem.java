@@ -56,7 +56,7 @@ public class DriveSubsystem extends CancelableSubsystemBase {
   // Odometry class for tracking robot pose
   SwerveDriveOdometry odometry = new SwerveDriveOdometry(
       RobotConstants.DRIVE_KINEMATICS,
-      Rotation2d.fromDegrees(gyro.getYaw().getValueAsDouble()),
+      Rotation2d.fromDegrees(getGyroOrientation()),
       new SwerveModulePosition[] {
           frontLeftModule.getPosition(),
           frontRightModule.getPosition(),
@@ -94,7 +94,7 @@ public class DriveSubsystem extends CancelableSubsystemBase {
   public void periodic() {
     // Update the odometry in the periodic block
     odometry.update(
-        Rotation2d.fromDegrees(gyro.getYaw().getValueAsDouble()),
+        Rotation2d.fromDegrees(getGyroOrientation()),
         new SwerveModulePosition[] {
             frontLeftModule.getPosition(),
             frontRightModule.getPosition(),
@@ -176,7 +176,7 @@ public class DriveSubsystem extends CancelableSubsystemBase {
     var swerveModuleStates = RobotConstants.DRIVE_KINEMATICS.toSwerveModuleStates(
         fieldRelative
             ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered,
-                Rotation2d.fromDegrees(gyro.getYaw().getValueAsDouble()))
+                Rotation2d.fromDegrees(getGyroOrientation()))
             : new ChassisSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered));
     SwerveDriveKinematics.desaturateWheelSpeeds(
         swerveModuleStates, ModuleConstants.DRIVE_WHEEL_FREE_SPEED_IN_RPS);
@@ -213,7 +213,7 @@ public class DriveSubsystem extends CancelableSubsystemBase {
    */
   public void updatePose(Pose2d pose) {
     odometry.resetPosition(
-        Rotation2d.fromDegrees(gyro.getYaw().getValueAsDouble()),
+        Rotation2d.fromDegrees(getGyroOrientation()),
         new SwerveModulePosition[] {
             frontLeftModule.getPosition(),
             frontRightModule.getPosition(),
@@ -280,7 +280,7 @@ public class DriveSubsystem extends CancelableSubsystemBase {
    * @return the robot's heading in degrees, from -180 to 180
    */
   public double getHeading() {
-    return SwerveUtils.normalizeAngle(gyro.getYaw().getValueAsDouble());
+    return SwerveUtils.normalizeAngle(getGyroOrientation());
   }
 
   /**
@@ -333,4 +333,7 @@ public class DriveSubsystem extends CancelableSubsystemBase {
     drive(normalizedX, normalizedY, normalizedRot, true);
   }
 
+  public double getGyroOrientation() {
+    return gyro.getYaw().getValueAsDouble() + RobotConstants.GYRO_OFFSET;
+  }
 }

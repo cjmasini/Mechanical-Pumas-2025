@@ -15,7 +15,7 @@ public class ClimbCommand extends Command {
    * Scheduled to run only when while the climb button is pressed down
    *
    * @param coralSubsystem
-   *          The game subsystem.
+   *                       The game subsystem.
    */
   public ClimbCommand(ClimbSubsystem climbSubsystem) {
     this.climbSubsystem = climbSubsystem;
@@ -23,7 +23,7 @@ public class ClimbCommand extends Command {
   }
 
   @Override
-  public void execute() {
+  public void initialize() {
     this.climbSubsystem.setClimbMotorSpeed(1);
   }
 

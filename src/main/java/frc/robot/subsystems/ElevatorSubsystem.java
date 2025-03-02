@@ -33,7 +33,6 @@ public class ElevatorSubsystem extends CancelableSubsystemBase {
 
     private Level targetLevel = Level.DOWN;
     private double targetInches = 0.0;
-    double currentPos;
 
     private boolean manualMode = false;
 
@@ -66,8 +65,6 @@ public class ElevatorSubsystem extends CancelableSubsystemBase {
                 ElevatorConstants.kV,
                 ElevatorConstants.kA);
 
-        setDefaultCommand(new SetElevatorLevelCommand(Level.DOWN, this));
-
         constraints = new TrapezoidProfile.Constraints(
                 ElevatorConstants.MAX_VELOCITY,
                 ElevatorConstants.MAX_ACCELERATION);
@@ -81,8 +78,6 @@ public class ElevatorSubsystem extends CancelableSubsystemBase {
         // DataLogManager.log("Manual Mode: %b".formatted(manualMode));
         logElevatorState();
         if (!manualMode) {
-            currentPos = encoder.getPosition() / ElevatorConstants.COUNTS_PER_INCH;
-
             // Update the state for motion towards target over the next 20ms
             nextState = profile.calculate(0.020, nextState, goalState);
 
@@ -97,10 +92,10 @@ public class ElevatorSubsystem extends CancelableSubsystemBase {
             // DataLogManager.log("PID Output: %f".formatted(pidOutput));
 
             double outputPower = MathUtil.clamp(
-                    pidOutput,
+                    pidOutput + ff,
                     ElevatorConstants.MIN_POWER,
                     ElevatorConstants.MAX_POWER);
-            
+
             elevatorMotor.set(outputPower);
         }
         logElevatorState();
@@ -163,7 +158,7 @@ public class ElevatorSubsystem extends CancelableSubsystemBase {
         nextState = new TrapezoidProfile.State(getHeightInches(), 0);
         goalState = new TrapezoidProfile.State(getHeightInches(), 0);
 
-        if ((getHeightInches() >= ElevatorConstants.MAX_POSITION && power > 0) 
+        if ((getHeightInches() >= ElevatorConstants.MAX_POSITION && power > 0)
                 || (getHeightInches() <= ElevatorConstants.MIN_POSITION && power < 0)) {
             power = 0;
         }
@@ -176,8 +171,8 @@ public class ElevatorSubsystem extends CancelableSubsystemBase {
     @Override
     public void cancel() {
         DataLogManager.log("Cancel function");
-
         pidController.reset();
+        pidController.setSetpoint(getHeightInches());
         nextState = new TrapezoidProfile.State(getHeightInches(), 0);
         goalState = new TrapezoidProfile.State(getHeightInches(), 0);
         elevatorMotor.set(0);

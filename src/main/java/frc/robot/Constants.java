@@ -42,12 +42,15 @@ public final class Constants {
     public static final int PIGEON_GYRO_CAN_ID = 21;
 
     // Elevator CAN Ids
-    public static final int LEFT_ELEVATOR_CAN_ID = 11;
-    public static final int RIGHT_ELEVATOR_CAN_ID = 12;
+
 
     // Motor CAN Ids
+    public static final int LEFT_ELEVATOR_CAN_ID = 11;
+    public static final int RIGHT_ELEVATOR_CAN_ID = 12;
     public static final int CORAL_MOTOR_CONTROLLER_ID = 51;
     public static final int CLIMB_MOTOR_CONTROLLER_ID = 52;
+    public static final int LEFT_INTAKE_WINCH_CAN_ID = 53;
+    public static final int RIGHT_INTAKE_WINCH_CAN_ID = 54;
   }
 
   public static final class ElevatorConstants {
@@ -62,7 +65,7 @@ public final class Constants {
     public static final double kD = 0.0;
     public static final double kS = 0.0;
     public static final double kV = 0.0;
-    public static final double kG = 0.02;
+    public static final double kG = 0.0;
     public static final double kA = 0.0;
 
     // Elevator Contraints - all in inches / seconds
@@ -83,15 +86,18 @@ public final class Constants {
     public static final int L4 = 40;
     public static final int A2 = 10;
     public static final int A3 = 20;
-    public static final int INTAKE = 25;
     public static final int NET = 50;
 
     public static enum Level {
-      DOWN(ElevatorConstants.DOWN), INTAKE(ElevatorConstants.INTAKE), NET(ElevatorConstants.NET), L1(
-          ElevatorConstants.L1),
-      L2(ElevatorConstants.L2), L3(
-          ElevatorConstants.L3),
-      L4(ElevatorConstants.L4), A2(ElevatorConstants.A2), A3(ElevatorConstants.A3);
+      DOWN(ElevatorConstants.DOWN),
+      // NET(ElevatorConstants.NET),
+      // A2(ElevatorConstants.A2),
+      // A3(ElevatorConstants.A3),
+      L1(ElevatorConstants.L1),
+      L2(ElevatorConstants.L2),
+      L3(ElevatorConstants.L3),
+      L4(ElevatorConstants.L4);
+
 
       private final int position;
 
@@ -105,6 +111,11 @@ public final class Constants {
     }
   }
 
+  // TODO: Set raised position to real value
+  public static final class IntakeConstants {
+    public static final double LOWERED_POSITION = 0;
+    public static final double RAISED_POSITION = 10;
+  }
   public static final class RobotConstants {
     // Chassis configuration
     // TODO: Update for your robots size
@@ -125,7 +136,8 @@ public final class Constants {
     // Hold time on motor brakes when disabled
     public static final double WHEEL_LOCK_TIME = 10; // seconds
 
-    public static final boolean GYRO_REVERSED = false;
+    //TODO: Update this value
+    public static final double GYRO_OFFSET = 0;
 
     // Enum for auto-orienting to field directions
     public enum Direction {

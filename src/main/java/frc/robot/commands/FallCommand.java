@@ -11,11 +11,11 @@ public class FallCommand extends Command {
   private final ClimbSubsystem climbSubsystem;
 
   /**
-   * Command for slowly lowering after climbing the cage
+   * Command for lowering after climbing the cage
    * Scheduled to run only when while the climb button is pressed down
    *
    * @param coralSubsystem
-   *          The game subsystem.
+   *                       The game subsystem.
    */
   public FallCommand(ClimbSubsystem climbSubsystem) {
     this.climbSubsystem = climbSubsystem;
@@ -23,8 +23,8 @@ public class FallCommand extends Command {
   }
 
   @Override
-  public void execute() {
-    this.climbSubsystem.setClimbMotorSpeed(-.25);
+  public void initialize() {
+    this.climbSubsystem.setClimbMotorSpeed(-1);
   }
 
   @Override
