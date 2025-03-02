@@ -23,7 +23,6 @@ import frc.robot.commands.LowerElevatorCommand;
 import frc.robot.commands.MoveCommand;
 import frc.robot.commands.RaiseElevatorCommand;
 import frc.robot.commands.ScoreCoralCommand;
-import frc.robot.commands.SetElevatorLevelCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
@@ -67,7 +66,6 @@ public class RobotContainer {
 
     configureBindings();
 
-
     SmartDashboard.putData(levelChooser);
     SmartDashboard.putData(autoChooser);
   }
@@ -98,9 +96,9 @@ public class RobotContainer {
       levelChooser.addOption(level.toString(), level);
     }
     levelChooser.setDefaultOption("DOWN", Level.DOWN);
-    // ScoreCoralCommand scoreCoralCommand = new ScoreCoralCommand(levelChooser, elevatorSubsystem, coralSubsystem);
-    AutoSetElevatorLevelCommand scoreCoralCommand = new AutoSetElevatorLevelCommand(levelChooser, elevatorSubsystem);
-    // SetElevatorLevelCommand scoreCoralCommand = new SetElevatorLevelCommand(Level.L2, elevatorSubsystem);
+    ScoreCoralCommand scoreCoralCommand = new ScoreCoralCommand(levelChooser, elevatorSubsystem, coralSubsystem);
+    // AutoSetElevatorLevelCommand scoreCoralCommand = new
+    // AutoSetElevatorLevelCommand(levelChooser, elevatorSubsystem);
     driverXbox.leftTrigger().onTrue(scoreCoralCommand);
 
     // Right trigger is used to cancel other commands and as a modifier for face

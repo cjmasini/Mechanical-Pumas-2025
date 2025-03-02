@@ -36,7 +36,8 @@ public class AutonomousCommandFactory {
     /**
      * Creates an autonomous command from a sequence string.
      * 
-     * @param sequenceString String in the format LA1L (Start/End at Left coral station, Reef
+     * @param sequenceString String in the format LA1L (Start/End at Left coral
+     *                       station, Reef
      *                       Branch A, Level 1, ) or RF4 (Right coral station, Reef
      *                       Branch F, Level 4).
      * 
