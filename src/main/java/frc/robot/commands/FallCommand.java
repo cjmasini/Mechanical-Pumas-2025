@@ -23,7 +23,7 @@ public class FallCommand extends Command {
   }
 
   @Override
-  public void initialize() {
+  public void execute() {
     this.climbSubsystem.setClimbMotorSpeed(-1);
   }
 
