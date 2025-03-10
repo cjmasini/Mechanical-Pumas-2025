@@ -19,12 +19,15 @@ import frc.robot.commands.CancelCommand;
 import frc.robot.commands.ClimbCommand;
 import frc.robot.commands.EjectCoralCommand;
 import frc.robot.commands.FallCommand;
+import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.LowerElevatorCommand;
 import frc.robot.commands.MoveCommand;
 import frc.robot.commands.RaiseElevatorCommand;
 import frc.robot.commands.ScoreCoralCommand;
+import frc.robot.commands.DriveToReefCommand.ReefPosition;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.CoralSubsystem;
@@ -41,6 +44,8 @@ public class RobotContainer {
   private final DriveSubsystem drivetrain = new DriveSubsystem();
 
   private final CoralSubsystem coralSubsystem = new CoralSubsystem();
+
+  private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
 
   private final ClimbSubsystem climbSubsystem = new ClimbSubsystem();
 
@@ -73,45 +78,47 @@ public class RobotContainer {
   private void configureBindings() {
     // Eject coral onto reef
     EjectCoralCommand ejectCoralCommand = new EjectCoralCommand(coralSubsystem);
-    driverXbox.rightBumper().and(driverXbox.rightTrigger().negate()).onTrue(ejectCoralCommand.withTimeout(10));
+    driverXbox.y().and(driverXbox.rightTrigger().negate()).onTrue(ejectCoralCommand.withTimeout(10));
 
     // Climb the cage while button is pressed
     ClimbCommand climbCommand = new ClimbCommand(climbSubsystem);
-    driverXbox.a().whileTrue(climbCommand);
+    driverXbox.a().and(driverXbox.rightTrigger().negate()).whileTrue(climbCommand);
 
     // Slowly lower after climbing the cage
     FallCommand fallCommand = new FallCommand(climbSubsystem);
-    driverXbox.b().whileTrue(fallCommand);
+    driverXbox.b().and(driverXbox.rightTrigger().negate()).whileTrue(fallCommand);
 
-    // Raise elevator while button is pressed
-    RaiseElevatorCommand raiseElevatorCommand = new RaiseElevatorCommand(elevatorSubsystem);
-    driverXbox.y().whileTrue(raiseElevatorCommand);
-
-    // Lower elevator while button is pressed
-    LowerElevatorCommand lowerElevatorCommand = new LowerElevatorCommand(elevatorSubsystem);
-    driverXbox.x().whileTrue(lowerElevatorCommand);
-
+    // Intake coral on left bumper press
+    IntakeCommand intakeCommand = new IntakeCommand(elevatorSubsystem, coralSubsystem, intakeSubsystem);
+    driverXbox.leftTrigger().and(driverXbox.rightTrigger().negate()).onTrue(intakeCommand);
+    
     // Set the elevator to a specific position
     for (Level level : Level.values()) {
       levelChooser.addOption(level.toString(), level);
     }
     levelChooser.setDefaultOption("DOWN", Level.DOWN);
-    ScoreCoralCommand scoreCoralCommand = new ScoreCoralCommand(levelChooser, elevatorSubsystem, coralSubsystem);
+    ScoreCoralCommand scoreLeftCoralCommand = new ScoreCoralCommand(levelChooser, elevatorSubsystem, coralSubsystem, drivetrain, visionSubsystem, ReefPosition.LEFT);
     // AutoSetElevatorLevelCommand scoreCoralCommand = new
     // AutoSetElevatorLevelCommand(levelChooser, elevatorSubsystem);
-    driverXbox.leftTrigger().onTrue(scoreCoralCommand);
+    driverXbox.leftBumper().onTrue(scoreLeftCoralCommand);
+
+    // TODO: Switch to score command when ready
+    // ScoreCoralCommand scoreRightCoralCommand = new ScoreCoralCommand(levelChooser, elevatorSubsystem, coralSubsystem, drivetrain, visionSubsystem, ReefPosition.LEFT);
+    AutoSetElevatorLevelCommand scoreRightCoralCommand = new
+      AutoSetElevatorLevelCommand(levelChooser, elevatorSubsystem);
+    driverXbox.rightBumper().onTrue(scoreRightCoralCommand);
 
     // Right trigger is used to cancel other commands and as a modifier for face
     // buttons
     CancelCommand cancelCommand = new CancelCommand(
-        List.of(drivetrain, coralSubsystem, climbSubsystem, elevatorSubsystem));
+        List.of(coralSubsystem, climbSubsystem, elevatorSubsystem));
     driverXbox.rightTrigger().onTrue(cancelCommand.withTimeout(10));
 
     // Manually re-zero the gyro if it gets off during competition
     // With the pigeon Gyro, we only needed to do this because of user error in
     // setup
     InstantCommand resetGyro = new InstantCommand(() -> this.drivetrain.zeroHeading());
-    driverXbox.rightStick().and(driverXbox.rightTrigger()).onTrue(resetGyro);
+    driverXbox.rightStick().and(driverXbox.leftStick()).onTrue(resetGyro);
 
     // Toggle drive mode command, currently disabled as we did not find it necessary
     // InstantCommand toggleDriveMode = new InstantCommand(() ->

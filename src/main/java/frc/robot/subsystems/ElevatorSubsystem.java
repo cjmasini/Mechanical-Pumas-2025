@@ -44,7 +44,6 @@ public class ElevatorSubsystem extends CancelableSubsystemBase {
         elevatorMotorConfig.smartCurrentLimit(40);
         elevatorMotorConfig.voltageCompensation(12.0);
         elevatorMotor.configure(elevatorMotorConfig, ResetMode.kResetSafeParameters, null);
-        elevatorMotor.configure(elevatorMotorConfig, ResetMode.kResetSafeParameters, null);
 
         followerMotor = new SparkMax(CANIdConstants.RIGHT_ELEVATOR_CAN_ID, MotorType.kBrushless);
         SparkMaxConfig followerConfig = new SparkMaxConfig();

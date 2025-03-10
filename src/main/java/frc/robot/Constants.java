@@ -40,9 +40,9 @@ public final class Constants {
 
     // Gyro CAN Id
     public static final int PIGEON_GYRO_CAN_ID = 21;
+    public static final int INTAKE_CAN_RANGE_ID = 22;
 
     // Elevator CAN Ids
-
 
     // Motor CAN Ids
     public static final int LEFT_ELEVATOR_CAN_ID = 11;
@@ -51,6 +51,7 @@ public final class Constants {
     public static final int CLIMB_MOTOR_CONTROLLER_ID = 52;
     public static final int LEFT_INTAKE_WINCH_CAN_ID = 53;
     public static final int RIGHT_INTAKE_WINCH_CAN_ID = 54;
+    public static final int CONVEYOR_BELT_CAN_ID = 55;
   }
 
   public static final class ElevatorConstants {
@@ -98,7 +99,6 @@ public final class Constants {
       L3(ElevatorConstants.L3),
       L4(ElevatorConstants.L4);
 
-
       private final int position;
 
       Level(int position) {
@@ -116,6 +116,7 @@ public final class Constants {
     public static final double LOWERED_POSITION = 0;
     public static final double RAISED_POSITION = 10;
   }
+
   public static final class RobotConstants {
     // Chassis configuration
     // TODO: Update for your robots size
@@ -136,7 +137,7 @@ public final class Constants {
     // Hold time on motor brakes when disabled
     public static final double WHEEL_LOCK_TIME = 10; // seconds
 
-    //TODO: Update this value
+    // TODO: Update this value
     public static final double GYRO_OFFSET = 0;
 
     // Enum for auto-orienting to field directions
