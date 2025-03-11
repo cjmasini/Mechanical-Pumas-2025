@@ -17,6 +17,7 @@ import frc.robot.commands.AutoSetElevatorLevelCommand;
 import frc.robot.commands.AutonomousCommandFactory;
 import frc.robot.commands.CancelCommand;
 import frc.robot.commands.ClimbCommand;
+import frc.robot.commands.DriveToReefCommand;
 import frc.robot.commands.EjectCoralCommand;
 import frc.robot.commands.FallCommand;
 import frc.robot.commands.IntakeCommand;
@@ -69,6 +70,12 @@ public class RobotContainer {
     MoveCommand moveCommand = new MoveCommand(this.drivetrain, driverXbox);
     drivetrain.setDefaultCommand(moveCommand);
 
+    // Add levels for the elevator to dashboard chooser
+    for (Level level : Level.values()) {
+      levelChooser.addOption(level.toString(), level);
+    }
+    levelChooser.setDefaultOption("DOWN", Level.DOWN);
+
     configureBindings();
 
     SmartDashboard.putData(levelChooser);
@@ -76,9 +83,9 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    // Eject coral onto reef
+    // Eject coral out of the coral mech
     EjectCoralCommand ejectCoralCommand = new EjectCoralCommand(coralSubsystem);
-    driverXbox.y().and(driverXbox.rightTrigger().negate()).onTrue(ejectCoralCommand.withTimeout(10));
+    driverXbox.y().and(driverXbox.rightTrigger().negate()).onTrue(ejectCoralCommand);
 
     // Climb the cage while button is pressed
     ClimbCommand climbCommand = new ClimbCommand(climbSubsystem);
@@ -88,15 +95,14 @@ public class RobotContainer {
     FallCommand fallCommand = new FallCommand(climbSubsystem);
     driverXbox.b().and(driverXbox.rightTrigger().negate()).whileTrue(fallCommand);
 
-    // Intake coral on left bumper press
+    // Drive to left reef
+    Command driveToReefCommand = new DriveToReefCommand(drivetrain, visionSubsystem, ReefPosition.LEFT);
+    driverXbox.x().and(driverXbox.rightTrigger().negate()).onTrue(driveToReefCommand);
+
+    // Intake coral on left trigger press
     IntakeCommand intakeCommand = new IntakeCommand(elevatorSubsystem, coralSubsystem, intakeSubsystem);
-    driverXbox.leftTrigger().and(driverXbox.rightTrigger().negate()).onTrue(intakeCommand);
+    driverXbox.leftTrigger().onTrue(intakeCommand);
     
-    // Set the elevator to a specific position
-    for (Level level : Level.values()) {
-      levelChooser.addOption(level.toString(), level);
-    }
-    levelChooser.setDefaultOption("DOWN", Level.DOWN);
     ScoreCoralCommand scoreLeftCoralCommand = new ScoreCoralCommand(levelChooser, elevatorSubsystem, coralSubsystem, drivetrain, visionSubsystem, ReefPosition.LEFT);
     // AutoSetElevatorLevelCommand scoreCoralCommand = new
     // AutoSetElevatorLevelCommand(levelChooser, elevatorSubsystem);

@@ -40,6 +40,7 @@ public class DriveToReefCommand extends Command {
 
         int targetID = visionSubsystem.getTargetID();
 
+        // If the target is a reef tag, drive to the target.
         if ((targetID >= 6 && targetID <= 11) || (targetID >= 17 && targetID <= 22)) {
             double limelightTx = visionSubsystem.getTx();
             double limelightTy = visionSubsystem.getTy();

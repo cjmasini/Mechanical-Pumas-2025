@@ -22,10 +22,8 @@ import frc.robot.Configs;
 /**
  * SwerveModule class - Tracks and controls state information for a swerve
  * module
- * TODO: Uncomment and switch to spark flex code if needed
  */
 public class SwerveModule {
-  // private final SparkMax driveMotorController;
   private final SparkFlex driveMotorController;
   private final SparkMax steeringMotorController;
 

@@ -16,7 +16,7 @@ public final class Configs {
                         double drivingFactor = ModuleConstants.WHEEL_CIRCUMFERENCE_IN_METERS
                                         / ModuleConstants.DRIVE_MOTOR_REDUCTION;
                         double turningFactor = ModuleConstants.MAX_ANGULAR_SPEED;
-                        double drivingVelocityFeedForward = 1 / ModuleConstants.DRIVE_WHEEL_FREE_SPEED_IN_RPS;
+                        double drivingVelocityFeedForward = 1 / ModuleConstants.DRIVE_WHEEL_FREE_SPEED_IN_MPS;
 
                         drivingConfig
                                         .idleMode(IdleMode.kBrake)

@@ -169,8 +169,8 @@ public class DriveSubsystem extends CancelableSubsystemBase {
    */
   public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
     // Convert the commanded speeds into the correct units for the drivetrain
-    double xSpeedDelivered = xSpeed * ModuleConstants.DRIVE_WHEEL_FREE_SPEED_IN_RPS;
-    double ySpeedDelivered = ySpeed * ModuleConstants.DRIVE_WHEEL_FREE_SPEED_IN_RPS;
+    double xSpeedDelivered = xSpeed * ModuleConstants.DRIVE_WHEEL_FREE_SPEED_IN_MPS;
+    double ySpeedDelivered = ySpeed * ModuleConstants.DRIVE_WHEEL_FREE_SPEED_IN_MPS;
     double rotDelivered = rot * ModuleConstants.MAX_ANGULAR_SPEED;
 
     var swerveModuleStates = RobotConstants.DRIVE_KINEMATICS.toSwerveModuleStates(
@@ -179,7 +179,7 @@ public class DriveSubsystem extends CancelableSubsystemBase {
                 Rotation2d.fromDegrees(getGyroOrientation()))
             : new ChassisSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered));
     SwerveDriveKinematics.desaturateWheelSpeeds(
-        swerveModuleStates, ModuleConstants.DRIVE_WHEEL_FREE_SPEED_IN_RPS);
+        swerveModuleStates, ModuleConstants.DRIVE_WHEEL_FREE_SPEED_IN_MPS);
     frontLeftModule.setDesiredState(swerveModuleStates[0]);
     frontRightModule.setDesiredState(swerveModuleStates[1]);
     backLeftModule.setDesiredState(swerveModuleStates[2]);
@@ -254,7 +254,7 @@ public class DriveSubsystem extends CancelableSubsystemBase {
    */
   public void setModuleStates(SwerveModuleState[] desiredStates) {
     SwerveDriveKinematics.desaturateWheelSpeeds(
-        desiredStates, ModuleConstants.DRIVE_WHEEL_FREE_SPEED_IN_RPS);
+        desiredStates, ModuleConstants.DRIVE_WHEEL_FREE_SPEED_IN_MPS);
     frontLeftModule.setDesiredState(desiredStates[0]);
     frontRightModule.setDesiredState(desiredStates[1]);
     backLeftModule.setDesiredState(desiredStates[2]);
@@ -325,8 +325,8 @@ public class DriveSubsystem extends CancelableSubsystemBase {
     ChassisSpeeds robotRelativeSpeeds = AutonConstants.AUTON_CONTROLLER
         .calculateRobotRelativeSpeeds(currentRelativePose, targetState);
 
-    double normalizedX = robotRelativeSpeeds.vxMetersPerSecond / ModuleConstants.DRIVE_WHEEL_FREE_SPEED_IN_RPS;
-    double normalizedY = robotRelativeSpeeds.vyMetersPerSecond / ModuleConstants.DRIVE_WHEEL_FREE_SPEED_IN_RPS;
+    double normalizedX = robotRelativeSpeeds.vxMetersPerSecond / ModuleConstants.DRIVE_WHEEL_FREE_SPEED_IN_MPS;
+    double normalizedY = robotRelativeSpeeds.vyMetersPerSecond / ModuleConstants.DRIVE_WHEEL_FREE_SPEED_IN_MPS;
     double normalizedRot = robotRelativeSpeeds.omegaRadiansPerSecond / ModuleConstants.MAX_ANGULAR_SPEED;
 
     // Command the drivetrain using field-relative control.
