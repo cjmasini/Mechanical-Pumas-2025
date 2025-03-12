@@ -3,16 +3,32 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.2513461538461532,
-        "y": 7.048910256410256
+        "x": 1.261666666666666,
+        "y": 0.9701282051282044
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.229642973868148,
-        "y": 6.766084022425822
+        "x": 2.7235483697016205,
+        "y": 1.5979583664204977
       },
       "isLocked": false,
-      "linkedName": "Left Coral Intake"
+      "linkedName": "Right Coral Intake"
+    },
+    {
+      "anchor": {
+        "x": 6.7000337381916335,
+        "y": 2.4226045883940617
+      },
+      "prevControl": {
+        "x": 6.019617825943042,
+        "y": 1.1841499084864688
+      },
+      "nextControl": {
+        "x": 7.397179724297223,
+        "y": 3.6915104054523513
+      },
+      "isLocked": false,
+      "linkedName": null
     },
     {
       "anchor": {
@@ -20,15 +36,20 @@
         "y": 6.336794871794872
       },
       "prevControl": {
-        "x": 5.408780024281693,
-        "y": 6.4049002071694465
+        "x": 5.574835984683133,
+        "y": 6.6888346323670556
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": "IJ"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1.0,
+      "rotationDegrees": 126.69486016742984
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
@@ -48,7 +69,7 @@
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -52.50000000000001
+    "rotation": 52.50000000000001
   },
   "useDefaultConstraints": true
 }

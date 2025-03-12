@@ -1,0 +1,91 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 5.4517948717948705,
+        "y": 5.397628205128205
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 5.9331467817586185,
+        "y": 5.430958298517864
+      },
+      "isLocked": false,
+      "linkedName": "I"
+    },
+    {
+      "anchor": {
+        "x": 6.6799358974358976,
+        "y": 4.819679487179487
+      },
+      "prevControl": {
+        "x": 6.619961980954119,
+        "y": 5.06237915619829
+      },
+      "nextControl": {
+        "x": 6.975827166258641,
+        "y": 3.62228039734929
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 6.132948717948717,
+        "y": 2.2498717948717943
+      },
+      "prevControl": {
+        "x": 6.43284291471118,
+        "y": 2.569833470059656
+      },
+      "nextControl": {
+        "x": 5.42130815543904,
+        "y": 1.4906116658984367
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 1.261666666666666,
+        "y": 0.9701282051282044
+      },
+      "prevControl": {
+        "x": 1.724521715766665,
+        "y": 1.1878197076804637
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Right Coral Intake"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 2,
+      "rotationDegrees": 100.30484646876594
+    }
+  ],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 52.50000000000001
+  },
+  "reversed": false,
+  "folder": null,
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": -119.99999999999999
+  },
+  "useDefaultConstraints": true
+}

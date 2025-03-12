@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.2513461538461532,
-        "y": 7.048910256410256
+        "x": 3.521858974358974,
+        "y": 2.642051282051282
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.229642973868148,
-        "y": 6.766084022425822
+        "x": 2.402843005603975,
+        "y": 1.8511821161392743
       },
       "isLocked": false,
-      "linkedName": "Left Coral Intake"
+      "linkedName": "C"
     },
     {
       "anchor": {
-        "x": 5.802692307692308,
-        "y": 6.336794871794872
+        "x": 1.261666666666666,
+        "y": 0.9701282051282044
       },
       "prevControl": {
-        "x": 5.408780024281693,
-        "y": 6.4049002071694465
+        "x": 1.6976210095875985,
+        "y": 1.2787033967962307
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "IJ"
+      "linkedName": "Right Coral Intake"
     }
   ],
   "rotationTargets": [],
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -119.99999999999999
+    "rotation": 52.50000000000001
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -52.50000000000001
+    "rotation": 59.99999999999999
   },
   "useDefaultConstraints": true
 }

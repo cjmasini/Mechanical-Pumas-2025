@@ -1,0 +1,95 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 5.111217948717948,
+        "y": 5.5937179487179485
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 5.038974358974358,
+        "y": 6.109743589743589
+      },
+      "isLocked": false,
+      "linkedName": "J"
+    },
+    {
+      "anchor": {
+        "x": 2.7994230769230763,
+        "y": 6.089102564102564
+      },
+      "prevControl": {
+        "x": 3.713969446592203,
+        "y": 6.817352259001624
+      },
+      "nextControl": {
+        "x": 1.7533025243208826,
+        "y": 5.256080862276982
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.2833974358974354,
+        "y": 1.9299358974358973
+      },
+      "prevControl": {
+        "x": 2.7610571446120393,
+        "y": 2.8811985079761637
+      },
+      "nextControl": {
+        "x": 2.0777161920328826,
+        "y": 1.5203202790194266
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 1.261666666666666,
+        "y": 0.9701282051282044
+      },
+      "prevControl": {
+        "x": 1.456909570770171,
+        "y": 1.1262698344178643
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Right Coral Intake"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1,
+      "rotationDegrees": -31.865977693603696
+    },
+    {
+      "waypointRelativePos": 2,
+      "rotationDegrees": 70.94229548987167
+    }
+  ],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 52.50000000000001
+  },
+  "reversed": false,
+  "folder": null,
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": -119.99999999999999
+  },
+  "useDefaultConstraints": true
+}

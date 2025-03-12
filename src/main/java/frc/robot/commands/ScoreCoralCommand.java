@@ -50,7 +50,7 @@ public class ScoreCoralCommand extends SequentialCommandGroup {
      * @param coralSubsystem
      * @param side
      */
-    public ScoreCoralCommand(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, Level targetLevel, ElevatorSubsystem elevatorSubsystem, CoralSubsystem coralSubsystem, ReefPosition side) {
+    public ScoreCoralCommand(Level targetLevel, DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, ElevatorSubsystem elevatorSubsystem, CoralSubsystem coralSubsystem, ReefPosition side) {
         addRequirements(elevatorSubsystem, coralSubsystem);
 
         Command driveToReefCommand = new DriveToReefCommand(driveSubsystem, visionSubsystem, side);

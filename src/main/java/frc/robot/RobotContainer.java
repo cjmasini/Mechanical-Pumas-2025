@@ -7,6 +7,8 @@ package frc.robot;
 import java.util.List;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -81,6 +83,7 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
+    // TODO: Probably remove?
     // Eject coral out of the coral mech
     EjectCoralCommand ejectCoralCommand = new EjectCoralCommand(coralSubsystem);
     driverXbox.y().and(driverXbox.rightTrigger().negate()).onTrue(ejectCoralCommand);
@@ -93,6 +96,7 @@ public class RobotContainer {
     FallCommand fallCommand = new FallCommand(climbSubsystem);
     driverXbox.b().and(driverXbox.rightTrigger().negate()).whileTrue(fallCommand);
 
+    // TODO: Probably remove?
     // Drive to left reef
     Command driveToReefCommand = new DriveToReefCommand(drivetrain, visionSubsystem, ReefPosition.LEFT);
     driverXbox.x().and(driverXbox.rightTrigger().negate()).onTrue(driveToReefCommand);
@@ -100,17 +104,19 @@ public class RobotContainer {
     // Intake coral on left trigger press
     IntakeCommand intakeCommand = new IntakeCommand(elevatorSubsystem, coralSubsystem, intakeSubsystem);
     driverXbox.leftTrigger().onTrue(intakeCommand);
-    
-    ScoreCoralCommand scoreLeftCoralCommand = new ScoreCoralCommand(levelChooser, elevatorSubsystem, coralSubsystem, drivetrain, visionSubsystem, ReefPosition.LEFT);
-    // AutoSetElevatorLevelCommand scoreCoralCommand = new
-    // AutoSetElevatorLevelCommand(levelChooser, elevatorSubsystem);
+    NamedCommands.registerCommand("intakeCommand", intakeCommand);
+
+    ScoreCoralCommand scoreLeftCoralCommand = new ScoreCoralCommand(levelChooser, elevatorSubsystem, coralSubsystem,
+        drivetrain, visionSubsystem, ReefPosition.LEFT);
     driverXbox.leftBumper().onTrue(scoreLeftCoralCommand);
+    NamedCommands.registerCommand("scoreLeftCoral", scoreLeftCoralCommand);
 
     // TODO: Switch to score command when ready
     // ScoreCoralCommand scoreRightCoralCommand = new ScoreCoralCommand(levelChooser, elevatorSubsystem, coralSubsystem, drivetrain, visionSubsystem, ReefPosition.LEFT);
-    AutoSetElevatorLevelCommand scoreRightCoralCommand = new
-      AutoSetElevatorLevelCommand(levelChooser, elevatorSubsystem);
+    AutoSetElevatorLevelCommand scoreRightCoralCommand = new AutoSetElevatorLevelCommand(levelChooser,
+        elevatorSubsystem);
     driverXbox.rightBumper().onTrue(scoreRightCoralCommand);
+    NamedCommands.registerCommand("scoreRightCoral", scoreRightCoralCommand);
 
     // Right trigger is used to cancel other commands and as a modifier for face
     // buttons
@@ -140,6 +146,7 @@ public class RobotContainer {
   }
 
   public void periodic() {
-    SmartDashboard.putBoolean("Valid Custom Auto?", AutonomousCommandFactory.isValidAuto(SmartDashboard.getString("Custom Auto", "Error")));
+    SmartDashboard.putBoolean("Valid Custom Auto?",
+        AutonomousCommandFactory.isValidAuto(SmartDashboard.getString("Custom Auto", "Error")));
   }
 }

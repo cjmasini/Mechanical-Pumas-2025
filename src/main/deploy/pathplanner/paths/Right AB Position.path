@@ -3,29 +3,45 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.2513461538461532,
-        "y": 7.048910256410256
+        "x": 1.261666666666666,
+        "y": 0.9701282051282044
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.229642973868148,
-        "y": 6.766084022425822
+        "x": 2.267645074224021,
+        "y": 1.6078272604588393
       },
       "isLocked": false,
-      "linkedName": "Left Coral Intake"
+      "linkedName": "Right Coral Intake"
     },
     {
       "anchor": {
-        "x": 5.802692307692308,
-        "y": 6.336794871794872
+        "x": 2.393181818181818,
+        "y": 2.167307692307693
       },
       "prevControl": {
-        "x": 5.408780024281693,
-        "y": 6.4049002071694465
+        "x": 2.2981332405468513,
+        "y": 1.9360810331838592
+      },
+      "nextControl": {
+        "x": 2.6016031064830543,
+        "y": 2.674338511530083
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.393181818181818,
+        "y": 4.069872159090909
+      },
+      "prevControl": {
+        "x": 2.340303526654467,
+        "y": 3.825528372009779
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "IJ"
+      "linkedName": "AB"
     }
   ],
   "rotationTargets": [],
@@ -41,14 +57,14 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
-    "rotation": -119.99999999999999
+    "velocity": 0.0,
+    "rotation": 0.0
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -52.50000000000001
+    "rotation": 52.50000000000001
   },
   "useDefaultConstraints": true
 }
