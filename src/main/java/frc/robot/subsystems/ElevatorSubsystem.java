@@ -14,7 +14,6 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.ElevatorConstants.Level;
-import frc.robot.commands.SetElevatorLevelCommand;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.CANIdConstants;
 

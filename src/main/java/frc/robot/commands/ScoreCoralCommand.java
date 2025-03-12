@@ -19,10 +19,12 @@ public class ScoreCoralCommand extends SequentialCommandGroup {
     /**
      * Command for setting the elevator to a specific position
      *
-     * @param targetLevel
-     *                          The target level to move the elevator to.
+     * @param levelChooser
      * @param elevatorSubsystem
-     *                          The elevator subsystem.
+     * @param coralSubsystem
+     * @param driveSubsystem
+     * @param visionSubsystem
+     * @param side
      */
     public ScoreCoralCommand(SendableChooser<Level> levelChooser, ElevatorSubsystem elevatorSubsystem,
             CoralSubsystem coralSubsystem, DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem,
@@ -39,9 +41,19 @@ public class ScoreCoralCommand extends SequentialCommandGroup {
 
     }
 
-    public ScoreCoralCommand(Level targetLevel, ElevatorSubsystem elevatorSubsystem, CoralSubsystem coralSubsystem, ReefPosition side) {
+    /**
+     * Command for setting the elevator to a supplied position
+     * @param driveSubsystem
+     * @param visionSubsystem
+     * @param targetLevel
+     * @param elevatorSubsystem
+     * @param coralSubsystem
+     * @param side
+     */
+    public ScoreCoralCommand(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, Level targetLevel, ElevatorSubsystem elevatorSubsystem, CoralSubsystem coralSubsystem, ReefPosition side) {
         addRequirements(elevatorSubsystem, coralSubsystem);
 
+        Command driveToReefCommand = new DriveToReefCommand(driveSubsystem, visionSubsystem, side);
         Command raiseElevator = new SetElevatorLevelCommand(targetLevel, elevatorSubsystem);
         Command scoreCoral = new EjectCoralCommand(coralSubsystem);
         Command waitCommand = new WaitCommand(1);

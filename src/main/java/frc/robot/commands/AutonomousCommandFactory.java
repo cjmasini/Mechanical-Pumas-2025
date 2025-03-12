@@ -63,7 +63,7 @@ public class AutonomousCommandFactory {
         if (startAndBody.length == 1) {
             routines = new String[0];
         } else {
-            routines  = startAndBody[1].split(",");
+            routines = startAndBody[1].split(",");
         }
 
         // Parse the starting command instructions
@@ -95,7 +95,7 @@ public class AutonomousCommandFactory {
         try {
             PathPlannerPath startToReefPath = PathPlannerPath.fromPathFile(startToReefPathName);
             Command startToReefPositionCommand = AutoBuilder.followPath(startToReefPath);
-            Command scoreCoralCommand = new ScoreCoralCommand(startingReefLevel, elevatorSubsystem, coralSubsystem,
+            Command scoreCoralCommand = new ScoreCoralCommand(startingReefLevel, driveSubsystem, visionSubsystem, elevatorSubsystem, coralSubsystem,
                     startingReefPosition);
             PathPlannerPath startingReefToCoralStationPath = PathPlannerPath
                     .fromPathFile(startingReefToCoralStationPathName);
@@ -123,7 +123,6 @@ public class AutonomousCommandFactory {
 
             String coralToReefPathPositionName;
             String reefToCoralStationPathName;
-            Command driveToReefCommand;
             if (previousCoralStation == 'L') {
                 coralToReefPathPositionName = "Left " + pathSegment + " Position";
             } else {
@@ -134,8 +133,6 @@ public class AutonomousCommandFactory {
             } else {
                 reefToCoralStationPathName = reefLetter + " to Right";
             }
-            driveToReefCommand = new DriveToReefCommand(driveSubsystem, visionSubsystem,
-                    mapReefLetterToSide(reefLetter));
 
             Command coralStationToReefPositionCommand;
             Command reefToCoralStationCommand;
@@ -149,7 +146,7 @@ public class AutonomousCommandFactory {
                 continue;
             }
 
-            Command scoreCoralCommand = new ScoreCoralCommand(reefLevel, elevatorSubsystem, coralSubsystem,
+            Command scoreCoralCommand = new ScoreCoralCommand(reefLevel, driveSubsystem, visionSubsystem, elevatorSubsystem, coralSubsystem,
                     reefPosition);
 
             Command intakeCoralCommand = new IntakeCommand(elevatorSubsystem, coralSubsystem, intakeSubsystem);
@@ -158,7 +155,6 @@ public class AutonomousCommandFactory {
             autonomousSequence.addCommands(
                     intakeCoralCommand,
                     coralStationToReefPositionCommand,
-                    driveToReefCommand,
                     scoreCoralCommand,
                     reefToCoralStationCommand);
         }
@@ -278,6 +274,40 @@ public class AutonomousCommandFactory {
                 DriverStation.reportError("Invalid reef level: " + reefLevel, null);
                 return Level.DOWN;
         }
+    }
+
+    /**
+     * Validates whether the given sequence string is in the correct format.
+     *
+     * Valid format:
+     * startingCommand : routine [, routine]*
+     *
+     * - startingCommand: [rcl][1-4][lr] (case-insensitive)
+     * - routine: [A-L][1-4][lr] (case-insensitive)
+     * - Commands may be separated by optional whitespace.
+     *
+     * @param sequence the input sequence string
+     * @return true if the sequence is valid; false otherwise.
+     */
+    public static boolean isValidAuto(String sequence) {
+        if (sequence == null) {
+            return false;
+        }
+        // The regex uses an inline case-insensitive flag (?i)
+        // Breakdown:
+        // ^\s* : optional whitespace at the beginning
+        // [rcl] : starting position (r, c, or l)
+        // [1-4] : reef level (1-4)
+        // [lr] : coral station (l or r)
+        // \s*:\s* : a colon with optional whitespace around it
+        // [a-l] : reef letter (A-L, case-insensitive)
+        // [1-4] : reef level (1-4)
+        // [lr] : coral station (l or r)
+        // (?:\s*,\s*[a-l][1-4][lr])* : zero or more additional routine commands
+        // separated by commas
+        // \s*$ : optional whitespace until the end of the string
+        String regex = "(?i)^\\s*[rcl][1-4][lr]\\s*:\\s*[a-l][1-4][lr](?:\\s*,\\s*[a-l][1-4][lr])*\\s*$";
+        return sequence.matches(regex);
     }
 
 }

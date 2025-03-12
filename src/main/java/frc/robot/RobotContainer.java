@@ -138,4 +138,8 @@ public class RobotContainer {
       return autoChooser.getSelected();
     }
   }
+
+  public void periodic() {
+    SmartDashboard.putBoolean("Valid Custom Auto?", AutonomousCommandFactory.isValidAuto(SmartDashboard.getString("Custom Auto", "Error")));
+  }
 }
