@@ -63,6 +63,8 @@ public class RobotContainer {
 
   private SendableChooser<Level> levelChooser = new SendableChooser<>();
 
+  private SendableChooser<Boolean> customAutoChooser = new SendableChooser<>();
+
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
@@ -76,10 +78,14 @@ public class RobotContainer {
     }
     levelChooser.setDefaultOption("DOWN", Level.DOWN);
 
+    customAutoChooser.setDefaultOption("No", false);
+    customAutoChooser.addOption("Yes", true);
+
     configureBindings();
 
     SmartDashboard.putData(levelChooser);
     SmartDashboard.putData(autoChooser);
+    SmartDashboard.putData(customAutoChooser);
   }
 
   private void configureBindings() {
@@ -138,7 +144,7 @@ public class RobotContainer {
 
   // Return the auto selected in smart dashboard
   public Command getAutonomousCommand() {
-    if (SmartDashboard.getBoolean("Use Custom Auto?", false)) {
+    if (customAutoChooser.getSelected()) {
       return autoFactory.createAutoCommand(SmartDashboard.getString("Custom Auto", "Error"));
     } else {
       return autoChooser.getSelected();

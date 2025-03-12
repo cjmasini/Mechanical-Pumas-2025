@@ -4,6 +4,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class VisionSubsystem extends SubsystemBase {
@@ -58,15 +59,23 @@ public class VisionSubsystem extends SubsystemBase {
      */
     @Override
     public void periodic() {
-        // Update absolute robot pose from MegaTag2 data.
-        double[] botposeArray = limelightTable.getEntry("botpose").getDoubleArray(new double[6]);
-        if (botposeArray.length >= 6) {
-            double x = botposeArray[0];
-            double y = botposeArray[1];
-            double yawDegrees = botposeArray[5];
-            Pose2d robotPose = new Pose2d(x, y, Rotation2d.fromDegrees(yawDegrees));
-            latestRobotPose = robotPose;
-            driveSubsystem.updatePose(robotPose);
+        // // Update absolute robot pose from MegaTag2 data.
+        // double[] botposeArray = limelightTable.getEntry("botpose").getDoubleArray(new double[6]);
+        // if (botposeArray.length >= 6) {
+        //     double x = botposeArray[0];
+        //     double y = botposeArray[1];
+        //     double yawDegrees = botposeArray[5];
+        //     Pose2d robotPose = new Pose2d(x, y, Rotation2d.fromDegrees(yawDegrees));
+        //     latestRobotPose = robotPose;
+        //     driveSubsystem.updatePose(robotPose);
+        // }
+        boolean targetFound = false;
+        if (hasTarget()) {
+            int targetID = getTargetID();
+            if ((targetID >= 6 && targetID <= 11) || (targetID >= 17 && targetID <= 22)) {
+                targetFound = true;
+            }
         }
+        SmartDashboard.putBoolean("Target found?", targetFound);
     }
 }
