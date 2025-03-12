@@ -21,9 +21,7 @@ import frc.robot.commands.DriveToReefCommand;
 import frc.robot.commands.EjectCoralCommand;
 import frc.robot.commands.FallCommand;
 import frc.robot.commands.IntakeCommand;
-import frc.robot.commands.LowerElevatorCommand;
 import frc.robot.commands.MoveCommand;
-import frc.robot.commands.RaiseElevatorCommand;
 import frc.robot.commands.ScoreCoralCommand;
 import frc.robot.commands.DriveToReefCommand.ReefPosition;
 import frc.robot.subsystems.DriveSubsystem;
@@ -59,7 +57,7 @@ public class RobotContainer {
   private final SendableChooser<Command> autoChooser = AutoBuilder.buildAutoChooser();
 
   private final AutonomousCommandFactory autoFactory = new AutonomousCommandFactory(drivetrain, visionSubsystem,
-      elevatorSubsystem, coralSubsystem);
+      elevatorSubsystem, coralSubsystem, intakeSubsystem);
 
   private SendableChooser<Level> levelChooser = new SendableChooser<>();
 

@@ -39,7 +39,7 @@ public class ScoreCoralCommand extends SequentialCommandGroup {
 
     }
 
-    public ScoreCoralCommand(Level targetLevel, ElevatorSubsystem elevatorSubsystem, CoralSubsystem coralSubsystem) {
+    public ScoreCoralCommand(Level targetLevel, ElevatorSubsystem elevatorSubsystem, CoralSubsystem coralSubsystem, ReefPosition side) {
         addRequirements(elevatorSubsystem, coralSubsystem);
 
         Command raiseElevator = new SetElevatorLevelCommand(targetLevel, elevatorSubsystem);

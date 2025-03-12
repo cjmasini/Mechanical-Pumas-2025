@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.hardware.core.CoreCANrange;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -16,6 +17,7 @@ public class IntakeSubsystem extends CancelableSubsystemBase {
     private final SparkMax followerMotor;
     private final RelativeEncoder encoder;
     private final SparkMax conveyorBeltMotor;
+    private final CoreCANrange canRangeSensor; 
 
     public IntakeSubsystem() {
         winchMotor = new SparkMax(CANIdConstants.LEFT_INTAKE_WINCH_CAN_ID, MotorType.kBrushless);
@@ -38,6 +40,8 @@ public class IntakeSubsystem extends CancelableSubsystemBase {
         conveyorBeltMotor.configure(conveyorConfig, ResetMode.kResetSafeParameters, null);
 
         encoder = winchMotor.getEncoder();
+
+        canRangeSensor = new CoreCANrange(CANIdConstants.INTAKE_CAN_RANGE_ID); 
     }
 
     /**
@@ -82,5 +86,13 @@ public class IntakeSubsystem extends CancelableSubsystemBase {
     public void setBeltSpeed(double speed) {
         speed = MathUtil.clamp(speed, -1, 1);
         conveyorBeltMotor.set(speed);
+    }
+
+    /**
+     * Gets the distance from the CAN range sensor in inches
+     * @return The distance from the CAN range sensor in inches
+     */
+    public double getTOFDistanceInches() {
+        return canRangeSensor.getDistance().getValueAsDouble()*39.3701;
     }
 }

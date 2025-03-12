@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.2513461538461532,
-        "y": 7.048910256410256
+        "x": 7.5675,
+        "y": 6.171666666666666
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.2513461538461534,
-        "y": 7.048910256410256
+        "x": 8.5675,
+        "y": 6.171666666666666
       },
       "isLocked": false,
-      "linkedName": "Left Coral Intake"
+      "linkedName": "Right Start"
     },
     {
       "anchor": {
@@ -20,8 +20,8 @@
         "y": 6.0375
       },
       "prevControl": {
-        "x": 2.902628205128205,
-        "y": 6.863141025641025
+        "x": 2.418653846153846,
+        "y": 6.0375
       },
       "nextControl": null,
       "isLocked": false,
@@ -48,7 +48,7 @@
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -52.50000000000001
+    "rotation": -90.0
   },
   "useDefaultConstraints": true
 }

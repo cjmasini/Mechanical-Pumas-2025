@@ -36,12 +36,12 @@
         "y": 4.066282051282052
       },
       "prevControl": {
-        "x": 7.484935897435896,
-        "y": 4.045641025641025
+        "x": 7.484837589275002,
+        "y": 4.0456439170575225
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "GH"
     }
   ],
   "rotationTargets": [
