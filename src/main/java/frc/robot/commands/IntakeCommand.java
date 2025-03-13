@@ -17,7 +17,8 @@ public class IntakeCommand extends Command {
 
     /**
      * Command for intaking a coral
-     * @param elevatorSubsystem 
+     * 
+     * @param elevatorSubsystem
      * @param coralSubsystem
      * @param intakeSubsystem
      */
@@ -34,7 +35,8 @@ public class IntakeCommand extends Command {
     /**
      * Lowers the elevator if it is not at the bottom
      * Expected behavior is that elevator is already down when intaking begins
-     * @param elevatorSubsystem 
+     * 
+     * @param elevatorSubsystem
      * @param coralSubsystem
      * @param intakeSubsystem
      * @param canRangeSensor
@@ -54,19 +56,21 @@ public class IntakeCommand extends Command {
     /**
      * Sets belt and coral motor speeds to intake coral
      * Stops when coral is obtained
-     * Lowers speed once coral is in the coral mechanism 
+     * Lowers speed once coral is in the coral mechanism
      */
     @Override
     public void execute() {
         if (!coralObtained && intakeSubsystem.getTOFDistanceInches() < 5) {
             coralObtained = true;
-            reverseTimer.start();
         }
-        if reverseTimer.
-        coralSubsystem.setCoralMotorSpeed(.15);
-        intakeSubsystem.setBeltSpeed(1);
-        
-        
+        if (coralObtained && intakeSubsystem.getTOFDistanceInches() > 5) {
+            coralSubsystem.setCoralMotorSpeed(-.15);
+            intakeSubsystem.setBeltSpeed(0);
+            reverseTimer.start();
+        } else {
+            coralSubsystem.setCoralMotorSpeed(.25);
+            intakeSubsystem.setBeltSpeed(1);
+        }
     }
 
     @Override
@@ -78,6 +82,6 @@ public class IntakeCommand extends Command {
 
     @Override
     public boolean isFinished() {
-        return coralObtained && intakeSubsystem.getTOFDistanceInches() > 5;
+        return coralObtained && reverseTimer.hasElapsed(0.15);
     }
 }

@@ -4,6 +4,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
+import com.ctre.phoenix6.hardware.core.CoreCANrange;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.trajectory.PathPlannerTrajectoryState;
@@ -49,6 +50,8 @@ public class DriveSubsystem extends CancelableSubsystemBase {
 
   // The gyro sensor
   private final Pigeon2 gyro = new Pigeon2(CANIdConstants.PIGEON_GYRO_CAN_ID);
+  //Front facing TOF sensor
+  private final CoreCANrange canRangeSensor = new CoreCANrange(CANIdConstants.FORWARD_CAN_RANGE_ID); 
 
   // PID Controller for orientation to supplied angle
   private final PIDController orientationController;
@@ -335,5 +338,9 @@ public class DriveSubsystem extends CancelableSubsystemBase {
 
   public double getGyroOrientation() {
     return gyro.getYaw().getValueAsDouble() + RobotConstants.GYRO_OFFSET;
+  }
+
+  public double getTOFDistance() {
+    return canRangeSensor.getDistance().getValueAsDouble();
   }
 }
