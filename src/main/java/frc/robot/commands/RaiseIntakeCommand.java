@@ -19,13 +19,13 @@ public class RaiseIntakeCommand extends Command {
     }
 
     @Override
-    public void initialize() {
-        this.intakeSubsystem.setWinchSpeed(1);
+    public void execute() {
+        this.intakeSubsystem.setWinchSpeed(.5);
     }
 
     @Override
     public boolean isFinished() {
-        return this.intakeSubsystem.isRaised();
+        return false;//this.intakeSubsystem.isRaised();
     }
 
     @Override

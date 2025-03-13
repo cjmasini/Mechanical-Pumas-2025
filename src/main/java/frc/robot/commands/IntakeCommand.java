@@ -1,5 +1,6 @@
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.ElevatorConstants.Level;
 import frc.robot.subsystems.CoralSubsystem;
@@ -10,6 +11,7 @@ public class IntakeCommand extends Command {
     private final ElevatorSubsystem elevatorSubsystem;
     private final CoralSubsystem coralSubsystem;
     private final IntakeSubsystem intakeSubsystem;
+    private final Timer reverseTimer;
 
     private boolean coralObtained = false;
 
@@ -25,6 +27,7 @@ public class IntakeCommand extends Command {
         this.elevatorSubsystem = elevatorSubsystem;
         this.coralSubsystem = coralSubsystem;
         this.intakeSubsystem = intakeSubsystem;
+        this.reverseTimer = new Timer();
         this.coralObtained = false;
     }
 
@@ -55,16 +58,13 @@ public class IntakeCommand extends Command {
      */
     @Override
     public void execute() {
-        if (!coralObtained && intakeSubsystem.getTOFDistanceInches() < 3) 
+        if (!coralObtained && intakeSubsystem.getTOFDistanceInches() < 5) {
             coralObtained = true;
-
-        if (coralObtained){
-            coralSubsystem.setCoralMotorSpeed(.2);
-            intakeSubsystem.setBeltSpeed(1);
-        } else {
-            coralSubsystem.setCoralMotorSpeed(.5);
-            intakeSubsystem.setBeltSpeed(1);
+            reverseTimer.start();
         }
+        if reverseTimer.
+        coralSubsystem.setCoralMotorSpeed(.15);
+        intakeSubsystem.setBeltSpeed(1);
         
         
     }
@@ -73,10 +73,11 @@ public class IntakeCommand extends Command {
     public void end(boolean interrupted) {
         coralSubsystem.setCoralMotorSpeed(0);
         intakeSubsystem.setBeltSpeed(0);
+        coralObtained = false;
     }
 
     @Override
     public boolean isFinished() {
-        return coralObtained && intakeSubsystem.getTOFDistanceInches() > 3;
+        return coralObtained && intakeSubsystem.getTOFDistanceInches() > 5;
     }
 }

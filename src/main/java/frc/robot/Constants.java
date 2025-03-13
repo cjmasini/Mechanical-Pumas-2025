@@ -78,7 +78,7 @@ public final class Constants {
     // TODO these values are completely made up
     public static final int DOWN = 0;
     public static final int L1 = 10;
-    public static final int L2 = 20;
+    public static final int L2 = 10;
     public static final int L3 = 30;
     public static final int L4 = 40;
     // public static final int A2 = 10;

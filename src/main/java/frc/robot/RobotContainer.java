@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.ElevatorConstants.Level;
 import frc.robot.commands.AutoSetElevatorLevelCommand;
@@ -24,6 +25,7 @@ import frc.robot.commands.EjectCoralCommand;
 import frc.robot.commands.FallCommand;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.MoveCommand;
+import frc.robot.commands.RaiseIntakeCommand;
 import frc.robot.commands.ScoreCoralCommand;
 import frc.robot.commands.DriveToReefCommand.ReefPosition;
 import frc.robot.subsystems.DriveSubsystem;
@@ -91,8 +93,8 @@ public class RobotContainer {
   private void configureBindings() {
     // TODO: Probably remove?
     // Eject coral out of the coral mech
-    EjectCoralCommand ejectCoralCommand = new EjectCoralCommand(coralSubsystem);
-    driverXbox.y().and(driverXbox.rightTrigger().negate()).onTrue(ejectCoralCommand);
+    RaiseIntakeCommand raiseIntakeCommand = new RaiseIntakeCommand(intakeSubsystem);
+    driverXbox.y().and(driverXbox.rightTrigger().negate()).onTrue(raiseIntakeCommand);
 
     // Climb the cage while button is pressed
     ClimbCommand climbCommand = new ClimbCommand(climbSubsystem);

@@ -9,6 +9,7 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.CANIdConstants;
 import frc.robot.Constants.IntakeConstants;
 
@@ -85,6 +86,7 @@ public class IntakeSubsystem extends CancelableSubsystemBase {
      */
     public void setBeltSpeed(double speed) {
         speed = MathUtil.clamp(speed, -1, 1);
+        System.out.println("Speed" + speed);
         conveyorBeltMotor.set(speed);
     }
 
@@ -94,5 +96,10 @@ public class IntakeSubsystem extends CancelableSubsystemBase {
      */
     public double getTOFDistanceInches() {
         return canRangeSensor.getDistance().getValueAsDouble()*39.3701;
+    }
+
+    @Override
+    public void periodic() {
+        SmartDashboard.putNumber("Range", getTOFDistanceInches());
     }
 }

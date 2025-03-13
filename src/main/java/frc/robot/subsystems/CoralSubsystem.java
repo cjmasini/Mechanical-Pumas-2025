@@ -8,6 +8,7 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.thethriftybot.ThriftyNova;
 
 import frc.robot.Constants.CANIdConstants;
 
@@ -15,7 +16,7 @@ public class CoralSubsystem extends CancelableSubsystemBase {
   /**
    * Motor to outtake coral pieces
    */
-  private final SparkMax coralLauncher;
+  private final ThriftyNova coralLauncher;
 
   /**
    * Initialize {@link SwerveDrive} with the directory provided.
@@ -26,13 +27,7 @@ public class CoralSubsystem extends CancelableSubsystemBase {
   public CoralSubsystem() {
     this.setName("Coral Subsystem");
 
-    this.coralLauncher = new SparkMax(CANIdConstants.CORAL_MOTOR_CONTROLLER_ID, MotorType.kBrushless);
-    SparkMaxConfig config = new SparkMaxConfig();
-    config
-        .inverted(true)
-        .idleMode(IdleMode.kBrake)
-        .smartCurrentLimit(20);
-
+    this.coralLauncher = new ThriftyNova(CANIdConstants.CORAL_MOTOR_CONTROLLER_ID);
   }
 
   /**
