@@ -11,81 +11,94 @@ public class IntakeCommand extends Command {
     private final ElevatorSubsystem elevatorSubsystem;
     private final CoralSubsystem coralSubsystem;
     private final IntakeSubsystem intakeSubsystem;
-    private final Timer reverseTimer;
+    private final Timer pulseTimer;
 
-    private boolean coralObtained = false;
+    private static final double TIME_OF_PULSE = 0.3; // Seconds per pulse
+    private static final double DETECTION_THRESHOLD = 5; // Inches for TOF detection
 
-    /**
-     * Command for intaking a coral
-     * 
-     * @param elevatorSubsystem
-     * @param coralSubsystem
-     * @param intakeSubsystem
-     */
+    private static final double CORAL_SPEED = 0.25; // Coral motor speed
+    private static final double BELT_SPEED = 0.5;   // Belt motor speed (initially on)
+
+    private boolean isCoralMotorOn = false;
+    private boolean coralDetected = false;
+    private boolean securingCoral = false;
+
     public IntakeCommand(ElevatorSubsystem elevatorSubsystem,
-            CoralSubsystem coralSubsystem, IntakeSubsystem intakeSubsystem) {
+                         CoralSubsystem coralSubsystem, 
+                         IntakeSubsystem intakeSubsystem) {
         addRequirements(elevatorSubsystem, coralSubsystem, intakeSubsystem);
         this.elevatorSubsystem = elevatorSubsystem;
         this.coralSubsystem = coralSubsystem;
         this.intakeSubsystem = intakeSubsystem;
-        this.reverseTimer = new Timer();
-        this.coralObtained = false;
+        this.pulseTimer = new Timer();
     }
 
-    /**
-     * Lowers the elevator if it is not at the bottom
-     * Expected behavior is that elevator is already down when intaking begins
-     * 
-     * @param elevatorSubsystem
-     * @param coralSubsystem
-     * @param intakeSubsystem
-     * @param canRangeSensor
-     */
     @Override
     public void initialize() {
-        // if (!elevatorSubsystem.isAtLevel(Level.DOWN)) {
-        //     elevatorSubsystem.setLevel(Level.DOWN);
-        //     while (true) {
-        //         if (elevatorSubsystem.isAtLevel(Level.DOWN)) {
-        //             break;
-        //         }
-        //     }
-        // }
+        coralDetected = false;
+        securingCoral = false;
+        isCoralMotorOn = false;
+        pulseTimer.reset();
+        pulseTimer.start();
+
+        // Ensure the elevator is at the bottom before starting
+        if (!elevatorSubsystem.isAtLevel(Level.DOWN)) {
+            elevatorSubsystem.setLevel(Level.DOWN);
+        }
+
+        // Start belt motor (runs constantly until coral is detected)
+        intakeSubsystem.setBeltSpeed(BELT_SPEED);
     }
 
-    /**
-     * Sets belt and coral motor speeds to intake coral
-     * Stops when coral is obtained
-     * Lowers speed once coral is in the coral mechanism
-     */
     @Override
     public void execute() {
-        intakeSubsystem.setBeltSpeed(.5);
-        // if (!coralObtained && intakeSubsystem.getTOFDistanceInches() < 5) {
-        //     // coralSubsystem.setCoralMotorSpeed(0);
-        //     intakeSubsystem.setBeltSpeed(.2);
-        //     coralObtained = true;
-        //     reverseTimer.start();
-        // }
-        // if (reverseTimer.hasElapsed(.1)) {
-        //     coralSubsystem.setCoralMotorSpeed(0);
-        //     intakeSubsystem.setBeltSpeed(0);
-        //     reverseTimer.start();
-        // } else {
-        //     coralSubsystem.setCoralMotorSpeed(.20);
-        //     intakeSubsystem.setBeltSpeed(.5);
-        // }
+        // Wait for the elevator to reach the bottom before intaking
+        if (!elevatorSubsystem.isAtLevel(Level.DOWN)) {
+            return; // Don't start pulsing until the elevator is down
+        }
+
+        double currentTOF = intakeSubsystem.getTOFDistanceInches();
+
+        // Check if coral is detected for the first time
+        if (!coralDetected && currentTOF < DETECTION_THRESHOLD) {
+            coralDetected = true;
+            securingCoral = true;
+            pulseTimer.reset();
+            intakeSubsystem.setBeltSpeed(0); // Stop belt motor once coral is detected
+        }
+
+        // Check if coral has been fully secured (no longer seen by TOF sensor)
+        if (securingCoral && currentTOF > DETECTION_THRESHOLD) {
+            securingCoral = false; // Coral is no longer detected, stop the command
+        }
+
+        // Continue pulsing coral motor while searching or securing coral
+        if (securingCoral || !coralDetected) {
+            if (!isCoralMotorOn && pulseTimer.hasElapsed(TIME_OF_PULSE)) {
+                // Turn coral motor ON
+                coralSubsystem.setCoralMotorSpeed(CORAL_SPEED);
+                pulseTimer.reset();
+                isCoralMotorOn = true;
+            } else if (isCoralMotorOn && pulseTimer.hasElapsed(TIME_OF_PULSE)) {
+                // Turn coral motor OFF
+                coralSubsystem.setCoralMotorSpeed(0);
+                pulseTimer.reset();
+                isCoralMotorOn = false;
+            }
+        }
     }
 
     @Override
     public void end(boolean interrupted) {
-        coralSubsystem.setCoralMotorSpeed(0);
+        // Ensure everything stops at the end
         intakeSubsystem.setBeltSpeed(0);
-        coralObtained = false;
+        coralSubsystem.setCoralMotorSpeed(0);
+        pulseTimer.stop();
     }
 
     @Override
     public boolean isFinished() {
-        return true;//coralObtained && reverseTimer.hasElapsed(.3);
+        // Stop when the coral is detected and then no longer detected
+        return coralDetected && !securingCoral;
     }
 }
