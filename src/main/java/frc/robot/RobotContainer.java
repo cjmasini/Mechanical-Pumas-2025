@@ -12,6 +12,7 @@ import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -27,6 +28,7 @@ import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.MoveCommand;
 import frc.robot.commands.RaiseIntakeCommand;
 import frc.robot.commands.ScoreCoralCommand;
+import frc.robot.commands.SetElevatorLevelCommand;
 import frc.robot.commands.DriveToReefCommand.ReefPosition;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
@@ -94,20 +96,23 @@ public class RobotContainer {
     // TODO: Probably remove?
     // Eject coral out of the coral mech
     RaiseIntakeCommand raiseIntakeCommand = new RaiseIntakeCommand(intakeSubsystem);
-    driverXbox.y().and(driverXbox.rightTrigger().negate()).onTrue(raiseIntakeCommand);
+    driverXbox.y().whileTrue(Commands.startEnd(() -> coralSubsystem.setCoralMotorSpeed(.5), () -> coralSubsystem.setCoralMotorSpeed(0), coralSubsystem));
+    driverXbox.x().whileTrue(Commands.startEnd(() -> intakeSubsystem.setBeltSpeed(.5), () -> intakeSubsystem.setBeltSpeed(0), coralSubsystem));
+    driverXbox.b().whileTrue(Commands.startEnd(() -> coralSubsystem.setCoralMotorSpeed(-.1), () -> coralSubsystem.setCoralMotorSpeed(0), coralSubsystem));
+
 
     // Climb the cage while button is pressed
     ClimbCommand climbCommand = new ClimbCommand(climbSubsystem);
-    driverXbox.a().and(driverXbox.rightTrigger().negate()).whileTrue(climbCommand);
+    // driverXbox.a().and(driverXbox.rightTrigger().negate()).whileTrue(climbCommand);
 
     // Slowly lower after climbing the cage
     FallCommand fallCommand = new FallCommand(climbSubsystem);
-    driverXbox.b().and(driverXbox.rightTrigger().negate()).whileTrue(fallCommand);
+    // driverXbox.b().and(driverXbox.rightTrigger().negate()).whileTrue(fallCommand);
 
     // TODO: Probably remove?
     // Drive to left reef
     Command driveToReefCommand = new DriveToReefCommand(drivetrain, visionSubsystem, ReefPosition.LEFT);
-    driverXbox.x().and(driverXbox.rightTrigger().negate()).onTrue(driveToReefCommand);
+    driverXbox.a().and(driverXbox.rightTrigger().negate()).onTrue(driveToReefCommand);
 
     // Intake coral on left trigger press
     IntakeCommand intakeCommand = new IntakeCommand(elevatorSubsystem, coralSubsystem, intakeSubsystem);
@@ -130,7 +135,7 @@ public class RobotContainer {
     // buttons
     CancelCommand cancelCommand = new CancelCommand(
         List.of(coralSubsystem, climbSubsystem, elevatorSubsystem));
-    driverXbox.rightTrigger().onTrue(cancelCommand.withTimeout(10));
+    driverXbox.rightTrigger().onTrue(new SetElevatorLevelCommand(Level.DOWN, elevatorSubsystem).withTimeout(2));
 
     // Manually re-zero the gyro if it gets off during competition
     // With the pigeon Gyro, we only needed to do this because of user error in

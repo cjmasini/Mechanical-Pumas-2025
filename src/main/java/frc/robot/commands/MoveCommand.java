@@ -43,28 +43,28 @@ public class MoveCommand extends Command {
   @Override
   public void execute() {
     // Trigger mappings for fine-tuned robot-oriented adjustments using the d-pad
-    if (driverXbox.povLeft().getAsBoolean()) {
+    if (driverXbox.povRight().getAsBoolean()) {
       driveSubsystem.drive(0, .2, -MathUtil.applyDeadband(driverXbox.getRightX(), OperatorConstants.DRIVE_DEADBAND),
           false);
-    } else if (driverXbox.povRight().getAsBoolean()) {
+    } else if (driverXbox.povLeft().getAsBoolean()) {
       driveSubsystem.drive(0, -.2, -MathUtil.applyDeadband(driverXbox.getRightX(), OperatorConstants.DRIVE_DEADBAND),
           false);
-    } else if (driverXbox.povUp().getAsBoolean()) {
+    } else if (driverXbox.povDown().getAsBoolean()) {
       driveSubsystem.drive(.2, 0, -MathUtil.applyDeadband(driverXbox.getRightX(), OperatorConstants.DRIVE_DEADBAND),
           false);
-    } else if (driverXbox.povDown().getAsBoolean()) {
+    } else if (driverXbox.povUp().getAsBoolean()) {
       driveSubsystem.drive(-0.2, 0, -MathUtil.applyDeadband(driverXbox.getRightX(), OperatorConstants.DRIVE_DEADBAND),
           false);
-    } else if (driverXbox.povUpLeft().getAsBoolean()) {
+    } else if (driverXbox.povDownRight().getAsBoolean()) {
       driveSubsystem.drive(.14, .14, -MathUtil.applyDeadband(driverXbox.getRightX(), OperatorConstants.DRIVE_DEADBAND),
           false);
-    } else if (driverXbox.povUpRight().getAsBoolean()) {
+    } else if (driverXbox.povDownLeft().getAsBoolean()) {
       driveSubsystem.drive(.14, -.14, -MathUtil.applyDeadband(driverXbox.getRightX(), OperatorConstants.DRIVE_DEADBAND),
           false);
-    } else if (driverXbox.povDownLeft().getAsBoolean()) {
+    } else if (driverXbox.povUpRight().getAsBoolean()) {
       driveSubsystem.drive(-.14, .14, -MathUtil.applyDeadband(driverXbox.getRightX(), OperatorConstants.DRIVE_DEADBAND),
           false);
-    } else if (driverXbox.povDownRight().getAsBoolean()) {
+    } else if (driverXbox.povUpLeft().getAsBoolean()) {
       driveSubsystem.drive(-.14, -.14,
           -MathUtil.applyDeadband(driverXbox.getRightX(), OperatorConstants.DRIVE_DEADBAND), false);
     } else { // Joystick / field-oriented based movement
@@ -106,9 +106,9 @@ public class MoveCommand extends Command {
         // The left stick controls translation of the robot.
         // Turning is controlled by the X axis of the right stick.
         this.driveSubsystem.drive(
-            -MathUtil.applyDeadband(OperatorConstants.DPAD_SPEED_REGULATOR * Math.pow(yMovement, 3),
+            -MathUtil.applyDeadband(Math.pow(yMovement, 3),
                 OperatorConstants.DRIVE_DEADBAND),
-            -MathUtil.applyDeadband(OperatorConstants.DPAD_SPEED_REGULATOR * Math.pow(xMovement, 3),
+            -MathUtil.applyDeadband(Math.pow(xMovement, 3),
                 OperatorConstants.DRIVE_DEADBAND),
             -MathUtil.applyDeadband(driverXbox.getRightX(), OperatorConstants.DRIVE_DEADBAND),
             fieldRelative);

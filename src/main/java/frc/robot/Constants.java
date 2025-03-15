@@ -26,15 +26,15 @@ import edu.wpi.first.math.util.Units;
 public final class Constants {
     public static final class CANIdConstants {
         // Drive Motor CAN Ids
-        public static final int FRONT_LEFT_DRIVE_CAN_ID = 3;
-        public static final int FRONT_RIGHT_DRIVE_CAN_ID = 7;
-        public static final int BACK_LEFT_DRIVE_CAN_ID = 5;
-        public static final int BACK_RIGHT_DRIVE_CAN_ID = 1;
+        public static final int FRONT_LEFT_DRIVE_CAN_ID = 5;
+        public static final int FRONT_RIGHT_DRIVE_CAN_ID = 3;
+        public static final int BACK_LEFT_DRIVE_CAN_ID = 1;
+        public static final int BACK_RIGHT_DRIVE_CAN_ID = 7;
 
-        public static final int FRONT_LEFT_STEERING_CAN_ID = 4;
-        public static final int FRONT_RIGHT_STEERING_CAN_ID = 8;
-        public static final int BACK_LEFT_STEERING_CAN_ID = 6;
-        public static final int BACK_RIGHT_STEERING_CAN_ID = 2;
+        public static final int FRONT_LEFT_STEERING_CAN_ID = 6;
+        public static final int FRONT_RIGHT_STEERING_CAN_ID = 4;
+        public static final int BACK_LEFT_STEERING_CAN_ID = 2;
+        public static final int BACK_RIGHT_STEERING_CAN_ID = 8;
 
         // Gyro CAN Id
         public static final int PIGEON_GYRO_CAN_ID = 21;
@@ -76,12 +76,11 @@ public final class Constants {
         public static final double MIN_POWER = -1;
         public static final double MAX_POWER = 1;
 
-        // TODO these values are completely made up
-        public static final int DOWN = 0;
-        public static final int L1 = 10;
-        public static final int L2 = 10;
-        public static final int L3 = 30;
-        public static final int L4 = 40;
+        public static final double DOWN = 0;
+        public static final double L1 = 11;
+        public static final double L2 = 11;
+        public static final double L3 = 23;
+        public static final double L4 = 48.5;
         // public static final int A2 = 10;
         // public static final int A3 = 20;
         // public static final int NET = 50;
@@ -96,13 +95,13 @@ public final class Constants {
             // A2(ElevatorConstants.A2),
             // A3(ElevatorConstants.A3);
 
-            private final int position;
+            private final double position;
 
-            Level(int position) {
+            Level(double position) {
                 this.position = position;
             }
 
-            public int getPosition() {
+            public double getPosition() {
                 return position;
             }
         }
@@ -177,8 +176,8 @@ public final class Constants {
                 ANGLE_PID); // new PIDConstants(5, 0.0, 0.0)); // Rotation PID constants
 
         // TODO: Update these values
-        public static final double LIMELIGHT_HEIGHT_METERS = 0.254;
-        public static final double LIMELIGHT_MOUNTING_ANGLE_DEGREES = 30.0;
+        public static final double LIMELIGHT_HEIGHT_METERS = 0.165;
+        public static final double LIMELIGHT_MOUNTING_ANGLE_DEGREES = 5.0;
         public static final double LIMELIGHT_MOUNTING_ANGLE_RADIANS = Math
                 .toRadians(AutonConstants.LIMELIGHT_MOUNTING_ANGLE_DEGREES);
 

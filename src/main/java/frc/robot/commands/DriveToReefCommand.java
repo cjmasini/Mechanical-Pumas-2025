@@ -9,6 +9,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import com.pathplanner.lib.trajectory.PathPlannerTrajectoryState;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class DriveToReefCommand extends Command {
     private final DriveSubsystem driveSubsystem;
@@ -61,10 +62,13 @@ public class DriveToReefCommand extends Command {
 
     @Override
     public void execute() {
+        SmartDashboard.putNumber("TOF Front", driveSubsystem.getTOFDistance());
         if (!validStart) {
             driveSubsystem.drive(0.0, 0.0, 0.0, true);
             return;
         }
+
+        SmartDashboard.putString("Approach", currentState.toString());
 
         switch (currentState) {
             case VISION_APPROACH: {

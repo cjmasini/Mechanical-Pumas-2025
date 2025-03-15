@@ -6,6 +6,7 @@ import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.thethriftybot.ThriftyNova;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.math.MathUtil;
@@ -17,7 +18,7 @@ public class IntakeSubsystem extends CancelableSubsystemBase {
     // private final SparkMax winchMotor;
     // private final SparkMax followerMotor;
     // private final RelativeEncoder encoder;
-    private final SparkMax conveyorBeltMotor;
+    private final ThriftyNova conveyorBeltMotor;
     private final CoreCANrange canRangeSensor; 
 
     public IntakeSubsystem() {
@@ -33,12 +34,7 @@ public class IntakeSubsystem extends CancelableSubsystemBase {
         // followerConfig.follow(winchMotor, true);
         // followerMotor.configure(followerConfig, null, null);
 
-        conveyorBeltMotor = new SparkMax(CANIdConstants.CONVEYOR_BELT_CAN_ID, MotorType.kBrushless);
-        SparkMaxConfig conveyorConfig = new SparkMaxConfig();
-        conveyorConfig.idleMode(IdleMode.kCoast);
-        conveyorConfig.smartCurrentLimit(30);
-        conveyorConfig.voltageCompensation(12.0);
-        conveyorBeltMotor.configure(conveyorConfig, ResetMode.kResetSafeParameters, null);
+        conveyorBeltMotor = new ThriftyNova(CANIdConstants.CONVEYOR_BELT_CAN_ID);
 
         // encoder = winchMotor.getEncoder();
 
@@ -101,5 +97,10 @@ public class IntakeSubsystem extends CancelableSubsystemBase {
     @Override
     public void periodic() {
         SmartDashboard.putNumber("Range", getTOFDistanceInches());
+    }
+
+    @Override
+    public void cancel() {
+        this.setBeltSpeed(0);
     }
 }

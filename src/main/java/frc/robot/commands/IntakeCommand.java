@@ -43,14 +43,14 @@ public class IntakeCommand extends Command {
      */
     @Override
     public void initialize() {
-        if (!elevatorSubsystem.isAtLevel(Level.DOWN)) {
-            elevatorSubsystem.setLevel(Level.DOWN);
-            while (true) {
-                if (elevatorSubsystem.isAtLevel(Level.DOWN)) {
-                    break;
-                }
-            }
-        }
+        // if (!elevatorSubsystem.isAtLevel(Level.DOWN)) {
+        //     elevatorSubsystem.setLevel(Level.DOWN);
+        //     while (true) {
+        //         if (elevatorSubsystem.isAtLevel(Level.DOWN)) {
+        //             break;
+        //         }
+        //     }
+        // }
     }
 
     /**
@@ -60,17 +60,21 @@ public class IntakeCommand extends Command {
      */
     @Override
     public void execute() {
-        if (!coralObtained && intakeSubsystem.getTOFDistanceInches() < 5) {
-            coralObtained = true;
-        }
-        if (coralObtained && intakeSubsystem.getTOFDistanceInches() > 5) {
-            coralSubsystem.setCoralMotorSpeed(-.15);
-            intakeSubsystem.setBeltSpeed(0);
-            reverseTimer.start();
-        } else {
-            coralSubsystem.setCoralMotorSpeed(.25);
-            intakeSubsystem.setBeltSpeed(1);
-        }
+        intakeSubsystem.setBeltSpeed(.5);
+        // if (!coralObtained && intakeSubsystem.getTOFDistanceInches() < 5) {
+        //     // coralSubsystem.setCoralMotorSpeed(0);
+        //     intakeSubsystem.setBeltSpeed(.2);
+        //     coralObtained = true;
+        //     reverseTimer.start();
+        // }
+        // if (reverseTimer.hasElapsed(.1)) {
+        //     coralSubsystem.setCoralMotorSpeed(0);
+        //     intakeSubsystem.setBeltSpeed(0);
+        //     reverseTimer.start();
+        // } else {
+        //     coralSubsystem.setCoralMotorSpeed(.20);
+        //     intakeSubsystem.setBeltSpeed(.5);
+        // }
     }
 
     @Override
@@ -82,6 +86,6 @@ public class IntakeCommand extends Command {
 
     @Override
     public boolean isFinished() {
-        return coralObtained && reverseTimer.hasElapsed(0.15);
+        return true;//coralObtained && reverseTimer.hasElapsed(.3);
     }
 }

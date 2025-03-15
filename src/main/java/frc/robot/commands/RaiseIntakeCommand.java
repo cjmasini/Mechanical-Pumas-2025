@@ -20,7 +20,7 @@ public class RaiseIntakeCommand extends Command {
 
     @Override
     public void execute() {
-        this.intakeSubsystem.setWinchSpeed(.5);
+        // this.intakeSubsystem.setWinchSpeed(.5);
     }
 
     @Override
@@ -30,6 +30,6 @@ public class RaiseIntakeCommand extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        this.intakeSubsystem.setWinchSpeed(0);
+        // this.intakeSubsystem.setWinchSpeed(0);
     }
 }

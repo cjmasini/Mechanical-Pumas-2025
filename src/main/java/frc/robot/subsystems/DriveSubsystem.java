@@ -18,6 +18,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.AutonConstants;
 import frc.robot.Constants.CANIdConstants;
 import frc.robot.Constants.RobotConstants;
@@ -104,6 +105,7 @@ public class DriveSubsystem extends CancelableSubsystemBase {
             backLeftModule.getPosition(),
             backRightModule.getPosition()
         });
+        SmartDashboard.putNumber("gyroOrientation", getGyroOrientation());
   }
 
   /**
@@ -311,6 +313,8 @@ public class DriveSubsystem extends CancelableSubsystemBase {
     // horizontal offset.
     double currentYOffset = currentXOffset * Math.tan(Math.toRadians(limelightTx));
 
+    SmartDashboard.putNumber("x-offset", currentXOffset);
+    SmartDashboard.putNumber("y-offset", currentYOffset);
     // Construct the current relative pose.
     // The rotation is set from limelightTx so that zero means the limelight is
     // directly facing the tag.

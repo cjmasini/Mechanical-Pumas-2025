@@ -20,16 +20,17 @@ public class LowerIntakeCommand extends Command {
 
     @Override
     public void initialize() {
-        this.intakeSubsystem.setWinchSpeed(-1);
+        // this.intakeSubsystem.setWinchSpeed(-1);
     }
 
     @Override
     public boolean isFinished() {
-        return this.intakeSubsystem.isLowered();
+        // return this.intakeSubsystem.isLowered();
+        return true;
     }
 
     @Override
     public void end(boolean interrupted) {
-        this.intakeSubsystem.setWinchSpeed(0);
+        // this.intakeSubsystem.setWinchSpeed(0);
     }
 }
