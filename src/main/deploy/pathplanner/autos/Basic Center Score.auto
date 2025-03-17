@@ -7,13 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Start to GH"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "scoreRightCoral"
+            "pathName": "Forward Score"
           }
         }
       ]

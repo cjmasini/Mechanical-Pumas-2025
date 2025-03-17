@@ -24,8 +24,8 @@ public class EjectCoralCommand extends SequentialCommandGroup {
     SmartDashboard.putString("test", "Eject");
     this.coralSubsystem = coralSubsystem;
 
-    Command startCoralMotor = new InstantCommand(() -> this.coralSubsystem.setCoralMotorSpeed(0.5), coralSubsystem);
-    WaitCommand oneSecondWait = new WaitCommand(0.5);
+    Command startCoralMotor = new InstantCommand(() -> this.coralSubsystem.setCoralMotorSpeed(.25), coralSubsystem);
+    WaitCommand oneSecondWait = new WaitCommand(1);
     Command stopCoralMotor = new InstantCommand(() -> this.coralSubsystem.setCoralMotorSpeed(0), coralSubsystem);
     this.addCommands(startCoralMotor, oneSecondWait, stopCoralMotor);
     addRequirements(coralSubsystem);

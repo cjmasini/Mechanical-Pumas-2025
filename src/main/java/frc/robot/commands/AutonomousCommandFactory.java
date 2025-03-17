@@ -95,8 +95,8 @@ public class AutonomousCommandFactory {
         try {
             PathPlannerPath startToReefPath = PathPlannerPath.fromPathFile(startToReefPathName);
             Command startToReefPositionCommand = AutoBuilder.followPath(startToReefPath);
-            Command scoreCoralCommand = new ScoreCoralCommand(startingReefLevel, driveSubsystem, visionSubsystem, elevatorSubsystem, coralSubsystem,
-                    startingReefPosition);
+            Command scoreCoralCommand = new InstantCommand();//new ScoreCoralCommand(startingReefLevel, driveSubsystem, visionSubsystem, elevatorSubsystem, coralSubsystem,
+                    //startingReefPosition);
             PathPlannerPath startingReefToCoralStationPath = PathPlannerPath
                     .fromPathFile(startingReefToCoralStationPathName);
             Command startingReefToCoralStationCommand = AutoBuilder.followPath(startingReefToCoralStationPath);
@@ -146,8 +146,8 @@ public class AutonomousCommandFactory {
                 continue;
             }
 
-            Command scoreCoralCommand = new ScoreCoralCommand(reefLevel, driveSubsystem, visionSubsystem, elevatorSubsystem, coralSubsystem,
-                    reefPosition);
+            Command scoreCoralCommand = new InstantCommand();//ScoreCoralCommand(reefLevel, driveSubsystem, visionSubsystem, elevatorSubsystem, coralSubsystem,
+                  //  reefPosition);
 
             Command intakeCoralCommand = new IntakeCommand(elevatorSubsystem, coralSubsystem, intakeSubsystem);
 

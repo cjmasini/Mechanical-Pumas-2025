@@ -44,7 +44,7 @@ import frc.robot.subsystems.CoralSubsystem;
  * trigger mappings) should be declared here.
  */
 public class RobotContainer {
-  private final DriveSubsystem drivetrain = new DriveSubsystem();
+  private final DriveSubsystem drivetrain;
 
   private final CoralSubsystem coralSubsystem = new CoralSubsystem();
 
@@ -54,25 +54,37 @@ public class RobotContainer {
 
   private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
 
-  private final VisionSubsystem visionSubsystem = new VisionSubsystem();
+  private final VisionSubsystem visionSubsystem;
 
   private final CommandXboxController driverXbox = new CommandXboxController(0);
 
-  private final SendableChooser<Command> autoChooser = AutoBuilder.buildAutoChooser();
+  private final SendableChooser<Command> autoChooser;
 
-  private final AutonomousCommandFactory autoFactory = new AutonomousCommandFactory(drivetrain, visionSubsystem,
-      elevatorSubsystem, coralSubsystem, intakeSubsystem);
+  private final AutonomousCommandFactory autoFactory;
 
-  private SendableChooser<Level> levelChooser = new SendableChooser<>();
+  private SendableChooser<Level> levelChooser;
 
-  private SendableChooser<Boolean> customAutoChooser = new SendableChooser<>();
+  private SendableChooser<Boolean> customAutoChooser;
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
+    ScoreCoralCommand scoreLeftCoralCommand = new ScoreCoralCommand(Level.L4,
+    elevatorSubsystem, coralSubsystem, ReefPosition.LEFT);
+    NamedCommands.registerCommand("scoreRightCoral", scoreLeftCoralCommand);
+
+    drivetrain = new DriveSubsystem();
+    autoChooser = AutoBuilder.buildAutoChooser();
+    levelChooser = new SendableChooser<>();
+    customAutoChooser = new SendableChooser<>();
+    visionSubsystem = new VisionSubsystem(drivetrain);
+    autoFactory = new AutonomousCommandFactory(drivetrain, visionSubsystem,
+      elevatorSubsystem, coralSubsystem, intakeSubsystem);
     MoveCommand moveCommand = new MoveCommand(this.drivetrain, driverXbox);
     drivetrain.setDefaultCommand(moveCommand);
+
+    
 
     // Add levels for the elevator to dashboard chooser
     for (Level level : Level.values()) {
@@ -119,10 +131,10 @@ public class RobotContainer {
     driverXbox.leftTrigger().onTrue(intakeCommand);
     NamedCommands.registerCommand("intakeCommand", intakeCommand);
 
-    ScoreCoralCommand scoreLeftCoralCommand = new ScoreCoralCommand(levelChooser, elevatorSubsystem, coralSubsystem,
-        drivetrain, visionSubsystem, ReefPosition.LEFT);
+    ScoreCoralCommand scoreLeftCoralCommand = new ScoreCoralCommand(Level.L4,
+        elevatorSubsystem, coralSubsystem, ReefPosition.LEFT);
     driverXbox.leftBumper().onTrue(scoreLeftCoralCommand);
-    NamedCommands.registerCommand("scoreLeftCoral", scoreLeftCoralCommand);
+    NamedCommands.registerCommand("scoreRightCoral", scoreLeftCoralCommand);
 
     // TODO: Switch to score command when ready
     // ScoreCoralCommand scoreRightCoralCommand = new

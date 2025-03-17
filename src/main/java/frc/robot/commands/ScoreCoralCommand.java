@@ -2,6 +2,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.ElevatorConstants.Level;
@@ -50,14 +51,28 @@ public class ScoreCoralCommand extends SequentialCommandGroup {
      * @param coralSubsystem
      * @param side
      */
-    public ScoreCoralCommand(Level targetLevel, DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, ElevatorSubsystem elevatorSubsystem, CoralSubsystem coralSubsystem, ReefPosition side) {
+    public ScoreCoralCommand(Level targetLevel, ElevatorSubsystem elevatorSubsystem, CoralSubsystem coralSubsystem, ReefPosition side) {
         addRequirements(elevatorSubsystem, coralSubsystem);
-
-        Command driveToReefCommand = new DriveToReefCommand(driveSubsystem, visionSubsystem, side);
         Command raiseElevator = new SetElevatorLevelCommand(targetLevel, elevatorSubsystem);
         Command scoreCoral = new EjectCoralCommand(coralSubsystem);
         Command waitCommand = new WaitCommand(1);
         Command lowerElevator = new SetElevatorLevelCommand(Level.DOWN, elevatorSubsystem);
         this.addCommands(raiseElevator, scoreCoral, waitCommand, lowerElevator);
+    }
+
+    /**
+     * Command for setting the elevator to a supplied position
+     * @param driveSubsystem
+     * @param visionSubsystem
+     * @param targetLevel
+     * @param elevatorSubsystem
+     * @param coralSubsystem
+     * @param side
+     */
+    public ScoreCoralCommand(SendableChooser<Level> autoChooser, ElevatorSubsystem elevatorSubsystem, CoralSubsystem coralSubsystem, ReefPosition side) {
+        addRequirements(elevatorSubsystem, coralSubsystem);
+        Command raiseElevator = new AutoSetElevatorLevelCommand(autoChooser, elevatorSubsystem);
+        Command scoreCoral = Commands.startEnd(() -> coralSubsystem.setCoralMotorSpeed(.5), () -> coralSubsystem.setCoralMotorSpeed(0), coralSubsystem).withTimeout(1);
+        this.addCommands(raiseElevator, scoreCoral);
     }
 }
