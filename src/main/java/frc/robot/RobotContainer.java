@@ -54,7 +54,7 @@ public class RobotContainer {
 
   private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
 
-  private final VisionSubsystem visionSubsystem = new VisionSubsystem(drivetrain);
+  private final VisionSubsystem visionSubsystem = new VisionSubsystem();
 
   private final CommandXboxController driverXbox = new CommandXboxController(0);
 
@@ -94,10 +94,12 @@ public class RobotContainer {
     // TODO: Probably remove?
     // Eject coral out of the coral mech
     RaiseIntakeCommand raiseIntakeCommand = new RaiseIntakeCommand(intakeSubsystem);
-    driverXbox.y().whileTrue(Commands.startEnd(() -> coralSubsystem.setCoralMotorSpeed(.5), () -> coralSubsystem.setCoralMotorSpeed(0), coralSubsystem));
-    driverXbox.x().whileTrue(Commands.startEnd(() -> intakeSubsystem.setBeltSpeed(.5), () -> intakeSubsystem.setBeltSpeed(0), coralSubsystem));
-    driverXbox.b().whileTrue(Commands.startEnd(() -> coralSubsystem.setCoralMotorSpeed(-.1), () -> coralSubsystem.setCoralMotorSpeed(0), coralSubsystem));
-
+    driverXbox.y().whileTrue(Commands.startEnd(() -> coralSubsystem.setCoralMotorSpeed(.5),
+        () -> coralSubsystem.setCoralMotorSpeed(0), coralSubsystem));
+    driverXbox.x().whileTrue(Commands.startEnd(() -> intakeSubsystem.setBeltSpeed(.5),
+        () -> intakeSubsystem.setBeltSpeed(0), coralSubsystem));
+    driverXbox.b().whileTrue(Commands.startEnd(() -> coralSubsystem.setCoralMotorSpeed(-.1),
+        () -> coralSubsystem.setCoralMotorSpeed(0), coralSubsystem));
 
     // Climb the cage while button is pressed
     ClimbCommand climbCommand = new ClimbCommand(climbSubsystem);
@@ -123,7 +125,9 @@ public class RobotContainer {
     NamedCommands.registerCommand("scoreLeftCoral", scoreLeftCoralCommand);
 
     // TODO: Switch to score command when ready
-    // ScoreCoralCommand scoreRightCoralCommand = new ScoreCoralCommand(levelChooser, elevatorSubsystem, coralSubsystem, drivetrain, visionSubsystem, ReefPosition.LEFT);
+    // ScoreCoralCommand scoreRightCoralCommand = new
+    // ScoreCoralCommand(levelChooser, elevatorSubsystem, coralSubsystem,
+    // drivetrain, visionSubsystem, ReefPosition.LEFT);
     AutoSetElevatorLevelCommand scoreRightCoralCommand = new AutoSetElevatorLevelCommand(levelChooser,
         elevatorSubsystem);
     driverXbox.rightBumper().onTrue(scoreRightCoralCommand);

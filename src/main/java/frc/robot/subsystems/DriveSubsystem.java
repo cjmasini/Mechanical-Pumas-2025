@@ -51,8 +51,8 @@ public class DriveSubsystem extends CancelableSubsystemBase {
 
   // The gyro sensor
   private final Pigeon2 gyro = new Pigeon2(CANIdConstants.PIGEON_GYRO_CAN_ID);
-  //Front facing TOF sensor
-  private final CoreCANrange canRangeSensor = new CoreCANrange(CANIdConstants.FORWARD_CAN_RANGE_ID); 
+  // Front facing TOF sensor
+  private final CoreCANrange canRangeSensor = new CoreCANrange(CANIdConstants.FORWARD_CAN_RANGE_ID);
 
   // PID Controller for orientation to supplied angle
   private final PIDController orientationController;
@@ -105,7 +105,7 @@ public class DriveSubsystem extends CancelableSubsystemBase {
             backLeftModule.getPosition(),
             backRightModule.getPosition()
         });
-        SmartDashboard.putNumber("gyroOrientation", getGyroOrientation());
+    SmartDashboard.putNumber("gyroOrientation", getGyroOrientation());
   }
 
   /**
@@ -289,54 +289,25 @@ public class DriveSubsystem extends CancelableSubsystemBase {
   }
 
   /**
-   * Drives the robot to achieve the specified offsets relative to a detected
-   * AprilTag.
-   * It computes the current forward and lateral distances to the tag using
-   * limelightTy and limelightTx,
-   * constructs a current relative pose, and then uses the path following
-   * controller's
-   * calculateRobotRelativeSpeeds method to determine the required robot-relative
-   * speeds.
+   * Drives the robot to achieve the desired offsets from the current offsets relative to a target.
    *
-   * @param desiredXOffset Desired forward distance (in meters) from the tag.
-   * @param desiredYOffset Desired lateral distance (in meters) from the tag.
-   * @param limelightTx    Horizontal offset from the tag (in degrees).
-   * @param limelightTy    Vertical offset from the tag (in degrees).
+   * @param desiredOffset The Pose2d representing the target position & rotation.
+   * @param currentOffset The Pose2d representing the robot's current position &
+   *                      rotation.
    */
-  public void driveToTagOffset(double desiredXOffset, double desiredYOffset, double limelightTx, double limelightTy) {
-    // Calculate the current forward distance (x) from the tag using the vertical
-    // offset.
-    double currentXOffset = (AutonConstants.REEF_APRILTAG_HEIGHT - AutonConstants.LIMELIGHT_HEIGHT_METERS)
-        / Math.tan(AutonConstants.LIMELIGHT_MOUNTING_ANGLE_RADIANS + Math.toRadians(limelightTy));
-
-    // Calculate the current lateral distance (y) from the camera center using the
-    // horizontal offset.
-    double currentYOffset = currentXOffset * Math.tan(Math.toRadians(limelightTx));
-
-    SmartDashboard.putNumber("x-offset", currentXOffset);
-    SmartDashboard.putNumber("y-offset", currentYOffset);
-    // Construct the current relative pose.
-    // The rotation is set from limelightTx so that zero means the limelight is
-    // directly facing the tag.
-    Pose2d currentRelativePose = new Pose2d(currentXOffset, currentYOffset, Rotation2d.fromDegrees(limelightTx));
-
-    // The desired relative pose has the desired offsets with zero rotation error
-    // (directly facing the tag).
-    Pose2d desiredRelativePose = new Pose2d(desiredXOffset, desiredYOffset, new Rotation2d(0));
-
-    // Create a target trajectory state using the desired relative pose.
+  public void driveToTagOffset(Pose2d desiredOffset, Pose2d currentOffset) {
     PathPlannerTrajectoryState targetState = new PathPlannerTrajectoryState();
-    targetState.pose = desiredRelativePose;
+    targetState.pose = desiredOffset;
 
-    // Calculate the robot-relative speeds using the path following controller.
-    ChassisSpeeds robotRelativeSpeeds = AutonConstants.AUTON_CONTROLLER
-        .calculateRobotRelativeSpeeds(currentRelativePose, targetState);
+    ChassisSpeeds robotRelativeSpeeds = AutonConstants.AUTON_CONTROLLER.calculateRobotRelativeSpeeds(currentOffset,
+        targetState);
 
+    // Normalize speeds for motor control
     double normalizedX = robotRelativeSpeeds.vxMetersPerSecond / ModuleConstants.DRIVE_WHEEL_FREE_SPEED_IN_MPS;
     double normalizedY = robotRelativeSpeeds.vyMetersPerSecond / ModuleConstants.DRIVE_WHEEL_FREE_SPEED_IN_MPS;
     double normalizedRot = robotRelativeSpeeds.omegaRadiansPerSecond / ModuleConstants.MAX_ANGULAR_SPEED;
 
-    // Command the drivetrain using field-relative control.
+    // Drive the robot toward the desired offset with rotation correction
     drive(normalizedX, normalizedY, normalizedRot, true);
   }
 

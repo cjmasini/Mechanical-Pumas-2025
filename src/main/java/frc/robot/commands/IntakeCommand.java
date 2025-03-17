@@ -13,15 +13,18 @@ public class IntakeCommand extends Command {
     private final IntakeSubsystem intakeSubsystem;
     private final Timer pulseTimer;
 
-    private static final double TIME_OF_PULSE = 0.3; // Seconds per pulse
+    private static final double PULSE_INTERVAL = 0.05; // 50ms pulse interval
     private static final double DETECTION_THRESHOLD = 5; // Inches for TOF detection
 
-    private static final double CORAL_SPEED = 0.25; // Coral motor speed
-    private static final double BELT_SPEED = 0.5;   // Belt motor speed (initially on)
+    private static final double CORAL_FORWARD_SPEED = 0.25; // Forward speed
+    private static final double CORAL_REVERSE_SPEED = -0.15; // Reverse speed after detection
+    private static final double BELT_SPEED = 0.5; // Belt motor runs constantly until coral is detected
+    private static final int REVERSE_PULSES = 8; // Number of reverse pulses
 
     private boolean isCoralMotorOn = false;
     private boolean coralDetected = false;
     private boolean securingCoral = false;
+    private int reversePulseCount = 0;
 
     public IntakeCommand(ElevatorSubsystem elevatorSubsystem,
                          CoralSubsystem coralSubsystem, 
@@ -38,6 +41,7 @@ public class IntakeCommand extends Command {
         coralDetected = false;
         securingCoral = false;
         isCoralMotorOn = false;
+        reversePulseCount = 0;
         pulseTimer.reset();
         pulseTimer.start();
 
@@ -72,18 +76,29 @@ public class IntakeCommand extends Command {
             securingCoral = false; // Coral is no longer detected, stop the command
         }
 
-        // Continue pulsing coral motor while searching or securing coral
-        if (securingCoral || !coralDetected) {
-            if (!isCoralMotorOn && pulseTimer.hasElapsed(TIME_OF_PULSE)) {
-                // Turn coral motor ON
-                coralSubsystem.setCoralMotorSpeed(CORAL_SPEED);
+        // Pulse logic
+        if (!coralDetected) {
+            // Searching phase: Pulse forward every 0.05s
+            if (!isCoralMotorOn && pulseTimer.hasElapsed(PULSE_INTERVAL)) {
+                coralSubsystem.setCoralMotorSpeed(CORAL_FORWARD_SPEED);
                 pulseTimer.reset();
                 isCoralMotorOn = true;
-            } else if (isCoralMotorOn && pulseTimer.hasElapsed(TIME_OF_PULSE)) {
-                // Turn coral motor OFF
+            } else if (isCoralMotorOn && pulseTimer.hasElapsed(PULSE_INTERVAL)) {
                 coralSubsystem.setCoralMotorSpeed(0);
                 pulseTimer.reset();
                 isCoralMotorOn = false;
+            }
+        } else if (reversePulseCount < REVERSE_PULSES) {
+            // Securing phase: Pulse in reverse 8 times
+            if (!isCoralMotorOn && pulseTimer.hasElapsed(PULSE_INTERVAL)) {
+                coralSubsystem.setCoralMotorSpeed(CORAL_REVERSE_SPEED);
+                pulseTimer.reset();
+                isCoralMotorOn = true;
+            } else if (isCoralMotorOn && pulseTimer.hasElapsed(PULSE_INTERVAL)) {
+                coralSubsystem.setCoralMotorSpeed(0);
+                pulseTimer.reset();
+                isCoralMotorOn = false;
+                reversePulseCount++;
             }
         }
     }
@@ -98,7 +113,8 @@ public class IntakeCommand extends Command {
 
     @Override
     public boolean isFinished() {
-        // Stop when the coral is detected and then no longer detected
-        return coralDetected && !securingCoral;
+        // Stop when the coral is detected and then no longer detected,
+        // and after completing 8 reverse pulses
+        return coralDetected && !securingCoral && reversePulseCount >= REVERSE_PULSES;
     }
 }

@@ -115,12 +115,4 @@ public class SwerveModule {
   public void resetEncoders() {
     this.driveEncoder.setPosition(0);
   }
-
-  public double getTargetAngle() {
-    return this.desiredState.angle.getRadians();
-  }
-
-  public double getCurrentAngle() {
-    return this.steeringEncoder.getPosition();
-  }
 }

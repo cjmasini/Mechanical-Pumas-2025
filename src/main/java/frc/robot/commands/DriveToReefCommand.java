@@ -9,6 +9,8 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import com.pathplanner.lib.trajectory.PathPlannerTrajectoryState;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class DriveToReefCommand extends Command {
@@ -16,33 +18,33 @@ public class DriveToReefCommand extends Command {
     private final VisionSubsystem visionSubsystem;
     private final ReefPosition reefPosition;
 
-    // Phase 1: Use vision to approach until ~1 meter away.
-    private static final double VISION_FORWARD_OFFSET = 1.0; // meters
-    private static final double LEFT_OFFSET = 0.25;   // meters (left)
-    private static final double RIGHT_OFFSET = 0.0;   // meters (right)
+    private static final double MAX_TOF_APPROACH_TIME = 1.0;
+    private final Timer tofTimer = new Timer();
 
-    // Phase 2: Use the CANRange TOF sensor to finalize the approach.
-    private static final double TOF_TARGET_DISTANCE = 0.2; // desired final distance (meters)
-    private static final double TOF_TOLERANCE = 0.05;        // acceptable error (meters)
+    // Limelight Approach Parameters
+    private static final double VISION_FORWARD_OFFSET = 1;
+    private static final double LEFT_OFFSET = -0.3048;
+    private static final double RIGHT_OFFSET = 0.3048;
 
-    // Tolerance for the vision phase transition.
-    private static final double POSITION_TOLERANCE = 0.1; // meters
+    // TOF Approach Parameters
+    private static final double TOF_TARGET_DISTANCE = 0.0762;
+    private static final double TOF_TOLERANCE = 0.01;
+    private static final double POSITION_TOLERANCE = 0.01;
 
-    private enum State {
-        VISION_APPROACH,
-        TOF_APPROACH
+    private Mode mode;
+    private boolean startedWithReefTag = false;
+
+    private enum Mode {
+        VISION,
+        TIME_OF_FLIGHT
     }
-    private State currentState;
-
-    // Ensure the command only starts if a valid vision target is seen.
-    private boolean validStart = false;
 
     public enum ReefPosition {
         LEFT, RIGHT
     }
 
     public DriveToReefCommand(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem,
-                              ReefPosition reefPosition) {
+            ReefPosition reefPosition) {
         this.driveSubsystem = driveSubsystem;
         this.visionSubsystem = visionSubsystem;
         this.reefPosition = reefPosition;
@@ -51,109 +53,94 @@ public class DriveToReefCommand extends Command {
 
     @Override
     public void initialize() {
-        // Only start if a valid reef tag is seen.
         if (visionSubsystem.hasTarget() && isReefTag(visionSubsystem.getTargetID())) {
-            validStart = true;
-            currentState = State.VISION_APPROACH;
+            startedWithReefTag = true;
+            mode = Mode.VISION;
         } else {
-            validStart = false;
+            startedWithReefTag = false;
         }
     }
 
     @Override
     public void execute() {
-        SmartDashboard.putNumber("TOF Front", driveSubsystem.getTOFDistance());
-        if (!validStart) {
+        if (!startedWithReefTag) {
             driveSubsystem.drive(0.0, 0.0, 0.0, true);
             return;
         }
 
-        SmartDashboard.putString("Approach", currentState.toString());
+        SmartDashboard.putString("Approach State", mode.toString());
 
-        switch (currentState) {
-            case VISION_APPROACH: {
-                double limelightTx;
-                double limelightTy;
-
-                if (visionSubsystem.hasTarget()) {
-                    limelightTx = visionSubsystem.getTx();
-                    limelightTy = visionSubsystem.getTy();
-                } else {
-                    // Fall back to the last cached relative pose.
-                    Pose2d cachedPose = visionSubsystem.getLatestReletiveRobotPose();
-                    if (cachedPose.getX() == 0 && cachedPose.getY() == 0) {
-                        driveSubsystem.drive(0.0, 0.0, 0.0, true);
-                        return;
-                    }
-                    limelightTx = cachedPose.getRotation().getDegrees();
-                    double currentXOffset = cachedPose.getX();
-                    double mountingAngleDegrees = Math.toDegrees(AutonConstants.LIMELIGHT_MOUNTING_ANGLE_RADIANS);
-                    double computedAngle = Math.toDegrees(Math.atan(
-                            (AutonConstants.REEF_APRILTAG_HEIGHT - AutonConstants.LIMELIGHT_HEIGHT_METERS)
-                                    / currentXOffset));
-                    limelightTy = computedAngle - mountingAngleDegrees;
-                }
-
-                // Command the drivetrain using vision-based control.
-                if (reefPosition == ReefPosition.LEFT) {
-                    driveSubsystem.driveToTagOffset(VISION_FORWARD_OFFSET, LEFT_OFFSET, limelightTx, limelightTy);
-                } else {
-                    driveSubsystem.driveToTagOffset(VISION_FORWARD_OFFSET, RIGHT_OFFSET, limelightTx, limelightTy);
-                }
-
-                // Determine the current forward offset.
-                double currentXOffset;
-                if (visionSubsystem.hasTarget()) {
-                    double tyForCalc = visionSubsystem.getTy();
-                    currentXOffset = (AutonConstants.REEF_APRILTAG_HEIGHT - AutonConstants.LIMELIGHT_HEIGHT_METERS)
-                            / Math.tan(AutonConstants.LIMELIGHT_MOUNTING_ANGLE_RADIANS + Math.toRadians(tyForCalc));
-                } else {
-                    Pose2d cachedPose = visionSubsystem.getLatestReletiveRobotPose();
-                    currentXOffset = cachedPose.getX();
-                }
-                // Transition to TOF-based control when within tolerance of the 1-meter offset.
-                if (currentXOffset <= VISION_FORWARD_OFFSET + POSITION_TOLERANCE) {
-                    currentState = State.TOF_APPROACH;
-                }
+        switch (mode) {
+            case VISION:
+                visionApproach();
                 break;
-            }
-            case TOF_APPROACH: {
-                // Use the CANRange TOF sensor with the auton drive controller for the final approach.
-                double tofDistance = driveSubsystem.getTOFDistance();
-
-                // Construct the current relative pose (assume lateral and angular errors are negligible).
-                Pose2d currentPose = new Pose2d(tofDistance, 0, new Rotation2d(0));
-
-                // Desired pose is at the target distance.
-                Pose2d desiredPose = new Pose2d(TOF_TARGET_DISTANCE, 0, new Rotation2d(0));
-
-                // Create a target trajectory state.
-                PathPlannerTrajectoryState targetState = new PathPlannerTrajectoryState();
-                targetState.pose = desiredPose;
-
-                // Calculate robot-relative speeds using the auton drive controller.
-                ChassisSpeeds robotRelativeSpeeds =
-                        AutonConstants.AUTON_CONTROLLER.calculateRobotRelativeSpeeds(currentPose, targetState);
-
-                // Normalize the speeds as done in driveToTagOffset.
-                double normalizedX = robotRelativeSpeeds.vxMetersPerSecond / ModuleConstants.DRIVE_WHEEL_FREE_SPEED_IN_MPS;
-                double normalizedY = robotRelativeSpeeds.vyMetersPerSecond / ModuleConstants.DRIVE_WHEEL_FREE_SPEED_IN_MPS;
-                double normalizedRot = robotRelativeSpeeds.omegaRadiansPerSecond / ModuleConstants.MAX_ANGULAR_SPEED;
-
-                driveSubsystem.drive(normalizedX, normalizedY, normalizedRot, true);
+            case TIME_OF_FLIGHT:
+                tofApproach();
                 break;
-            }
         }
+    }
+
+    /**
+     * Uses vision offsets to approach the reef tag
+     */
+    private void visionApproach() {
+        if (!visionSubsystem.hasTarget()) {
+            driveSubsystem.drive(0.0, 0.0, 0.0, true);
+            return;
+        }
+
+        double lateralOffset = reefPosition == ReefPosition.LEFT ? LEFT_OFFSET : RIGHT_OFFSET;
+
+        Pose2d currentOffset = visionSubsystem.getRobotOffset();
+        Pose2d desiredOffset = new Pose2d(
+                VISION_FORWARD_OFFSET,
+                lateralOffset,
+                currentOffset.getRotation());
+
+        driveSubsystem.driveToTagOffset(desiredOffset, currentOffset);
+
+        if (Math.abs(currentOffset.getX() - VISION_FORWARD_OFFSET) <= POSITION_TOLERANCE &&
+                Math.abs(currentOffset.getY() - lateralOffset) <= POSITION_TOLERANCE) {
+            mode = Mode.TIME_OF_FLIGHT;
+            tofTimer.reset();
+            tofTimer.start();
+        }
+    }
+
+    /**
+     * Handles the TOF-based final approach
+     */
+    private void tofApproach() {
+        double tofDistance = driveSubsystem.getTOFDistance();
+
+        if (tofTimer.get() > MAX_TOF_APPROACH_TIME) {
+            DriverStation.reportWarning("Timeout: TOF approach took too long.", false);
+            end(true);
+            return;
+        }
+
+        Pose2d currentPose = new Pose2d(tofDistance, 0, new Rotation2d(0));
+        Pose2d desiredPose = new Pose2d(TOF_TARGET_DISTANCE, 0, new Rotation2d(0));
+
+        PathPlannerTrajectoryState targetState = new PathPlannerTrajectoryState();
+        targetState.pose = desiredPose;
+
+        ChassisSpeeds robotRelativeSpeeds = AutonConstants.AUTON_CONTROLLER.calculateRobotRelativeSpeeds(currentPose,
+                targetState);
+
+        double normalizedX = robotRelativeSpeeds.vxMetersPerSecond / ModuleConstants.DRIVE_WHEEL_FREE_SPEED_IN_MPS;
+        double normalizedY = robotRelativeSpeeds.vyMetersPerSecond / ModuleConstants.DRIVE_WHEEL_FREE_SPEED_IN_MPS;
+        double normalizedRotation = robotRelativeSpeeds.omegaRadiansPerSecond / ModuleConstants.MAX_ANGULAR_SPEED;
+
+        driveSubsystem.drive(normalizedX, normalizedY, normalizedRotation, true);
     }
 
     @Override
     public boolean isFinished() {
-        if (!validStart) {
+        if (!startedWithReefTag)
             return true;
-        }
-        if (currentState == State.TOF_APPROACH) {
-            double tofDistance = driveSubsystem.getTOFDistance();
-            return Math.abs(tofDistance - TOF_TARGET_DISTANCE) < TOF_TOLERANCE;
+        if (mode == Mode.TIME_OF_FLIGHT) {
+            return Math.abs(driveSubsystem.getTOFDistance() - TOF_TARGET_DISTANCE) < TOF_TOLERANCE;
         }
         return false;
     }
@@ -163,7 +150,9 @@ public class DriveToReefCommand extends Command {
         driveSubsystem.drive(0.0, 0.0, 0.0, true);
     }
 
-    // Helper method to determine if the target ID corresponds to a reef tag.
+    /**
+     * Determines if the detected target is a valid reef tag
+     */
     private boolean isReefTag(int targetID) {
         return (targetID >= 6 && targetID <= 11) || (targetID >= 17 && targetID <= 22);
     }
