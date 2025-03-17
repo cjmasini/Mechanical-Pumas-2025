@@ -172,8 +172,8 @@ public final class Constants {
 
     public static final class AutonConstants {
         // TODO: Tune these values
-        public static final PIDConstants TRANSLATION_PID = new PIDConstants(0.7, 0, 0);
-        public static final PIDConstants ANGLE_PID = new PIDConstants(0.01, 0, 0);
+        public static final PIDConstants TRANSLATION_PID = new PIDConstants(1.3, 0, 0);
+        public static final PIDConstants ANGLE_PID = new PIDConstants(.01, 0, 0);
 
         public static final PathFollowingController AUTON_CONTROLLER = new PPHolonomicDriveController(
                 TRANSLATION_PID, // new PIDConstants(5, 0.0, 0.0), // Translation PID constants

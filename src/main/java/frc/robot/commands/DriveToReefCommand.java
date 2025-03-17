@@ -22,14 +22,14 @@ public class DriveToReefCommand extends Command {
     private final Timer tofTimer = new Timer();
 
     // Limelight Approach Parameters
-    private static final double VISION_FORWARD_OFFSET = 1;
-    private static final double LEFT_OFFSET = -0.3048;
-    private static final double RIGHT_OFFSET = 0.3048;
+    private static final double VISION_FORWARD_OFFSET = -1;
+    private static final double LEFT_OFFSET = -0.28;
+    private static final double RIGHT_OFFSET = 0.28;
 
     // TOF Approach Parameters
-    private static final double TOF_TARGET_DISTANCE = 0.0762;
+    private static final double TOF_TARGET_DISTANCE = 0.00;
     private static final double TOF_TOLERANCE = 0.01;
-    private static final double POSITION_TOLERANCE = 0.01;
+    private static final double POSITION_TOLERANCE = 0.05;
 
     private Mode mode;
     private boolean startedWithReefTag = false;
@@ -80,31 +80,42 @@ public class DriveToReefCommand extends Command {
         }
     }
 
-    /**
-     * Uses vision offsets to approach the reef tag
-     */
     private void visionApproach() {
         if (!visionSubsystem.hasTarget()) {
             driveSubsystem.drive(0.0, 0.0, 0.0, true);
             return;
         }
-
+    
+        // Lateral offset to determine left/right side positioning relative to the tag
         double lateralOffset = reefPosition == ReefPosition.LEFT ? LEFT_OFFSET : RIGHT_OFFSET;
-
+    
         Pose2d currentOffset = visionSubsystem.getRobotOffset();
+        // The desired offset includes a forward offset along X and a lateral offset along Y
         Pose2d desiredOffset = new Pose2d(
-                VISION_FORWARD_OFFSET,
+                VISION_FORWARD_OFFSET,  
                 lateralOffset,
-                currentOffset.getRotation());
+                Rotation2d.fromDegrees(0));
 
+        logPose("Current", currentOffset);
+        logPose("Desired", desiredOffset);
+    
+        // Drive the robot towards the desired offset using vision data
         driveSubsystem.driveToTagOffset(desiredOffset, currentOffset);
-
+    
+        // Check if the robot has reached the desired offset
         if (Math.abs(currentOffset.getX() - VISION_FORWARD_OFFSET) <= POSITION_TOLERANCE &&
                 Math.abs(currentOffset.getY() - lateralOffset) <= POSITION_TOLERANCE) {
             mode = Mode.TIME_OF_FLIGHT;
             tofTimer.reset();
             tofTimer.start();
         }
+    }    
+
+    void logPose(String name, Pose2d pose) {
+        SmartDashboard.putNumber(name + "_x", pose.getX());
+        SmartDashboard.putNumber(name + "_y", pose.getY());
+        SmartDashboard.putNumber(name + "_r", pose.getRotation().getDegrees());
+
     }
 
     /**
@@ -112,6 +123,7 @@ public class DriveToReefCommand extends Command {
      */
     private void tofApproach() {
         double tofDistance = driveSubsystem.getTOFDistance();
+        SmartDashboard.putNumber("TOF Front", tofDistance);
 
         if (tofTimer.get() > MAX_TOF_APPROACH_TIME) {
             DriverStation.reportWarning("Timeout: TOF approach took too long.", false);
@@ -128,7 +140,7 @@ public class DriveToReefCommand extends Command {
         ChassisSpeeds robotRelativeSpeeds = AutonConstants.AUTON_CONTROLLER.calculateRobotRelativeSpeeds(currentPose,
                 targetState);
 
-        double normalizedX = robotRelativeSpeeds.vxMetersPerSecond / ModuleConstants.DRIVE_WHEEL_FREE_SPEED_IN_MPS;
+        double normalizedX = -1*robotRelativeSpeeds.vxMetersPerSecond / ModuleConstants.DRIVE_WHEEL_FREE_SPEED_IN_MPS;
         double normalizedY = robotRelativeSpeeds.vyMetersPerSecond / ModuleConstants.DRIVE_WHEEL_FREE_SPEED_IN_MPS;
         double normalizedRotation = robotRelativeSpeeds.omegaRadiansPerSecond / ModuleConstants.MAX_ANGULAR_SPEED;
 
@@ -154,6 +166,6 @@ public class DriveToReefCommand extends Command {
      * Determines if the detected target is a valid reef tag
      */
     private boolean isReefTag(int targetID) {
-        return (targetID >= 6 && targetID <= 11) || (targetID >= 17 && targetID <= 22);
+        return (targetID >= 6 && targetID <= 11) || (targetID >= 17 && targetID <= 22) || targetID == 1;
     }
 }

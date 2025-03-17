@@ -78,13 +78,11 @@ public class RobotContainer {
     autoChooser = AutoBuilder.buildAutoChooser();
     levelChooser = new SendableChooser<>();
     customAutoChooser = new SendableChooser<>();
-    visionSubsystem = new VisionSubsystem(drivetrain);
+    visionSubsystem = new VisionSubsystem();
     autoFactory = new AutonomousCommandFactory(drivetrain, visionSubsystem,
       elevatorSubsystem, coralSubsystem, intakeSubsystem);
     MoveCommand moveCommand = new MoveCommand(this.drivetrain, driverXbox);
     drivetrain.setDefaultCommand(moveCommand);
-
-    
 
     // Add levels for the elevator to dashboard chooser
     for (Level level : Level.values()) {

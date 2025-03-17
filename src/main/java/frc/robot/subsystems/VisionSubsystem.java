@@ -7,6 +7,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.AutonConstants;
+import frc.robot.utils.LimelightHelpers;
 
 public class VisionSubsystem extends SubsystemBase {
     private final NetworkTable limelightTable;
@@ -45,18 +46,23 @@ public class VisionSubsystem extends SubsystemBase {
             return new Pose2d(); // Return a zeroed pose if no target is found.
         }
 
-        double limelightTx = limelightTable.getEntry("tx").getDouble(0.0);
-        double limelightTy = limelightTable.getEntry("ty").getDouble(0.0);
+        // double limelightTx = limelightTable.getEntry("tx").getDouble(0.0);
+        // double limelightTy = limelightTable.getEntry("ty").getDouble(0.0);
 
-        // Calculate forward distance (X) from target.
-        double currentXOffset = (AutonConstants.REEF_APRILTAG_HEIGHT - AutonConstants.LIMELIGHT_HEIGHT_METERS)
-                / Math.tan(AutonConstants.LIMELIGHT_MOUNTING_ANGLE_RADIANS + Math.toRadians(limelightTy));
+        // // Calculate forward distance (X) from target.
+        // double currentXOffset = (AutonConstants.REEF_APRILTAG_HEIGHT - AutonConstants.LIMELIGHT_HEIGHT_METERS)
+        //         / Math.tan(AutonConstants.LIMELIGHT_MOUNTING_ANGLE_RADIANS + Math.toRadians(limelightTy));
 
-        // Calculate lateral distance (Y) from camera center.
-        double currentYOffset = currentXOffset * Math.tan(Math.toRadians(limelightTx));
+        // // Calculate lateral distance (Y) from camera center.
+        // double currentYOffset = currentXOffset * Math.tan(Math.toRadians(limelightTx));
+
+        double[] positions = LimelightHelpers.getBotPose_TargetSpace("");
+        double currentXOffset = positions[2];
+        double currentYOffset = positions[0];
+        double currentRot = positions[4];
 
         // Store the latest pose and return it.
-        latestRobotPose = new Pose2d(currentXOffset, currentYOffset, Rotation2d.fromDegrees(limelightTx));
+        latestRobotPose = new Pose2d(currentXOffset, currentYOffset, Rotation2d.fromDegrees(currentRot));
         return latestRobotPose;
     }
 

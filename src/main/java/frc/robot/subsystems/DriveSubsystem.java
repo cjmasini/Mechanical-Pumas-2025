@@ -301,11 +301,14 @@ public class DriveSubsystem extends CancelableSubsystemBase {
 
     ChassisSpeeds robotRelativeSpeeds = AutonConstants.AUTON_CONTROLLER.calculateRobotRelativeSpeeds(currentOffset,
         targetState);
+        SmartDashboard.putNumber("Relative_r", robotRelativeSpeeds.omegaRadiansPerSecond);
+        SmartDashboard.putNumber("Relative_x", robotRelativeSpeeds.omegaRadiansPerSecond);
+        SmartDashboard.putNumber("Relative_y", robotRelativeSpeeds.omegaRadiansPerSecond);
 
     // Normalize speeds for motor control
     double normalizedX = robotRelativeSpeeds.vxMetersPerSecond / ModuleConstants.DRIVE_WHEEL_FREE_SPEED_IN_MPS;
-    double normalizedY = robotRelativeSpeeds.vyMetersPerSecond / ModuleConstants.DRIVE_WHEEL_FREE_SPEED_IN_MPS;
-    double normalizedRot = robotRelativeSpeeds.omegaRadiansPerSecond / ModuleConstants.MAX_ANGULAR_SPEED;
+    double normalizedY = -1*robotRelativeSpeeds.vyMetersPerSecond / ModuleConstants.DRIVE_WHEEL_FREE_SPEED_IN_MPS;
+    double normalizedRot = 0;// robotRelativeSpeeds.omegaRadiansPerSecond / ModuleConstants.MAX_ANGULAR_SPEED;
 
     // Drive the robot toward the desired offset with rotation correction
     drive(normalizedX, normalizedY, normalizedRot, true);
