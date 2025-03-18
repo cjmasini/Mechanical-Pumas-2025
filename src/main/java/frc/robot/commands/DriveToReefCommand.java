@@ -85,23 +85,22 @@ public class DriveToReefCommand extends Command {
             driveSubsystem.drive(0.0, 0.0, 0.0, true);
             return;
         }
-    
-        // Lateral offset to determine left/right side positioning relative to the tag
+
         double lateralOffset = reefPosition == ReefPosition.LEFT ? LEFT_OFFSET : RIGHT_OFFSET;
-    
+
         Pose2d currentOffset = visionSubsystem.getRobotOffset();
-        // The desired offset includes a forward offset along X and a lateral offset along Y
         Pose2d desiredOffset = new Pose2d(
-                VISION_FORWARD_OFFSET,  
+                VISION_FORWARD_OFFSET,
                 lateralOffset,
                 Rotation2d.fromDegrees(0));
+                //currentOffset.getRotation().plus(Rotation2d.fromDegrees(driveSubsystem.getGyroOrientation())));
 
         logPose("Current", currentOffset);
         logPose("Desired", desiredOffset);
-    
+
         // Drive the robot towards the desired offset using vision data
         driveSubsystem.driveToTagOffset(desiredOffset, currentOffset);
-    
+
         // Check if the robot has reached the desired offset
         if (Math.abs(currentOffset.getX() - VISION_FORWARD_OFFSET) <= POSITION_TOLERANCE &&
                 Math.abs(currentOffset.getY() - lateralOffset) <= POSITION_TOLERANCE) {
@@ -109,7 +108,7 @@ public class DriveToReefCommand extends Command {
             tofTimer.reset();
             tofTimer.start();
         }
-    }    
+    }
 
     void logPose(String name, Pose2d pose) {
         SmartDashboard.putNumber(name + "_x", pose.getX());
@@ -140,7 +139,7 @@ public class DriveToReefCommand extends Command {
         ChassisSpeeds robotRelativeSpeeds = AutonConstants.AUTON_CONTROLLER.calculateRobotRelativeSpeeds(currentPose,
                 targetState);
 
-        double normalizedX = -1*robotRelativeSpeeds.vxMetersPerSecond / ModuleConstants.DRIVE_WHEEL_FREE_SPEED_IN_MPS;
+        double normalizedX = -1 * robotRelativeSpeeds.vxMetersPerSecond / ModuleConstants.DRIVE_WHEEL_FREE_SPEED_IN_MPS;
         double normalizedY = robotRelativeSpeeds.vyMetersPerSecond / ModuleConstants.DRIVE_WHEEL_FREE_SPEED_IN_MPS;
         double normalizedRotation = robotRelativeSpeeds.omegaRadiansPerSecond / ModuleConstants.MAX_ANGULAR_SPEED;
 

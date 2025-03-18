@@ -45,17 +45,6 @@ public class VisionSubsystem extends SubsystemBase {
         if (!hasTarget()) {
             return new Pose2d(); // Return a zeroed pose if no target is found.
         }
-
-        // double limelightTx = limelightTable.getEntry("tx").getDouble(0.0);
-        // double limelightTy = limelightTable.getEntry("ty").getDouble(0.0);
-
-        // // Calculate forward distance (X) from target.
-        // double currentXOffset = (AutonConstants.REEF_APRILTAG_HEIGHT - AutonConstants.LIMELIGHT_HEIGHT_METERS)
-        //         / Math.tan(AutonConstants.LIMELIGHT_MOUNTING_ANGLE_RADIANS + Math.toRadians(limelightTy));
-
-        // // Calculate lateral distance (Y) from camera center.
-        // double currentYOffset = currentXOffset * Math.tan(Math.toRadians(limelightTx));
-
         double[] positions = LimelightHelpers.getBotPose_TargetSpace("");
         double currentXOffset = positions[2];
         double currentYOffset = positions[0];
@@ -85,9 +74,9 @@ public class VisionSubsystem extends SubsystemBase {
         SmartDashboard.putBoolean("Vision/Has Target", hasTarget());
         SmartDashboard.putNumber("Vision/Target ID", getTargetID());
 
-        Pose2d offset = getRobotOffset();
-        SmartDashboard.putNumber("Vision/Offset X", offset.getX());
-        SmartDashboard.putNumber("Vision/Offset Y", offset.getY());
-        SmartDashboard.putNumber("Vision/Rotation", offset.getRotation().getDegrees());
+        double[] positions = LimelightHelpers.getBotPose_TargetSpace("");
+        SmartDashboard.putNumber("Vision/Offset X", positions[2]);
+        SmartDashboard.putNumber("Vision/Offset Y", positions[0]);
+        SmartDashboard.putNumber("Vision/Rotation", positions[4]);
     }
 }

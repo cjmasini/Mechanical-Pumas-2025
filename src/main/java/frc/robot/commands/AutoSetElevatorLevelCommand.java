@@ -44,6 +44,5 @@ public class AutoSetElevatorLevelCommand extends Command {
 
   @Override
   public void end(boolean interrupted) {
-    this.elevatorSubsystem.cancel();
   }
 }

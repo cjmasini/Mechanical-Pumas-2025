@@ -39,6 +39,5 @@ public class SetElevatorLevelCommand extends Command {
 
   @Override
   public void end(boolean interrupted) {
-    this.elevatorSubsystem.cancel();
   }
 }

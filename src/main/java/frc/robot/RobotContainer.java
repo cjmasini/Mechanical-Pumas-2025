@@ -70,9 +70,9 @@ public class RobotContainer {
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
-    ScoreCoralCommand scoreLeftCoralCommand = new ScoreCoralCommand(Level.L4,
-    elevatorSubsystem, coralSubsystem, ReefPosition.LEFT);
-    NamedCommands.registerCommand("scoreRightCoral", scoreLeftCoralCommand);
+    ScoreCoralCommand scoreCoralCommand = new ScoreCoralCommand(Level.L4,
+    elevatorSubsystem, coralSubsystem);
+    NamedCommands.registerCommand("scoreRightCoral", scoreCoralCommand);
 
     drivetrain = new DriveSubsystem();
     autoChooser = AutoBuilder.buildAutoChooser();
@@ -121,7 +121,8 @@ public class RobotContainer {
 
     // TODO: Probably remove?
     // Drive to left reef
-    Command driveToReefCommand = new DriveToReefCommand(drivetrain, visionSubsystem, ReefPosition.LEFT);
+    Command driveToReefCommand = new DriveToReefCommand(drivetrain, visionSubsystem, ReefPosition.LEFT).withTimeout(3);
+    Command driveToReefContinuousCommand = new DriveToReefCommand(drivetrain, visionSubsystem, ReefPosition.LEFT);
     driverXbox.a().and(driverXbox.rightTrigger().negate()).onTrue(driveToReefCommand);
 
     // Intake coral on left trigger press
@@ -129,8 +130,8 @@ public class RobotContainer {
     driverXbox.leftTrigger().onTrue(intakeCommand);
     NamedCommands.registerCommand("intakeCommand", intakeCommand);
 
-    ScoreCoralCommand scoreLeftCoralCommand = new ScoreCoralCommand(Level.L4,
-        elevatorSubsystem, coralSubsystem, ReefPosition.LEFT);
+    ScoreCoralCommand scoreLeftCoralCommand = new ScoreCoralCommand(levelChooser,
+        elevatorSubsystem, coralSubsystem, drivetrain, visionSubsystem, ReefPosition.LEFT);
     driverXbox.leftBumper().onTrue(scoreLeftCoralCommand);
     NamedCommands.registerCommand("scoreRightCoral", scoreLeftCoralCommand);
 
