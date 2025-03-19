@@ -133,7 +133,37 @@ public class DriveSubsystem extends CancelableSubsystemBase {
    * @param targetHeading
    *                      Target heading (angle) robot should face
    */
+  public void driveAndOrientToAprilTag(double xSpeed, double ySpeed, double angleOffset) {
+    driveAndOrient(xSpeed, ySpeed, this.getGyroOrientation() + angleOffset, true);
+  }
+
+    /**
+   * Method to drive the robot while it adjusts to a specified orientation.
+   *
+   * @param xSpeed
+   *                      Speed of the robot in the x direction (forward).
+   * @param ySpeed
+   *                      Speed of the robot in the y direction (sideways).
+   * @param targetHeading
+   *                      Target heading (angle) robot should face
+   */
   public void driveAndOrient(double xSpeed, double ySpeed, double target) {
+    driveAndOrient(xSpeed, ySpeed, target, true);
+  }
+
+  /**
+   * Method to drive the robot while it adjusts to a specified orientation.
+   *
+   * @param xSpeed
+   *                      Speed of the robot in the x direction (forward).
+   * @param ySpeed
+   *                      Speed of the robot in the y direction (sideways).
+   * @param targetHeading
+   *                      Target heading (angle) robot should face
+   * @param fieldRelative
+   *                      Whether the robot is in field relative mode
+   */
+  public void driveAndOrient(double xSpeed, double ySpeed, double target, boolean fieldRelative) {
     double currentHeading = this.getHeading();
     double targetHeading = SwerveUtils.normalizeAngle(target);
 
@@ -143,8 +173,10 @@ public class DriveSubsystem extends CancelableSubsystemBase {
         xSpeed,
         ySpeed,
         this.orientationController.calculate(currentHeading, targetHeading),
-        true);
+        fieldRelative);
   }
+
+  
 
   /**
    * Drive in a robot relative direction.
@@ -295,11 +327,35 @@ public class DriveSubsystem extends CancelableSubsystemBase {
    * @param currentOffset The Pose2d representing the robot's current position &
    *                      rotation.
    */
-  public void driveToTagOffset(Pose2d desiredOffset, Pose2d currentOffset) {
+  public void driveToOffset(Pose2d desiredOffset, Pose2d currentOffset) {
     PathPlannerTrajectoryState targetState = new PathPlannerTrajectoryState();
     targetState.pose = desiredOffset;
 
     ChassisSpeeds robotRelativeSpeeds = AutonConstants.AUTON_CONTROLLER.calculateRobotRelativeSpeeds(currentOffset,
+        targetState);
+        SmartDashboard.putNumber("Relative_r", robotRelativeSpeeds.omegaRadiansPerSecond);
+        SmartDashboard.putNumber("Relative_x", robotRelativeSpeeds.omegaRadiansPerSecond);
+        SmartDashboard.putNumber("Relative_y", robotRelativeSpeeds.omegaRadiansPerSecond);
+
+    // Normalize speeds for motor control
+    double normalizedX = robotRelativeSpeeds.vxMetersPerSecond / ModuleConstants.DRIVE_WHEEL_FREE_SPEED_IN_MPS;
+    double normalizedY = -1*robotRelativeSpeeds.vyMetersPerSecond / ModuleConstants.DRIVE_WHEEL_FREE_SPEED_IN_MPS;
+    double normalizedRot = robotRelativeSpeeds.omegaRadiansPerSecond / ModuleConstants.MAX_ANGULAR_SPEED;
+
+    // Drive the robot toward the desired offset with rotation correction
+    drive(normalizedX, normalizedY, normalizedRot, true);
+  }
+
+    /**
+   * Drives the robot to achieve the desired pose based on the current odometry
+   *
+   * @param desiredOffset The Pose2d representing the target position & rotation.
+   */
+  public void driveToPose(Pose2d desiredOffset) {
+    PathPlannerTrajectoryState targetState = new PathPlannerTrajectoryState();
+    targetState.pose = desiredOffset;
+
+    ChassisSpeeds robotRelativeSpeeds = AutonConstants.AUTON_CONTROLLER.calculateRobotRelativeSpeeds(getPose(),
         targetState);
         SmartDashboard.putNumber("Relative_r", robotRelativeSpeeds.omegaRadiansPerSecond);
         SmartDashboard.putNumber("Relative_x", robotRelativeSpeeds.omegaRadiansPerSecond);

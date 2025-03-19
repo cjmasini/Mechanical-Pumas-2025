@@ -99,7 +99,7 @@ public class DriveToReefCommand extends Command {
         logPose("Desired", desiredOffset);
 
         // Drive the robot towards the desired offset using vision data
-        driveSubsystem.driveToTagOffset(desiredOffset, currentOffset);
+        driveSubsystem.driveToOffset(desiredOffset, currentOffset);
 
         // Check if the robot has reached the desired offset
         if (Math.abs(currentOffset.getX() - VISION_FORWARD_OFFSET) <= POSITION_TOLERANCE &&

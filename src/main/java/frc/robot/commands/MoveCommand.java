@@ -75,30 +75,30 @@ public class MoveCommand extends Command {
       // supplied direction
       if (driverXbox.rightTrigger().getAsBoolean() && driverXbox.x().getAsBoolean()) {
         this.driveSubsystem.driveAndOrient(
-            -MathUtil.applyDeadband(OperatorConstants.DPAD_SPEED_REGULATOR * Math.pow(yMovement, 3),
+            -MathUtil.applyDeadband(Math.pow(yMovement, 3),
                 OperatorConstants.DRIVE_DEADBAND),
-            -MathUtil.applyDeadband(OperatorConstants.DPAD_SPEED_REGULATOR * Math.pow(xMovement, 3),
+            -MathUtil.applyDeadband(Math.pow(xMovement, 3),
                 OperatorConstants.DRIVE_DEADBAND),
             Direction.RIGHT);
       } else if (driverXbox.rightTrigger().getAsBoolean() && driverXbox.y().getAsBoolean()) {
         this.driveSubsystem.driveAndOrient(
-            -MathUtil.applyDeadband(OperatorConstants.DPAD_SPEED_REGULATOR * Math.pow(yMovement, 3),
+            -MathUtil.applyDeadband(Math.pow(yMovement, 3),
                 OperatorConstants.DRIVE_DEADBAND),
-            -MathUtil.applyDeadband(OperatorConstants.DPAD_SPEED_REGULATOR * Math.pow(xMovement, 3),
+            -MathUtil.applyDeadband(Math.pow(xMovement, 3),
                 OperatorConstants.DRIVE_DEADBAND),
             Direction.BACKWARD);
       } else if (driverXbox.rightTrigger().getAsBoolean() && driverXbox.b().getAsBoolean()) {
         this.driveSubsystem.driveAndOrient(
-            -MathUtil.applyDeadband(OperatorConstants.DPAD_SPEED_REGULATOR * Math.pow(yMovement, 3),
+            -MathUtil.applyDeadband(Math.pow(yMovement, 3),
                 OperatorConstants.DRIVE_DEADBAND),
-            -MathUtil.applyDeadband(OperatorConstants.DPAD_SPEED_REGULATOR * Math.pow(xMovement, 3),
+            -MathUtil.applyDeadband(Math.pow(xMovement, 3),
                 OperatorConstants.DRIVE_DEADBAND),
             Direction.LEFT);
       } else if (driverXbox.rightTrigger().getAsBoolean() && driverXbox.a().getAsBoolean()) {
         this.driveSubsystem.driveAndOrient(
-            -MathUtil.applyDeadband(OperatorConstants.DPAD_SPEED_REGULATOR * Math.pow(yMovement, 3),
+            -MathUtil.applyDeadband(Math.pow(yMovement, 3),
                 OperatorConstants.DRIVE_DEADBAND),
-            -MathUtil.applyDeadband(OperatorConstants.DPAD_SPEED_REGULATOR * Math.pow(xMovement, 3),
+            -MathUtil.applyDeadband(Math.pow(xMovement, 3),
                 OperatorConstants.DRIVE_DEADBAND),
             Direction.FORWARD);
       } else {
