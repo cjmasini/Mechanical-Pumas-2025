@@ -18,9 +18,9 @@ public class CenterThenDriveToReefCommand extends Command {
         public static final double forwardTolerance = .4;
         public static final double txTarget = 0;
         public static final double tyTarget = 0.5;
-        public static final double LEFT_DEAD_RECKONING_OFFSET = -.25;
-        public static final double RIGHT_DEAD_RECKONING_OFFSET = .25;
-        public static final double FORWARD_DEAD_RECKONING_OFFSET = -.3;
+        public static final double LEFT_DEAD_RECKONING_OFFSET = .1;
+        public static final double RIGHT_DEAD_RECKONING_OFFSET = -.1;
+        public static final double FORWARD_DEAD_RECKONING_OFFSET = .3;
     }
 
     private final DriveSubsystem drivetrain;
@@ -88,7 +88,7 @@ public class CenterThenDriveToReefCommand extends Command {
             drivetrain.driveToPose(new Pose2d(
                     (this.side == ReefPosition.LEFT ? AlignmentConstants.LEFT_DEAD_RECKONING_OFFSET
                             : AlignmentConstants.RIGHT_DEAD_RECKONING_OFFSET),
-                    AlignmentConstants.FORWARD_DEAD_RECKONING_OFFSET, Rotation2d.kZero));
+                    AlignmentConstants.FORWARD_DEAD_RECKONING_OFFSET, Rotation2d.fromDegrees(drivetrain.getGyroOrientation())));
         }
     }
 

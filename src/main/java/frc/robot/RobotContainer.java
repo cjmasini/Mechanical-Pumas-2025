@@ -21,6 +21,7 @@ import frc.robot.commands.AutonomousCommandFactory;
 import frc.robot.commands.CancelCommand;
 import frc.robot.commands.CenterThenDriveToReefCommand;
 import frc.robot.commands.ClimbCommand;
+import frc.robot.commands.OrientToTagCommand;
 import frc.robot.commands.DriveToReefCommand;
 import frc.robot.commands.DriveToReefContinuousCommand;
 import frc.robot.commands.FallCommand;
@@ -123,8 +124,9 @@ public class RobotContainer {
 
     // TODO: Probably remove?
     // Drive to left reef
-    Command driveToReefCommand = new CenterThenDriveToReefCommand(drivetrain, ReefPosition.LEFT).withTimeout(5);
-    Command driveToReefContinuousCommand = new DriveToReefContinuousCommand(drivetrain, visionSubsystem, ReefPosition.LEFT).withTimeout(3);
+    Command driveToReefCommand = new CenterThenDriveToReefCommand(drivetrain, ReefPosition.RIGHT).withTimeout(5);
+    Command driveToReefContinuousCommand = new DriveToReefContinuousCommand(drivetrain, visionSubsystem, ReefPosition.RIGHT).withTimeout(3);
+    Command driveToPose = new OrientToTagCommand(drivetrain, visionSubsystem).withTimeout(3);
     driverXbox.a().and(driverXbox.rightTrigger().negate()).onTrue(driveToReefContinuousCommand);
 
     // Intake coral on left trigger press

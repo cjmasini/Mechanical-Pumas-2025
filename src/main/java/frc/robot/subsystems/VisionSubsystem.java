@@ -6,7 +6,6 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.AutonConstants;
 import frc.robot.utils.LimelightHelpers;
 
 public class VisionSubsystem extends SubsystemBase {
@@ -24,6 +23,10 @@ public class VisionSubsystem extends SubsystemBase {
      */
     public boolean hasTarget() {
         return limelightTable.getEntry("tv").getDouble(0.0) == 1.0;
+    }
+
+    public double getTa() {
+        return limelightTable.getEntry("ta").getDouble(0.0);
     }
 
     /**
@@ -74,13 +77,14 @@ public class VisionSubsystem extends SubsystemBase {
         SmartDashboard.putBoolean("Vision/Has Target", hasTarget());
         SmartDashboard.putNumber("Vision/Target ID", getTargetID());
 
+        SmartDashboard.putNumber("TA", getTa());
         double[] positions = LimelightHelpers.getBotPose_TargetSpace("");
         SmartDashboard.putNumber("Vision/Offset X", positions[2]);
         SmartDashboard.putNumber("Vision/Offset Y", positions[0]);
         SmartDashboard.putNumber("Vision/Rotation", positions[4]);
     }
 
-    public double getTa() {
-        return LimelightHelpers.getTA("");
-    }
+    // public double getTa() {
+    //     return LimelightHelpers.getTA("");
+    // }
 }

@@ -89,8 +89,7 @@ public class DriveSubsystem extends CancelableSubsystemBase {
       DriverStation.reportError("Failed to load PathPlanner config and configure AutoBuilder", e.getStackTrace());
     }
 
-    orientationController = new PIDController(AutonConstants.ANGLE_PID.kP, AutonConstants.ANGLE_PID.kI,
-        AutonConstants.ANGLE_PID.kD);
+    orientationController = new PIDController(.01, 0,0);
     orientationController.enableContinuousInput(-180, 180);
   }
 
@@ -159,7 +158,7 @@ public class DriveSubsystem extends CancelableSubsystemBase {
    *                      Speed of the robot in the x direction (forward).
    * @param ySpeed
    *                      Speed of the robot in the y direction (sideways).
-   * @param targetHeading
+   * @param target
    *                      Target heading (angle) robot should face
    * @param fieldRelative
    *                      Whether the robot is in field relative mode
@@ -336,17 +335,17 @@ public class DriveSubsystem extends CancelableSubsystemBase {
 
     ChassisSpeeds robotRelativeSpeeds = AutonConstants.AUTON_CONTROLLER.calculateRobotRelativeSpeeds(currentOffset,
         targetState);
-        SmartDashboard.putNumber("Relative_r", robotRelativeSpeeds.omegaRadiansPerSecond);
-        SmartDashboard.putNumber("Relative_x", robotRelativeSpeeds.omegaRadiansPerSecond);
-        SmartDashboard.putNumber("Relative_y", robotRelativeSpeeds.omegaRadiansPerSecond);
+        // SmartDashboard.putNumber("Relative_r", robotRelativeSpeeds.omegaRadiansPerSecond);
+        // SmartDashboard.putNumber("Relative_x", robotRelativeSpeeds.omegaRadiansPerSecond);
+        // SmartDashboard.putNumber("Relative_y", robotRelativeSpeeds.omegaRadiansPerSecond);
 
     // Normalize speeds for motor control
     double normalizedX = robotRelativeSpeeds.vxMetersPerSecond / ModuleConstants.DRIVE_WHEEL_FREE_SPEED_IN_MPS;
-    double normalizedY = -1*robotRelativeSpeeds.vyMetersPerSecond / ModuleConstants.DRIVE_WHEEL_FREE_SPEED_IN_MPS;
-    double normalizedRot = robotRelativeSpeeds.omegaRadiansPerSecond / ModuleConstants.MAX_ANGULAR_SPEED;
+    double normalizedY = 0*-1*robotRelativeSpeeds.vyMetersPerSecond / ModuleConstants.DRIVE_WHEEL_FREE_SPEED_IN_MPS;
+    double normalizedRot =0* robotRelativeSpeeds.omegaRadiansPerSecond / ModuleConstants.MAX_ANGULAR_SPEED;
 
     // Drive the robot toward the desired offset with rotation correction
-    drive(normalizedY, normalizedX, normalizedRot, false);
+    drive(normalizedX, normalizedX, normalizedRot, false);
   }
 
   private void logPose(String name, Pose2d pose) {
@@ -363,26 +362,37 @@ public class DriveSubsystem extends CancelableSubsystemBase {
   public void driveToPose(Pose2d desiredOffset) {
     PathPlannerTrajectoryState targetState = new PathPlannerTrajectoryState();
     targetState.pose = desiredOffset;
-    logPose("Current", getPose());
-    logPose("Desired", desiredOffset);
+    // logPose("Current", getPose());
+    // logPose("Desired", desiredOffset);
 
     ChassisSpeeds robotRelativeSpeeds = AutonConstants.AUTON_CONTROLLER.calculateRobotRelativeSpeeds(getPose(),
         targetState);
-        SmartDashboard.putNumber("Relative_r", robotRelativeSpeeds.omegaRadiansPerSecond);
-        SmartDashboard.putNumber("Relative_x", robotRelativeSpeeds.omegaRadiansPerSecond);
-        SmartDashboard.putNumber("Relative_y", robotRelativeSpeeds.omegaRadiansPerSecond);
+        double x = robotRelativeSpeeds.vxMetersPerSecond;
+        double y = robotRelativeSpeeds.vyMetersPerSecond;
+        double omega = robotRelativeSpeeds.omegaRadiansPerSecond;
+        
+        SmartDashboard.putNumber("Relative_x", x);
+        SmartDashboard.putNumber("Relative_y", y);
+        SmartDashboard.putNumber("Relative_r", omega);
 
     // Normalize speeds for motor control
-    double normalizedX = robotRelativeSpeeds.vxMetersPerSecond / ModuleConstants.DRIVE_WHEEL_FREE_SPEED_IN_MPS;
-    double normalizedY = -1.*robotRelativeSpeeds.vyMetersPerSecond / ModuleConstants.DRIVE_WHEEL_FREE_SPEED_IN_MPS;
-    double normalizedRot = robotRelativeSpeeds.omegaRadiansPerSecond / ModuleConstants.MAX_ANGULAR_SPEED;
+    double normalizedX = -x / ModuleConstants.DRIVE_WHEEL_FREE_SPEED_IN_MPS;
+    double normalizedY = y / ModuleConstants.DRIVE_WHEEL_FREE_SPEED_IN_MPS;
+    double normalizedRot = omega / ModuleConstants.MAX_ANGULAR_SPEED;
+    SmartDashboard.putNumber("NormalizedX", normalizedX);
+    SmartDashboard.putNumber("NormalizedY", normalizedY);
+    SmartDashboard.putNumber("NormalizedRot", normalizedRot);
 
     // Drive the robot toward the desired offset with rotation correction
-    drive(normalizedY, normalizedX, normalizedRot, false);
+    drive(normalizedX, normalizedY, normalizedRot, true);
   }
 
   public double getGyroOrientation() {
     return gyro.getYaw().getValueAsDouble() + RobotConstants.GYRO_OFFSET;
+  }
+
+  public boolean isAtAngle(double targetAngle) {
+    return Math.abs(getGyroOrientation() - targetAngle) < 1;
   }
 
   public double getTOFDistance() {
