@@ -2,6 +2,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.DriveToReefCommand.ReefPosition;
 import frc.robot.subsystems.DriveSubsystem;
@@ -10,16 +11,16 @@ import frc.robot.utils.LimelightHelpers;
 public class CenterThenDriveToReefCommand extends Command {
 
     public class AlignmentConstants {
-        public static final double kPForward = 0.1;
-        public static final double kPStrafe = 0.1;
-        public static final double feedforward = 0.1;
+        public static final double kPForward = 0.017;
+        public static final double kPStrafe = 0.012;
+        public static final double feedforward = 0.02;
         public static final double strafeTolerance = 1;
-        public static final double forwardTolerance = 1;
+        public static final double forwardTolerance = .4;
         public static final double txTarget = 0;
         public static final double tyTarget = 0.5;
-        public static final double LEFT_DEAD_RECKONING_OFFSET = -.1651;
-        public static final double RIGHT_DEAD_RECKONING_OFFSET = .1651;
-        public static final double FORWARD_DEAD_RECKONING_OFFSET = -.2;
+        public static final double LEFT_DEAD_RECKONING_OFFSET = -.25;
+        public static final double RIGHT_DEAD_RECKONING_OFFSET = .25;
+        public static final double FORWARD_DEAD_RECKONING_OFFSET = -.3;
     }
 
     private final DriveSubsystem drivetrain;
@@ -51,7 +52,10 @@ public class CenterThenDriveToReefCommand extends Command {
 
             if (ta != 0.0) {
                 strafeError = tx - AlignmentConstants.txTarget;
+                SmartDashboard.putNumber("strafe error", strafeError);
                 forwardError = ty - AlignmentConstants.tyTarget;
+                SmartDashboard.putNumber("forward error", forwardError);
+
 
                 double forwardCommanded = -AlignmentConstants.kPForward * forwardError;
                 double strafeCommanded = -AlignmentConstants.kPStrafe * strafeError;
@@ -71,12 +75,16 @@ public class CenterThenDriveToReefCommand extends Command {
                         forwardCommanded = forwardCommanded - AlignmentConstants.feedforward;
                     }
                 }
+                if (Math.abs(strafeError) < AlignmentConstants.strafeTolerance && Math.abs(forwardError) < AlignmentConstants.forwardTolerance) {
+                    visionAligned = true;
+                    return;
+                }
 
-                drivetrain.driveAndOrientToAprilTag(forwardCommanded, strafeCommanded, ta);
+                drivetrain.drive(forwardCommanded, strafeCommanded, 0, false);
             }
         } else {
             if (!zeroedPose)
-                drivetrain.updatePose(Pose2d.kZero);
+                drivetrain.updatePose(new Pose2d(0, 0, Rotation2d.fromDegrees(drivetrain.getGyroOrientation())));
             drivetrain.driveToPose(new Pose2d(
                     (this.side == ReefPosition.LEFT ? AlignmentConstants.LEFT_DEAD_RECKONING_OFFSET
                             : AlignmentConstants.RIGHT_DEAD_RECKONING_OFFSET),
@@ -86,7 +94,6 @@ public class CenterThenDriveToReefCommand extends Command {
 
     @Override
     public boolean isFinished() {
-        return Math.abs(strafeError) < AlignmentConstants.strafeTolerance
-                && Math.abs(forwardError) < AlignmentConstants.forwardTolerance;
+        return false;
     }
 }

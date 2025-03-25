@@ -105,6 +105,7 @@ public class DriveSubsystem extends CancelableSubsystemBase {
             backLeftModule.getPosition(),
             backRightModule.getPosition()
         });
+      logPose("Odometry", getPose());
     SmartDashboard.putNumber("gyroOrientation", getGyroOrientation());
   }
 
@@ -330,6 +331,8 @@ public class DriveSubsystem extends CancelableSubsystemBase {
   public void driveToOffset(Pose2d desiredOffset, Pose2d currentOffset) {
     PathPlannerTrajectoryState targetState = new PathPlannerTrajectoryState();
     targetState.pose = desiredOffset;
+    logPose("Current", currentOffset);
+    logPose("Desired", desiredOffset);
 
     ChassisSpeeds robotRelativeSpeeds = AutonConstants.AUTON_CONTROLLER.calculateRobotRelativeSpeeds(currentOffset,
         targetState);
@@ -343,8 +346,14 @@ public class DriveSubsystem extends CancelableSubsystemBase {
     double normalizedRot = robotRelativeSpeeds.omegaRadiansPerSecond / ModuleConstants.MAX_ANGULAR_SPEED;
 
     // Drive the robot toward the desired offset with rotation correction
-    drive(normalizedX, normalizedY, normalizedRot, true);
+    drive(normalizedY, normalizedX, normalizedRot, false);
   }
+
+  private void logPose(String name, Pose2d pose) {
+    SmartDashboard.putNumber(name + "_x", pose.getX());
+    SmartDashboard.putNumber(name + "_y", pose.getY());
+    SmartDashboard.putNumber(name + "_rot", pose.getRotation().getDegrees());
+}
 
     /**
    * Drives the robot to achieve the desired pose based on the current odometry
@@ -354,6 +363,8 @@ public class DriveSubsystem extends CancelableSubsystemBase {
   public void driveToPose(Pose2d desiredOffset) {
     PathPlannerTrajectoryState targetState = new PathPlannerTrajectoryState();
     targetState.pose = desiredOffset;
+    logPose("Current", getPose());
+    logPose("Desired", desiredOffset);
 
     ChassisSpeeds robotRelativeSpeeds = AutonConstants.AUTON_CONTROLLER.calculateRobotRelativeSpeeds(getPose(),
         targetState);
@@ -363,11 +374,11 @@ public class DriveSubsystem extends CancelableSubsystemBase {
 
     // Normalize speeds for motor control
     double normalizedX = robotRelativeSpeeds.vxMetersPerSecond / ModuleConstants.DRIVE_WHEEL_FREE_SPEED_IN_MPS;
-    double normalizedY = -1*robotRelativeSpeeds.vyMetersPerSecond / ModuleConstants.DRIVE_WHEEL_FREE_SPEED_IN_MPS;
+    double normalizedY = -1.*robotRelativeSpeeds.vyMetersPerSecond / ModuleConstants.DRIVE_WHEEL_FREE_SPEED_IN_MPS;
     double normalizedRot = robotRelativeSpeeds.omegaRadiansPerSecond / ModuleConstants.MAX_ANGULAR_SPEED;
 
     // Drive the robot toward the desired offset with rotation correction
-    drive(normalizedX, normalizedY, normalizedRot, true);
+    drive(normalizedY, normalizedX, normalizedRot, false);
   }
 
   public double getGyroOrientation() {

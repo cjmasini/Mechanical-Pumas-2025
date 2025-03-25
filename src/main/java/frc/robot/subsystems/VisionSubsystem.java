@@ -79,4 +79,8 @@ public class VisionSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Vision/Offset Y", positions[0]);
         SmartDashboard.putNumber("Vision/Rotation", positions[4]);
     }
+
+    public double getTa() {
+        return LimelightHelpers.getTA("");
+    }
 }
